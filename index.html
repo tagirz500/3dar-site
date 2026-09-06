@@ -343,10 +343,16 @@ body.locked .nav{opacity:0;pointer-events:none}
 
 /* ---------- services ---------- */
 /* the parallax backdrop continues under the top of this section, then the navy takes over */
-.services{padding:96px 0 30px}
-.services .wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:72px}
-.services .head{position:sticky;top:110px;align-self:start}
-.services .head p{margin-top:22px;color:var(--fg-2);max-width:32ch}
+.services{padding:40px 0 30px}
+.services .wrap{display:grid;grid-template-columns:1fr}
+/* the statement: full screen, the demo's 12vw title, copy centred beneath */
+.typo{min-height:100vh;display:grid;place-items:center;padding:14vh 0 8vh}
+.typo__inner{width:100%;text-align:center;padding:0 2rem}
+.typo__title{margin:22px 0 0;display:grid;gap:1.2vw;font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;
+  font-size:clamp(3rem,12vw,13rem);line-height:.86;letter-spacing:-.01em;color:var(--fg)}
+.typo__title .char{display:inline-block;will-change:opacity,transform}
+.typo__title .word{white-space:nowrap;display:inline-block}
+.typo__p{max-width:660px;margin:2.2rem auto 0;font-size:clamp(1.05rem,1.4vw,1.25rem);line-height:1.5;color:var(--fg-2)}
 .svc article{
   display:grid;grid-template-columns:44px 1fr;gap:20px;
   padding:26px 0;border-bottom:1px solid var(--line);
@@ -363,7 +369,7 @@ body.locked .nav{opacity:0;pointer-events:none}
 .text-rep>span:not(:last-child){color:var(--accent-2);opacity:0}
 .text-rep>span:not(:last-child) em{color:var(--accent-2)}
 .svc p{color:var(--fg-2);margin-top:8px;font-size:15px;max-width:56ch}
-@media(max-width:900px){.services{padding-top:88px}.services .wrap{grid-template-columns:1fr;gap:40px}.services .head{position:static}}
+@media(max-width:900px){.services{padding-top:40px}}
 
 /* ---------- portfolio: drift wall over the whole library, pinned for 300vh ---------- */
 .work{padding:64px 0}
@@ -719,13 +725,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   </div>
 </section>
 
+<!-- Between the clip and the wall: the statement, full screen, letters settling in as you scroll
+     (Codrops OnScrollTypographyAnimations, effect 1: chars from opacity 0 / scale .6 / ±20°, stagger .4, power4, scrubbed) -->
+<section class="typo" id="typo">
+  <div class="typo__inner">
+    <span class="eyebrow">Что мы делаем</span>
+    <h2 class="typo__title" id="js-typo" data-nogoo><span>Ваше желание,</span><span>наше исполнение</span></h2>
+    <p class="typo__p">Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
+  </div>
+</section>
+
 <section class="services" id="services">
   <div class="wrap">
-    <div class="head rv">
-      <span class="eyebrow">Что мы делаем</span>
-      <h2 class="sec-h" style="margin-top:14px" data-text-rep data-nogoo>Ваше желание,<br>наше исполнение</h2>
-      <p>Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
-    </div>
     <div class="svc">
       <article class="rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
@@ -1160,7 +1171,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     blkCover().then(() => {
       film.pause(); heroEl.classList.add('is-left'); heroLeft = true; lock(false);
       scrollTo({ top: 0, behavior: 'instant' });   // the site now starts at «Услуги»
-      repWarm = 0; warmReps();
+      repWarm = 0; warmReps(); if (window.TYPO_WARM) TYPO_WARM();
       return blkReveal();
     }).then(() => { handing = false; });
   }
@@ -1240,6 +1251,41 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 
 
   /* (the parallax hand-off between the clip and «Услуги» was removed: the clip is its own screen now) */
+
+  /* ---------- the statement's letters (Codrops OnScrollTypographyAnimations, effect 1) ----------
+     Splitting-style chars; each starts at opacity 0, scale .6, a random tilt of ±20°, and settles
+     with power4 as its slice of the scroll passes — stagger .4 between letters, the whole title
+     scrubbed from "title centre 20% below the viewport bottom" over half a viewport. */
+  {
+    const title = $('js-typo');
+    const chars = [];
+    title.querySelectorAll('span').forEach(line => {
+      const text = line.textContent; line.textContent = '';
+      text.split(' ').forEach((w, wi, arr) => {
+        const word = document.createElement('span'); word.className = 'word';
+        Array.from(w).forEach(ch => { const c = document.createElement('span'); c.className = 'char'; c.textContent = ch; c.dataset.r = (Math.random() * 40 - 20).toFixed(2); word.appendChild(c); chars.push(c); });
+        line.appendChild(word); if (wi < arr.length - 1) line.appendChild(document.createTextNode(' '));
+      });
+    });
+    const STAG = .4, span = 1 + STAG * (chars.length - 1), p4 = t => 1 - Math.pow(1 - t, 4);
+    // this block is the first thing after the clip, so on arrival the letters settle over 2.2s
+    // (there is nothing to scroll them in with); scrolling away and back scrubs them as in the demo
+    let typoWarm = 0, typoT0 = 0;
+    function warmTypo() { typoWarm = 0; typoT0 = performance.now(); const step = () => { typoWarm = Math.min(1, (performance.now() - typoT0) / 2200); typoTick(); if (typoWarm < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+    function typoTick() {
+      const r = title.getBoundingClientRect(), vh = innerHeight;
+      const start = vh + r.height * .2 - (r.top + r.height / 2) ;         // 0 when the title's centre is 20% of its height below the bottom edge
+      const p = Math.min(typoWarm, Math.max(0, start / (vh * .5)));        // ... 1 half a viewport later
+      chars.forEach((c, i) => {
+        const t = p4(Math.min(1, Math.max(0, p * span - STAG * i)));
+        c.style.opacity = t.toFixed(3);
+        c.style.transform = `scale(${(.6 + .4 * t).toFixed(4)}) rotate(${(c.dataset.r * (1 - t)).toFixed(2)}deg)`;
+      });
+    }
+    addEventListener('scroll', typoTick, { passive: true }); addEventListener('resize', typoTick); typoTick();
+    window.TYPO_WARM = warmTypo;
+    if (!document.body.classList.contains('locked')) warmTypo();   // already on the site (home2 loader, reduced motion, wall-test)
+  }
 
   /* ---------- TextRepetitionEffect (Codrops demo 5) on the service titles ----------
      totalWords 8, tyIncrement 16, txIncrement 2, opacityIncrement .15, delayIncrement .01,

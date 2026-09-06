@@ -235,8 +235,8 @@
       for (const b of blocks) {
         const r = b.el.getBoundingClientRect();
         if (r.bottom < 0 || r.top > vh * 1.5) { if (r.top > vh * 1.5 && b.done) { b.done = false; } continue; }
-        // effect 1's window: from the block's centre 20% (of its height) below the viewport bottom, over half a viewport
-        const p = clamp01((vh + r.height * .2 - (r.top + r.height / 2)) / (vh * .5));
+        // the scrub runs from the block's top entering at the bottom edge until it reaches 35% down the screen
+        const p = clamp01((vh - r.top) / (vh * .65));
         if (p >= 1 && b.done) continue;
         b.done = p >= 1;
         for (let i = 0; i < b.chars.length; i++) {

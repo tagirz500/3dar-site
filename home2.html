@@ -7,7 +7,7 @@
 <meta name="description" content="3D-визуализация, архитектурная анимация, VR-туры и брендинг для девелоперов. Студия премиум-класса, 35+ реализованных проектов.">
 <link rel="preload" as="video" href="media/hero.mp4" type="video/mp4">
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="site.css?v=20260905">
+<link rel="stylesheet" href="site.css?v=20260906b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
@@ -356,14 +356,11 @@ body.locked .nav{opacity:0;pointer-events:none}
 .typo__title .char{display:inline-block;will-change:opacity,transform}
 .typo__title .word{white-space:nowrap;display:inline-block}
 .typo__p{max-width:660px;margin:2.2rem auto 0;font-size:clamp(1.05rem,1.4vw,1.25rem);line-height:1.5;color:var(--fg-2)}
-.svc article{
-  display:grid;grid-template-columns:44px 1fr;gap:20px;
-  padding:26px 0;border-bottom:1px solid var(--line);
-}
-.svc article:first-child{padding-top:0}
-.svc article:last-child{border-bottom:0}
-.svc svg{width:26px;height:26px;color:var(--accent)}
-.svc h3{font-size:23px}
+/* each service is its own screen, like the statement above: icon, the fanned title, then the copy
+   set large enough to fill the screen while its letters settle in (site-wide on-scroll typography) */
+.svc article{min-height:100vh;display:grid;place-content:center;justify-items:center;text-align:center;padding:8vh 0;box-sizing:border-box}
+.svc svg{width:34px;height:34px;color:var(--accent);margin-bottom:2.4vh}
+.svc h3{font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;font-size:clamp(2.6rem,7.5vw,8.5rem);line-height:.9}
 .svc h3 em{font-style:normal;color:var(--accent)}
 /* TextRepetitionEffect (Codrops, demo 5): the title is stacked eight times; as it scrolls up the
    copies fan out down-right into a fading trail behind the solid top copy */
@@ -371,7 +368,7 @@ body.locked .nav{opacity:0;pointer-events:none}
 .text-rep>span{grid-area:1/1;line-height:1.05;will-change:transform,opacity}
 .text-rep>span:not(:last-child){color:var(--accent-2);opacity:0}
 .text-rep>span:not(:last-child) em{color:var(--accent-2)}
-.svc p{color:var(--fg-2);margin-top:8px;font-size:15px;max-width:56ch}
+.svc p{color:var(--fg);margin:3.2vh auto 0;font-size:clamp(1.35rem,2.5vw,2.5rem);line-height:1.28;max-width:30ch}
 @media(max-width:900px){.services{padding-top:40px}}
 
 /* ---------- portfolio: drift wall over the whole library, pinned for 300vh ---------- */
@@ -769,28 +766,28 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 <section class="services" id="services">
   <div class="wrap">
     <div class="svc">
-      <article class="rv">
+      <article>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>3D</em> визуализации</h3>
           <p>Фотореалистичная визуализация, моделирование архитектуры и окружения, атмосферные рендеры, 3D-проектирование и создание контента для отдела продаж.</p>
         </div>
       </article>
-      <article class="rv">
+      <article>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>3D</em> анимация</h3>
           <p>Сюжетные короткометражные фильмы и рекламные ролики. Организация съёмочного процесса. Интеграция натурных и персонажных кадров в 3D-сцену.</p>
         </div>
       </article>
-      <article class="rv">
+      <article>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3l-2-3h-4l-2 3H5a2 2 0 0 1-2-2V9z"/><circle cx="8.5" cy="12" r="1.5"/><circle cx="15.5" cy="12" r="1.5"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>VR</em> туры</h3>
           <p>Иммерсивные 3D-панорамы, разработка сценариев, интеграция натурных съёмок с хромакеем и 3D-графики.</p>
         </div>
       </article>
-      <article class="rv">
+      <article>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4z"/><path d="M13 8l3 3"/><path d="M14 4l6 6"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>Brand</em> решения</h3>
@@ -1997,6 +1994,6 @@ if (el && el.textContent.trim()) window.PIXELSCAN.scan(el);
   document.getElementById('js-cine-skip').addEventListener('click', finish);
 })();
 </script>
-<script src="site.js?v=20260905"></script>
+<script src="site.js?v=20260906b"></script>
 </body>
 </html>

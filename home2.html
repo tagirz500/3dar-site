@@ -566,6 +566,25 @@ body.locked .nav{opacity:0;pointer-events:none}
 
 
 
+
+/* ---------- start-up loader (Drive: cinematic-loader-entrance), in the site's blues ---------- */
+body.cine-on{overflow:hidden;height:100dvh}
+body.cine-on .nav{opacity:0;pointer-events:none}
+.cine{position:fixed;inset:0;z-index:400;overflow-x:hidden;background:#6ea8ff}          /* the demo's white → the accent blue */
+.cine__clip{position:absolute;left:0;width:100vw;height:33.3vh;overflow:clip;z-index:2;background:#071238}   /* the demo's black → navy */
+.cine__top{top:0;clip-path:inset(0 0 0 0)}
+.cine__bottom{bottom:0;clip-path:inset(0 0 0 0)}
+.cine__center{position:relative;top:33.4vh;width:100vw;height:33.4vh;overflow:hidden}
+.cine__mq{position:absolute;top:200%;left:50%;transform:translate(-50%,-50%);width:200vw;mix-blend-mode:difference;color:#fff}
+.cine__row{width:100%;display:flex;justify-content:space-between;align-items:center;line-height:1;font-size:clamp(2rem,10vw,12rem);
+  font-family:Oswald,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;color:#fff;white-space:nowrap}
+.cine__row span{margin-inline:25px}
+.cine__center .cine__row span{color:#071238}                                            /* the demo's black centre text → navy */
+.cine__skip{position:absolute;right:clamp(16px,3.5vw,58px);bottom:28px;z-index:5;padding:9px 16px;border-radius:999px;border:1px solid rgba(7,18,56,.4);
+  background:rgba(7,18,56,.15);color:#071238;cursor:pointer;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.cine__skip:hover{background:#071238;color:#eaf1ff}
+.cine.done{display:none}
+
 /* ---------- about ---------- */
 .about{padding:64px 0;background:transparent}
 .about .wrap{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:72px;align-items:center}
@@ -668,7 +687,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 }
 </style>
 </head>
-<body class="locked">
+<body class="cine-on">
+<!-- Start-up: the "cinematic loader entrance" (Drive hero-20) in the site's blues, "3DAR STUDIO" running
+     in three bands — instead of the clip. The clip's hero stays in the document but hidden, so the
+     rest of the page (wall, reel, transitions) is exactly the main page's. -->
+<div class="cine" id="js-cine" aria-hidden="true">
+  <div class="cine__clip cine__top"><div class="cine__mq"><div class="cine__row"><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span></div></div></div>
+  <div class="cine__clip cine__bottom"><div class="cine__mq"><div class="cine__row"><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span></div></div></div>
+  <div class="cine__center"><div class="cine__mq"><div class="cine__row"><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span><span>3DAR STUDIO</span></div></div></div>
+  <button class="cine__skip" id="js-cine-skip" type="button">Пропустить</button>
+</div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="cta-splash" viewBox="0 0 342 208">
@@ -1213,6 +1241,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 
   film.addEventListener('loadeddata', () => { film.currentTime = 0; }, { once: true });
   paint();
+  if (document.body.classList.contains('cine-on')) {              // this page starts with the loader, not the clip
+    heroEl.classList.add('is-left'); heroLeft = true; lock(false);
+  }
   if (new URLSearchParams(location.search).has('wall')) {          // wall-test.html: skip the clip, go to the wall
     heroEl.classList.add('is-left'); heroLeft = true; lock(false);
     requestAnimationFrame(() => { const t = document.getElementById('wall-track'); scrollTo({ top: t.getBoundingClientRect().top + scrollY + innerHeight * .6, behavior: 'instant' }); });   // (offsetTop is relative to the positioned .work section)
@@ -1889,6 +1920,31 @@ const el = document.getElementById('h');
 const opts = { shader, overflow: 30, intersection: { threshold: 0.99 }, uniforms: { mode: 0, width: 0.2, layers: 3, speed: 0.25, delay: 0 } };   // 3x slower than the demo's .75 (2x, then 1.5x slower again)
 window.PIXELSCAN = { vfx, scan(e) { try { vfx.remove(e); } catch (err) {} if (e.textContent.trim()) vfx.add(e, opts); } };
 if (el && el.textContent.trim()) window.PIXELSCAN.scan(el);
+</script>
+<script>
+(() => {
+  const P4 = 'cubic-bezier(.76,0,.24,1)', P3 = 'cubic-bezier(.65,0,.35,1)', P2 = 'cubic-bezier(.45,0,.55,1)';   // power4/3/2.inOut
+  const cine = document.getElementById('js-cine'), top = cine.querySelector('.cine__top'), bottom = cine.querySelector('.cine__bottom');
+  const mqs = cine.querySelectorAll('.cine__mq'), mqTB = [top.querySelector('.cine__mq'), bottom.querySelector('.cine__mq')], mqC = cine.querySelector('.cine__center .cine__mq');
+  const anims = [];
+  const run = (el, kf, o) => { const a = el.animate(kf, Object.assign({ fill: 'forwards' }, o)); anims.push(a); return a; };
+  // gsap.from(".clip-top, .clip-bottom", 2, {delay:1, height:"50vh", ease:power4.inOut})
+  [top, bottom].forEach(el => run(el, [{ height: '50vh' }, { height: '33.3vh' }], { duration: 2000, delay: 1000, easing: P4 }));
+  // gsap.to(".marquee", 3.5, {delay:.75, top:"50%", ease:power4.inOut})
+  mqs.forEach(el => run(el, [{ top: '200%' }, { top: '50%' }], { duration: 3500, delay: 750, easing: P4 }));
+  // gsap.from(".clip-top .marquee, .clip-bottom .marquee", 5, {delay:1, left:"100%", ease:power3.inOut})
+  mqTB.forEach(el => run(el, [{ left: '100%' }, { left: '50%' }], { duration: 5000, delay: 1000, easing: P3 }));
+  // gsap.from(".clip-center .marquee", 4.5, {delay:1, opacity:.9, left:"-100%", ease:power3.inOut})
+  run(mqC, [{ left: '-100%', opacity: .9 }, { left: '50%', opacity: 1 }], { duration: 4500, delay: 1000, easing: P3 });
+  // at 6s the bands close and the words fade; at 7s the loader fades and is gone
+  run(top, [{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 2000, delay: 6000, easing: P4 });
+  run(bottom, [{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(100% 0 0 0)' }], { duration: 2000, delay: 6000, easing: P4 });
+  [...mqTB, ...mqC.querySelectorAll('span')].forEach(el => run(el, [{ opacity: 1 }, { opacity: 0 }], { duration: 1000, delay: 6000, easing: P2 }));
+  const last = run(cine, [{ opacity: 1 }, { opacity: 0 }], { duration: 1000, delay: 7000, easing: P2 });
+  function finish() { cine.classList.add('done'); document.body.classList.remove('cine-on'); anims.forEach(a => { try { a.cancel(); } catch (e) {} }); }
+  last.finished.then(finish).catch(() => {});
+  document.getElementById('js-cine-skip').addEventListener('click', finish);
+})();
 </script>
 <script src="site.js?v=20260905"></script>
 </body>

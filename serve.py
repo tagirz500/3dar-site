@@ -47,6 +47,9 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         if self.command == "GET" and self.path != "/":
             self.send_header("Accept-Ranges", "bytes")
+        # no Cache-Control + a Last-Modified makes Chrome cache heuristically, so edits to
+        # site.css / site.js / index.html did not show up without a hard reload
+        self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
 

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Drift wall — settings</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<style>
+  :root{color-scheme:dark}
+  body{margin:0;background:#0b0b10;color:#eaf1ff;font:13px/1.4 system-ui,sans-serif;display:grid;grid-template-rows:auto 1fr;height:100vh}
+  .panel{background:#141420;border-bottom:1px solid #26263a;padding:12px 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 18px;align-items:center}
+  .panel h1{grid-column:1/-1;margin:0 0 2px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  label{display:grid;grid-template-columns:96px 1fr 60px;gap:8px;align-items:center;background:#1c1c2a;border-radius:8px;padding:6px 10px}
+  label span:last-child{text-align:right;font-variant-numeric:tabular-nums;color:#a9c9ff}
+  input[type=range]{width:100%;accent-color:#6ea8ff}
+  input[type=color]{width:100%;height:22px;border:0;background:none;padding:0}
+  select{background:#0b0b10;color:#eaf1ff;border:1px solid #33334a;border-radius:6px;padding:3px 6px}
+  button{background:#6ea8ff;color:#041033;border:0;border-radius:6px;padding:6px 12px;font-weight:600;cursor:pointer}
+  button.ghost{background:transparent;color:#a9c9ff;border:1px solid #33334a}
+  iframe{width:100%;height:100%;border:0;background:#020a24}
+  pre{grid-column:1/-1;margin:4px 0 0;background:#0b0b10;border:1px solid #26263a;border-radius:8px;padding:8px 10px;font-size:11px;overflow:auto;max-height:64px;color:#8fa6d9}
+</style>
+</head>
+<body>
+<div class="panel" id="panel">
+  <h1>Drift wall — live settings <span><button class="ghost" id="reset" type="button">Reset</button> <button id="copy" type="button">Copy JSON</button></span></h1>
+</div>
+<iframe id="frame" title="site"></iframe>
+<script src="wall-settings.js"></script>
+<script>
+  // one row per setting: [key, type, min, max, step]
+  const ROWS = [
+    ['overlay', 'color'], ['columns', 'range', 1, 8, 1], ['tileWidth', 'range', 80, 480, 4], ['tileHeight', 'range', 60, 360, 4],
+    ['gap', 'range', 0, 60, 1], ['radius', 'range', 0, 40, 1], ['direction', 'select', ['up', 'down', 'alternate']], ['speed', 'range', 0, 120, 1],
+    ['variance', 'range', 0, 1, .01], ['tilt', 'range', -60, 60, 1], ['turn', 'range', -60, 60, 1], ['roll', 'range', -45, 45, 1],
+    ['perspective', 'range', 300, 4000, 10], ['depth', 'range', -600, 1200, 5], ['parallax', 'range', 0, 2, .05], ['lift', 'range', 0, 200, 2],
+    ['fade', 'range', 0, 1, .01], ['dim', 'range', .1, 1, .01], ['overlayOpacity', 'range', 0, 1, .01], ['pauseOnHover', 'check'], ['grayscale', 'check'],
+  ];
+  const DEF = JSON.parse(JSON.stringify(window.WALL));
+  let cur = JSON.parse(JSON.stringify(DEF));
+  const panel = document.getElementById('panel'), frame = document.getElementById('frame');
+  const out = document.createElement('pre'); panel.appendChild(out);
+  const fmt = v => typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(2)) : v;
+  let t;
+  function apply(reload) {
+    out.textContent = 'window.WALL = ' + JSON.stringify(cur, null, 0).replace(/,"/g, ', "').replace(/":/g, '": ') + ';';
+    clearTimeout(t);
+    t = setTimeout(() => {
+      const url = 'index.html?wall=' + encodeURIComponent(JSON.stringify(cur)) + '&v=' + Date.now();
+      // structural values need a rebuild (reload); the rest are CSS variables and can go live
+      const live = frame.contentWindow && frame.contentWindow.document.getElementById('work');
+      if (!reload && live) {
+        const v = live.style, px = n => n + 'px', deg = n => n + 'deg';
+        v.setProperty('--dw-tile-w', px(cur.tileWidth)); v.setProperty('--dw-tile-h', px(cur.tileHeight)); v.setProperty('--dw-gap', px(cur.gap));
+        v.setProperty('--dw-radius', px(cur.radius)); v.setProperty('--dw-tilt', deg(cur.tilt)); v.setProperty('--dw-turn', deg(cur.turn)); v.setProperty('--dw-roll', deg(cur.roll));
+        v.setProperty('--dw-perspective', px(cur.perspective)); v.setProperty('--dw-depth', px(cur.depth)); v.setProperty('--dw-lift', px(cur.lift));
+        v.setProperty('--dw-edge', (100 - cur.fade * 100) + '%'); v.setProperty('--dw-dim', cur.dim);
+        v.setProperty('--dw-overlay', cur.overlay); v.setProperty('--dw-overlay-a', cur.overlayOpacity); v.setProperty('--dw-gray', cur.grayscale ? 1 : 0);
+        frame.contentWindow.WALL_LIVE = cur;                  // motion values read by the frame loop
+      } else { frame.src = url; toWall(); }
+    }, reload ? 250 : 30);
+  }
+  const STRUCT = new Set(['columns', 'tileWidth', 'tileHeight', 'gap', 'direction', 'speed', 'variance', 'parallax', 'pauseOnHover', 'tilt', 'turn', 'roll', 'depth']);
+  ROWS.forEach(([key, type, a, b, c]) => {
+    const row = document.createElement('label');
+    const name = document.createElement('span'); name.textContent = key;
+    let input, val = document.createElement('span');
+    if (type === 'range') { input = document.createElement('input'); input.type = 'range'; input.min = a; input.max = b; input.step = c; input.value = cur[key]; }
+    else if (type === 'color') { input = document.createElement('input'); input.type = 'color'; input.value = cur[key]; }
+    else if (type === 'check') { input = document.createElement('input'); input.type = 'checkbox'; input.checked = cur[key]; }
+    else { input = document.createElement('select'); a.forEach(o => { const op = document.createElement('option'); op.value = op.textContent = o; input.appendChild(op); }); input.value = cur[key]; }
+    val.textContent = fmt(cur[key]);
+    input.addEventListener('input', () => {
+      cur[key] = type === 'range' ? +input.value : type === 'check' ? input.checked : input.value;
+      val.textContent = fmt(cur[key]);
+      apply(STRUCT.has(key));
+    });
+    row.append(name, input, val); panel.insertBefore(row, out);
+  });
+  // once the site has loaded inside the frame, put the wall in view
+  // put the wall in view once the framed page has built it (the clip keeps the page 'loading' too long to wait for onload)
+  let poll;
+  function toWall() {
+    clearInterval(poll); let tries = 0;
+    poll = setInterval(() => {
+      const w = frame.contentWindow, d = w && w.document, t = d && d.getElementById('wall-track');
+      if (t && d.querySelectorAll('.tile').length) {
+        const y = t.getBoundingClientRect().top + w.scrollY + w.innerHeight * .6; w.scrollTo({ top: y, behavior: 'instant' });
+        if (Math.abs(w.scrollY - y) < 40 || ++tries > 20) clearInterval(poll);
+      } else if (++tries > 60) clearInterval(poll);
+    }, 150);
+  }
+  frame.addEventListener('load', toWall);
+  document.getElementById('reset').onclick = () => { cur = JSON.parse(JSON.stringify(DEF)); location.reload(); };
+  document.getElementById('copy').onclick = () => navigator.clipboard.writeText(out.textContent);
+  apply(true);
+</script>
+</body>
+</html>

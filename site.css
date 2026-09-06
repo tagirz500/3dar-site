@@ -1,0 +1,288 @@
+/* Shared chrome: design tokens, the sliding-stairs menu, and the gallery pages.
+   index.html keeps its own page CSS inline; it links this file for the menu. */
+:root{
+  --bg:#020a24;              /* deep navy */
+  --bg-2:#071238;            /* navy */
+  --line:#17305e;            /* mid navy hairline */
+  --fg:#eaf1ff; --fg-2:#8fa6d9;  /* ice / light navy */
+  --accent:#6ea8ff;          /* light blue */
+  --accent-2:#3d6fd1;        /* royal blue */
+  --bg-a:rgba(2,10,36,.72);  /* the navy as a glaze, so the wave field shows through */
+  --bg-2a:rgba(7,18,56,.78);
+  --r:14px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  /* power2.out from the source timeline */
+  --ease-out:cubic-bezier(.33,1,.68,1);
+  /* GSAP's default power1.out — the hover wipe is the one place the easings differ */
+  --ease-hover:cubic-bezier(.25,.46,.45,.94);
+}
+
+/* Page reset for the gallery pages. It must sit ABOVE the menu rules: `.subpage *`
+   ties with `.burger` on specificity, so declared later it would strip the padding
+   off every piece of injected chrome. */
+.subpage{background:#030615;color:var(--fg);font-family:Onest,system-ui,sans-serif;font-size:16px;line-height:1.6}
+.subpage *{box-sizing:border-box;margin:0;padding:0}
+.subpage img{max-width:100%;display:block}
+.subpage a{color:inherit;text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+
+/* ===============================================
+   BURGER — fixed top-right, present on every page
+   =============================================== */
+.burger{
+  position:fixed;right:0;top:0;z-index:60;
+  height:74px;width:max-content;border:0;padding:0 28px;background:transparent;
+  display:flex;align-items:center;gap:14px;white-space:nowrap;
+  cursor:pointer;overflow:hidden;-webkit-tap-highlight-color:transparent;
+  font-family:Oswald,sans-serif;font-weight:500;font-size:13px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--fg);
+  transition:color .4s var(--ease);
+}
+/* the slab that grows down on hover, as in the source */
+.burger__bg{position:absolute;left:0;top:0;width:100%;height:0;z-index:-1;background:var(--accent);transition:height .3s var(--ease)}
+.burger:hover .burger__bg,.burger:focus-visible .burger__bg{height:100%}
+.burger:hover,.burger:focus-visible{color:var(--bg)}
+.burger__icon{flex:none;width:32px;height:7px;overflow:visible}
+.burger__icon line{stroke:var(--fg);transition:stroke .4s var(--ease)}
+.burger:hover .burger__icon line,.burger:focus-visible .burger__icon line{stroke:var(--bg)}
+.burger__label{position:relative}
+
+/* ===============================================
+   STAIRS — five bars that curtain the screen, then
+   a scrim. Bars grow downward because each has an
+   explicit height, which defeats align-items:stretch.
+   =============================================== */
+.stairs{position:fixed;inset:0;z-index:70;height:100dvh;width:100%;display:flex;pointer-events:none}
+.stairs__bar{
+  position:relative;z-index:1;                         /* above the navy scrim, so the blue stays bright */
+  width:20vw;height:0;background:#0b1a4a;              /* dark navy, a shade up from the page */
+  /* #000525 bars over a #000525 page are invisible — alternate the tone and put a
+     hairline on each edge so the staircase actually reads while it sweeps down */
+  box-shadow:inset -1px 0 0 rgba(238,240,250,.07);
+  transition:height .5s var(--ease-out);transition-delay:0s;
+}
+.stairs__bar:nth-child(even){background:#12245e}
+.stairs__bg{position:absolute;inset:0;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .5s var(--ease-out)}
+
+/* ===============================================
+   MENU — full-screen overlay
+   =============================================== */
+.menu{
+  --row:clamp(56px,7.2vw,104px);
+  position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;visibility:hidden;pointer-events:none;background:rgba(7,18,56,.96);   /* the menu panel: dark blue */
+  transition:opacity .5s var(--ease-out),visibility 0s .5s;
+}
+.menu__header{display:flex;justify-content:flex-end;padding:14px 20px}
+.menu__close{
+  width:64px;height:64px;border:0;background:transparent;cursor:pointer;padding:0;
+  display:grid;place-items:center;transform:translateX(150px);
+  transition:transform .5s var(--ease-out);
+}
+.menu__close svg{width:38px;height:38px}
+.menu__close path{stroke:var(--fg);transition:stroke .4s var(--ease)}
+.menu__close:hover path,.menu__close:focus-visible path{stroke:var(--accent)}
+
+.menu__body{position:absolute;left:0;top:50%;transform:translateY(-50%);width:100%}
+.menu__item{
+  position:relative;display:flex;justify-content:center;overflow:hidden;
+  border-top:1px solid rgba(238,240,250,.14);perspective:80vw;
+}
+.menu__item:last-of-type{border-bottom:1px solid rgba(238,240,250,.14)}
+/* the whole row is the link — the demo only made the text clickable */
+.menu__link{
+  display:flex;align-items:center;justify-content:center;width:100%;height:var(--row);
+  font-family:Oswald,sans-serif;font-weight:500;font-size:calc(var(--row) * .62);line-height:1;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--fg);text-decoration:none;
+  transform:rotateX(90deg);opacity:0;
+  transition:transform .5s var(--ease-out),opacity .5s var(--ease-out);
+}
+.menu__link[aria-current=page]{color:var(--accent)}
+
+/* The hover band. The original counter-animates two nested layers whose offsets
+   cancel exactly — the content never moves, only the mask does. One clip-path
+   on one element is the same result. */
+.menu__inner{
+  position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;
+  background:var(--accent);white-space:nowrap;pointer-events:none;
+  clip-path:inset(100% 0 0 0);
+  transition:clip-path .3s var(--ease-hover);
+}
+.menu__container{
+  /* flex:none matters — as a shrinkable flex item the strip collapses to the row
+     width and the thumbnails get squashed. min-width is the seam backstop. */
+  display:flex;align-items:center;flex:none;min-width:100vw;
+  animation:marquee 12s linear infinite;
+}
+.menu__inner p{
+  margin:0;color:var(--bg);font-family:Oswald,sans-serif;font-weight:500;
+  font-size:calc(var(--row) * .62);line-height:1;letter-spacing:.02em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.menu__img{
+  flex:none;height:calc(var(--row) * .6);width:calc(var(--row) * 1.14);
+  margin:0 calc(var(--row) * .18);border-radius:var(--r);overflow:hidden;
+}
+.menu__img img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-100%,0,0)}}
+
+.menu__footer{
+  display:flex;justify-content:center;align-items:center;gap:10px;padding:20px;
+  opacity:0;transition:opacity .5s var(--ease-out);
+}
+.menu__footer a{
+  font-family:Oswald,sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--fg-2);border:1px solid var(--line);padding:6px 16px;border-radius:30px;
+  text-decoration:none;transition:color .3s var(--ease),border-color .3s var(--ease);
+}
+.menu__footer a:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ── open ─────────────────────────────────────── */
+.menu-open .stairs__bar{height:100%;transition-duration:.5s;transition-delay:calc((4 - var(--i)) * .05s)}
+.menu-open .stairs__bg{opacity:.78;transition-delay:.2s}
+.menu-open .menu{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .5s .4s var(--ease-out),visibility 0s}
+.menu-open .menu__close{transform:none;transition-delay:.4s}
+.menu-open .menu__link{transform:none;opacity:1;transition-delay:calc(.6s + var(--i) * .05s)}
+.menu-open .menu__footer{opacity:1;transition-delay:.9s}
+.menu-open{overflow:hidden}
+
+/* ── close: 0.7s, half the open. The container cross-fades as one layer, so the
+      links must not individually flip back — their transition is killed. ── */
+.menu-closing .menu{opacity:0;pointer-events:none;transition:opacity .5s var(--ease-out),visibility 0s .5s}
+.menu-closing .menu__link,.menu-closing .menu__close,.menu-closing .menu__footer{transition:none}
+.menu-closing .stairs__bg{opacity:0;transition-delay:.1s}
+.menu-closing .stairs__bar{height:0;transition-duration:.3s;transition-delay:calc(.2s + var(--i) * .05s)}
+
+@media (prefers-reduced-motion:reduce){
+  .stairs__bar,.stairs__bg,.menu,.menu__link,.menu__close,.menu__footer,.menu__inner,.burger__bg{
+    transition-duration:.001s !important;transition-delay:0s !important;
+  }
+  .menu__container{animation:none}
+  .menu__link{transform:none}
+}
+
+/* ===============================================
+   GALLERY PAGES (renders.html, animation.html)
+   =============================================== */
+
+.sub-nav{
+  position:fixed;inset:0 0 auto 0;z-index:40;height:74px;display:flex;align-items:center;
+  background:rgba(2,10,36,.93);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.sub-nav .wrap{display:flex;align-items:center;gap:36px;width:100%;padding-right:160px}
+.mark{font-family:Oswald,sans-serif;font-weight:700;font-size:22px;letter-spacing:.02em}
+.mark span{color:var(--accent)}
+.sub-back{
+  margin-left:auto;display:inline-flex;align-items:center;gap:10px;color:var(--accent);
+  font-family:Oswald,sans-serif;font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+}
+.sub-back svg{width:18px;height:18px;transition:transform .25s var(--ease)}
+.sub-back:hover svg{transform:translateX(-5px)}
+
+.sub-head{padding:150px 0 10px}
+.sub-head h1{
+  font-family:Oswald,sans-serif;font-weight:600;font-size:clamp(34px,5.4vw,72px);
+  line-height:1.05;letter-spacing:.005em;text-transform:uppercase;
+}
+.sub-head p{color:var(--fg-2);margin-top:16px;max-width:52ch}
+
+.proj{padding:64px 0 0}
+.proj__bar{display:flex;align-items:baseline;justify-content:space-between;gap:24px;margin-bottom:20px}
+.proj__bar h2{
+  font-family:Oswald,sans-serif;font-weight:600;font-size:clamp(20px,2.2vw,30px);
+  line-height:1.1;letter-spacing:.02em;text-transform:uppercase;
+}
+.proj__count{font-family:Oswald,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid--wide{grid-template-columns:repeat(2,1fr)}
+.shot{
+  position:relative;display:block;width:100%;border:0;padding:0;background:var(--bg-2);
+  border-radius:var(--r);overflow:hidden;aspect-ratio:16/9;cursor:zoom-in;
+}
+/* Инноград is the only 4:3 set — its own ratio, so nothing is cropped away */
+.grid--43 .shot{aspect-ratio:4/3}
+.shot img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.shot:hover img,.shot:focus-visible img{transform:scale(1.05)}
+
+/* video cards */
+.vid{position:relative;border-radius:var(--r);overflow:hidden;background:var(--bg-2);aspect-ratio:16/9;cursor:pointer;border:0;padding:0;width:100%;display:block}
+.vid img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease),filter .4s var(--ease)}
+.vid:hover img,.vid:focus-visible img{transform:scale(1.04);filter:brightness(1.08)}
+.vid__play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:74px;height:74px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(2,10,36,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border:1px solid rgba(238,240,250,.28);pointer-events:none;
+  transition:background .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
+}
+.vid:hover .vid__play{background:var(--accent);border-color:var(--accent);transform:translate(-50%,-50%) scale(1.06)}
+.vid__play svg{width:22px;height:22px;margin-left:3px;fill:var(--fg)}
+.vid:hover .vid__play svg{fill:var(--bg)}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid__name{
+  margin-top:12px;font-family:Oswald,sans-serif;font-weight:500;font-size:16px;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--fg);
+}
+.vid-item{margin-bottom:34px}
+
+/* lightbox */
+.lb{
+  position:fixed;inset:0;z-index:90;display:none;place-items:center;
+  background:rgba(2,10,36,.95);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+.lb[open]{display:grid}
+.lb img{max-width:92vw;max-height:86vh;width:auto;border-radius:var(--r)}
+.lb__bar{position:absolute;left:0;right:0;bottom:24px;display:flex;justify-content:center;gap:18px;align-items:center;color:var(--fg-2);font-family:Oswald,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.lb button{background:transparent;border:1px solid var(--line);color:var(--fg);width:44px;height:44px;border-radius:50%;cursor:pointer;display:grid;place-items:center;transition:border-color .3s var(--ease),color .3s var(--ease)}
+.lb button:hover{border-color:var(--accent);color:var(--accent)}
+.lb__close{position:absolute;right:24px;top:24px}
+.lb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.sub-foot{margin-top:90px;padding:26px 0 44px;color:var(--fg-2);font-size:14px;border-top:1px solid var(--line)}
+.sub-foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media(max-width:900px){
+  .grid,.grid--wide{grid-template-columns:repeat(2,1fr)}
+  .sub-head{padding-top:120px}
+  .sub-nav .wrap{padding-right:86px}
+  .burger{height:74px;padding:0 20px}
+  .burger__label{display:none}
+}
+@media(max-width:620px){
+  .grid,.grid--wide{grid-template-columns:1fr}
+}
+
+
+/* ---------- gooey text reveal (Drive demo: gooey-text-reveal) ----------
+   Copy is cut into lines; each line is drawn through an alpha-threshold
+   matrix, so while its inner span is blurred the letters melt into ink
+   blobs and then resolve, one line after another. */
+/* the wrappers must stay invisible to the page's own span rules (.stats span
+   would otherwise shrink the big numbers to label size) */
+.goo-line.goo-line,.goo-in.goo-in,.goo-w.goo-w{font:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:inherit;margin:0;padding:0;border:0;background:none;text-decoration:inherit;vertical-align:baseline}
+.goo-w{display:inline-block}
+.goo-line{display:block;filter:url(#goo-matrix) blur(.4px);-webkit-filter:url(#goo-matrix) blur(.4px)}
+.goo-in{display:inline-block;transition:filter 1.5s cubic-bezier(.215,.61,.355,1)}
+.goo-line.pre .goo-in{filter:blur(.35em)}
+@media (prefers-reduced-motion:reduce){.goo-line{filter:none}.goo-in{transition:none}}
+
+
+/* ---------- the particle field (Drive demo bg-3) ----------
+   The demo's .hero / .particles-container CSS, verbatim, fixed to the viewport. */
+.index.bgx{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bgx__hero{min-height:100dvh;display:grid;place-items:center;
+  background:radial-gradient(75rem 50rem at 50% 45%,rgba(51,199,255,.18),transparent 60%),radial-gradient(56.25rem 43.75rem at 55% 55%,rgba(0,120,255,.14),transparent 62%),linear-gradient(180deg,#030615,#040b1f)}
+.bgx .particles-container{width:100%;min-height:100dvh;position:relative}
+.bgx .particles-container canvas{min-height:100dvh;width:100%;display:block}
+body > section,body > main,body > footer{position:relative;z-index:1}
+
+
+/* ---------- SVG stroke page transition (Drive: SVG-Page-transition) ---------- */
+.ptr{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.5);width:100%;height:100%;pointer-events:none;z-index:200}
+.ptr svg{width:100%;height:100%}
+.ptr path{stroke-linecap:round;stroke-width:200px;stroke-dasharray:99999;stroke-dashoffset:99999}
+.ptr__a{stroke:#071238}   /* navy under, royal blue over */
+.ptr__b{stroke:#3d6fd1}

@@ -346,8 +346,11 @@ body.locked .nav{opacity:0;pointer-events:none}
 .services{padding:40px 0 30px}
 .services .wrap{display:grid;grid-template-columns:1fr}
 /* the statement: full screen, the demo's 12vw title, copy centred beneath */
-.typo{min-height:100vh;display:grid;place-items:center;padding:14vh 0 8vh}
-.typo__inner{width:100%;text-align:center;padding:0 2rem}
+/* a long scroll: the block is 2.8 screens tall, the words stay pinned in the middle while
+   the scroll reveals the title letter by letter and then the paragraph word by word */
+.typo{height:280vh;position:relative}
+.typo__inner{position:sticky;top:0;height:100vh;display:grid;place-content:center;width:100%;text-align:center;padding:0 2rem;box-sizing:border-box}
+.typo__p .word{display:inline-block;will-change:opacity,transform}
 .typo__title{margin:22px 0 0;display:grid;gap:1.2vw;font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;
   font-size:clamp(3rem,9.6vw,11rem);line-height:.9;letter-spacing:-.01em;color:var(--fg)}
 .typo__title .char{display:inline-block;will-change:opacity,transform}
@@ -731,7 +734,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   <div class="typo__inner">
     <span class="eyebrow">Что мы делаем</span>
     <h2 class="typo__title" id="js-typo" data-nogoo><span>Ваше желание,</span><span>наше исполнение</span></h2>
-    <p class="typo__p">Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
+    <p class="typo__p" id="js-typo-p" data-nogoo>Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
   </div>
 </section>
 
@@ -1252,13 +1255,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 
   /* (the parallax hand-off between the clip and «Услуги» was removed: the clip is its own screen now) */
 
-  /* ---------- the statement's letters (Codrops OnScrollTypographyAnimations, effect 1) ----------
-     Splitting-style chars; each starts at opacity 0, scale .6, a random tilt of ±20°, and settles
-     with power4 as its slice of the scroll passes — stagger .4 between letters, the whole title
-     scrubbed from "title centre 20% below the viewport bottom" over half a viewport. */
+  /* ---------- the statement, as a long scroll (Codrops OnScrollTypographyAnimations, effect 1) ----------
+     The section is 2.8 screens tall with the words pinned; progress through it drives the letters
+     of the title (opacity 0 / scale .6 / ±20° → settled, stagger .4, power4) over the first 60%,
+     then the paragraph's words (rise + fade, staggered) over the last half. Scroll back, it undoes. */
   {
-    const title = $('js-typo');
-    const chars = [];
+    const sec = document.getElementById('typo'), title = $('js-typo'), para = $('js-typo-p');
+    const chars = [], words = [];
     title.querySelectorAll('span').forEach(line => {
       const text = line.textContent; line.textContent = '';
       text.split(' ').forEach((w, wi, arr) => {
@@ -1267,24 +1270,26 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
         line.appendChild(word); if (wi < arr.length - 1) line.appendChild(document.createTextNode(' '));
       });
     });
-    const STAG = .4, span = 1 + STAG * (chars.length - 1), p4 = t => 1 - Math.pow(1 - t, 4);
-    // this block is the first thing after the clip, so on arrival the letters settle over 2.2s
-    // (there is nothing to scroll them in with); scrolling away and back scrubs them as in the demo
-    let typoWarm = 0, typoT0 = 0;
-    function warmTypo() { typoWarm = 0; typoT0 = performance.now(); const step = () => { typoWarm = Math.min(1, (performance.now() - typoT0) / 2200); typoTick(); if (typoWarm < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
+    { const text = para.textContent; para.textContent = '';
+      text.split(' ').forEach((w, wi, arr) => { const sp = document.createElement('span'); sp.className = 'word'; sp.textContent = w; para.appendChild(sp); words.push(sp); if (wi < arr.length - 1) para.appendChild(document.createTextNode(' ')); }); }
+    const STAG = .4, span = 1 + STAG * (chars.length - 1), p4 = t => 1 - Math.pow(1 - t, 4), clamp01 = v => Math.min(1, Math.max(0, v));
+    const WST = .25, wspan = 1 + WST * (words.length - 1);
     function typoTick() {
-      const r = title.getBoundingClientRect(), vh = innerHeight;
-      const start = vh + r.height * .2 - (r.top + r.height / 2) ;         // 0 when the title's centre is 20% of its height below the bottom edge
-      const p = Math.min(typoWarm, Math.max(0, start / (vh * .5)));        // ... 1 half a viewport later
+      const r = sec.getBoundingClientRect(), vh = innerHeight;
+      const p = clamp01(-r.top / (r.height - vh));                          // 0 at the top of the block, 1 when it has scrolled through
+      const pt = clamp01(p / .6), pp = clamp01((p - .5) / .5);
       chars.forEach((c, i) => {
-        const t = p4(Math.min(1, Math.max(0, p * span - STAG * i)));
+        const t = p4(clamp01(pt * span - STAG * i));
         c.style.opacity = t.toFixed(3);
         c.style.transform = `scale(${(.6 + .4 * t).toFixed(4)}) rotate(${(c.dataset.r * (1 - t)).toFixed(2)}deg)`;
       });
+      words.forEach((w, i) => {
+        const t = p4(clamp01(pp * wspan - WST * i));
+        w.style.opacity = t.toFixed(3); w.style.transform = `translateY(${(18 * (1 - t)).toFixed(1)}px)`;
+      });
     }
     addEventListener('scroll', typoTick, { passive: true }); addEventListener('resize', typoTick); typoTick();
-    window.TYPO_WARM = warmTypo;
-    if (!document.body.classList.contains('locked')) warmTypo();   // already on the site (home2 loader, reduced motion, wall-test)
+    window.TYPO_WARM = typoTick;                                             // (nothing to warm now: the scroll is the timeline)
   }
 
   /* ---------- TextRepetitionEffect (Codrops demo 5) on the service titles ----------

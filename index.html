@@ -350,7 +350,7 @@ body.locked .nav{opacity:0;pointer-events:none}
    the scroll reveals the title letter by letter and then the paragraph word by word */
 .typo{height:280vh;position:relative}
 .typo__inner{position:sticky;top:0;height:100vh;display:grid;place-content:center;width:100%;text-align:center;padding:0 2rem;box-sizing:border-box}
-.typo__p .word,[data-words] .word{display:inline-block;will-change:opacity,transform}
+.typo__p .word{display:inline-block;will-change:opacity,transform}
 .typo__title{margin:22px 0 0;display:grid;gap:1.2vw;font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;
   font-size:clamp(3rem,9.6vw,11rem);line-height:.9;letter-spacing:-.01em;color:var(--fg)}
 .typo__title .char{display:inline-block;will-change:opacity,transform}
@@ -745,28 +745,28 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>3D</em> визуализации</h3>
-          <p data-words data-nogoo>Фотореалистичная визуализация, моделирование архитектуры и окружения, атмосферные рендеры, 3D-проектирование и создание контента для отдела продаж.</p>
+          <p>Фотореалистичная визуализация, моделирование архитектуры и окружения, атмосферные рендеры, 3D-проектирование и создание контента для отдела продаж.</p>
         </div>
       </article>
       <article class="rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>3D</em> анимация</h3>
-          <p data-words data-nogoo>Сюжетные короткометражные фильмы и рекламные ролики. Организация съёмочного процесса. Интеграция натурных и персонажных кадров в 3D-сцену.</p>
+          <p>Сюжетные короткометражные фильмы и рекламные ролики. Организация съёмочного процесса. Интеграция натурных и персонажных кадров в 3D-сцену.</p>
         </div>
       </article>
       <article class="rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3l-2-3h-4l-2 3H5a2 2 0 0 1-2-2V9z"/><circle cx="8.5" cy="12" r="1.5"/><circle cx="15.5" cy="12" r="1.5"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>VR</em> туры</h3>
-          <p data-words data-nogoo>Иммерсивные 3D-панорамы, разработка сценариев, интеграция натурных съёмок с хромакеем и 3D-графики.</p>
+          <p>Иммерсивные 3D-панорамы, разработка сценариев, интеграция натурных съёмок с хромакеем и 3D-графики.</p>
         </div>
       </article>
       <article class="rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4z"/><path d="M13 8l3 3"/><path d="M14 4l6 6"/></svg>
         <div>
           <h3 data-text-rep data-nogoo><em>Brand</em> решения</h3>
-          <p data-words data-nogoo>От разработки бренда и визуального образа до создания контента для онлайн и офлайн-носителей. Отражение мировых трендов и внедрение собственных ноу-хау.</p>
+          <p>От разработки бренда и визуального образа до создания контента для онлайн и офлайн-носителей. Отражение мировых трендов и внедрение собственных ноу-хау.</p>
         </div>
       </article>
     </div>
@@ -1174,7 +1174,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     blkCover().then(() => {
       film.pause(); heroEl.classList.add('is-left'); heroLeft = true; lock(false);
       scrollTo({ top: 0, behavior: 'instant' });   // the site now starts at «Услуги»
-      repWarm = 0; warmReps(); if (window.TYPO_WARM) TYPO_WARM();
+      repWarm = 0; warmReps(); if (window.TYPO_WARM) TYPO_WARM(); if (window.FX_TICK) FX_TICK();
       return blkReveal();
     }).then(() => { handing = false; });
   }
@@ -1290,27 +1290,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     }
     addEventListener('scroll', typoTick, { passive: true }); addEventListener('resize', typoTick); typoTick();
     window.TYPO_WARM = typoTick;                                             // (nothing to warm now: the scroll is the timeline)
-  }
-
-  /* ---------- the small copy: word by word on scroll (same rise + fade as the statement's paragraph) ----------
-     Progress runs from "paragraph top 10% above the viewport bottom" over 45% of the viewport, scrubbed. */
-  {
-    const blocks = Array.from(document.querySelectorAll('[data-words]')).map(el => {
-      const text = el.textContent.trim(); el.textContent = ''; const ws = [];
-      text.split(/\s+/).forEach((w, i, arr) => { const sp = document.createElement('span'); sp.className = 'word'; sp.textContent = w; el.appendChild(sp); ws.push(sp); if (i < arr.length - 1) el.appendChild(document.createTextNode(' ')); });
-      return { el, ws, span: 1 + .12 * (ws.length - 1) };
-    });
-    const p4 = t => 1 - Math.pow(1 - t, 4), clamp01 = v => Math.min(1, Math.max(0, v));
-    function wordsTick() {
-      const vh = innerHeight;
-      for (const b of blocks) {
-        const r = b.el.getBoundingClientRect();
-        if (r.top > vh * 1.2 || r.bottom < -vh) continue;
-        const p = clamp01((vh * .9 - r.top) / (vh * .45));
-        b.ws.forEach((w, i) => { const t = p4(clamp01(p * b.span - .12 * i)); w.style.opacity = t.toFixed(3); w.style.transform = `translateY(${(16 * (1 - t)).toFixed(1)}px)`; });
-      }
-    }
-    addEventListener('scroll', wordsTick, { passive: true }); addEventListener('resize', wordsTick); wordsTick();
   }
 
   /* ---------- TextRepetitionEffect (Codrops demo 5) on the service titles ----------

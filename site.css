@@ -286,3 +286,12 @@ body > section,body > main,body > footer{position:relative;z-index:1}
 .ptr path{stroke-linecap:round;stroke-width:200px;stroke-dasharray:99999;stroke-dashoffset:99999}
 .ptr__a{stroke:#071238}   /* navy under, royal blue over */
 .ptr__b{stroke:#3d6fd1}
+
+/* ---------- on-scroll typography: the split copy ---------- */
+.fx-word{display:inline-block;white-space:nowrap}
+.fx-char{display:inline-block;will-change:opacity,transform}
+.fx--head .fx-char{transform-origin:50% 0%}
+.fx--copy .fx-char{transform-origin:50% 50%}
+/* the wrappers must not pick up the page's own span rules (e.g. .stats span) */
+.fx-word.fx-word,.fx-char.fx-char{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0;padding:0;border:0;background:none;vertical-align:baseline}
+.fx-word.fx-word{display:inline-block}.fx-char.fx-char{display:inline-block}

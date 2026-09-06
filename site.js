@@ -186,81 +186,77 @@
       btn.style.cursor = 'default';
     }, { once: true });
   });
-  /* ── gooey text reveal ─────────────────────────────────────────────────
-     The demo splits copy with GSAP SplitText and blurs each line behind a
-     gooey colour matrix. Same thing without GSAP: words are wrapped, grouped
-     by the line box they land in, and every line resolves from blur(.35em)
-     together (the component staggers them 0.1s apart; here the whole block
-     comes up at once) with its 1.5s power3.out. The
-     split happens as the block enters the viewport, so collapsed FAQ answers
-     measure their real line breaks rather than a zero-height box. */
-  const GOO_PICK = 'h1,h2,h3,h4,p,summary,li,figcaption,blockquote,.eyebrow,.stats b,.stats span,.proj__count';
-  const GOO_SKIP = '.hero,.nav,.menu,.burger,.stairs,.cta,.reel,#wall-foot,.lb,footer,[data-nogoo]';
+  /* ── on-scroll typography, every block of copy (Codrops OnScrollTypographyAnimations) ──
+     Every heading, paragraph, list item, question and label is split into words and
+     characters (inline elements such as <em>/<strong> are kept), and its progress through
+     the viewport is scrubbed into a per-character animation:
+       headings  → effect 2: chars rise from 120% below, stretched (scaleY 2.3, scaleX .7),
+                   with a back.inOut overshoot, stagger .03
+       copy      → effect 1: chars from opacity 0, scale .6, a random ±20° tilt, power4, stagger .4
+     Staggers are scaled so a long paragraph finishes within the same scroll distance.
+     Elements that carry their own effect (data-text-rep, data-nogoo, the hero) are left alone. */
+  const FX_PICK = 'h1,h2,h3,h4,p,summary,li,figcaption,blockquote,.eyebrow,.stats b,.stats span,.proj__count';
+  const FX_SKIP = '.hero,.nav,.menu,.burger,.stairs,.cta,.reel,#wall-foot,.lb,footer,[data-nogoo],[data-text-rep],.typo';
   if (!reduce && document.body) {
-    document.body.insertAdjacentHTML('beforeend',
-      '<svg aria-hidden="true" style="position:absolute;width:0;height:0;pointer-events:none">' +
-      '<defs><filter id="goo-matrix" x="-50%" y="-50%" width="200%" height="200%">' +
-      '<feColorMatrix in="SourceGraphic" type="matrix" ' +
-      'values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"/></filter></defs></svg>');
-
+    const HEAD = 'H1,H2,H3,H4,SUMMARY';
     const split = el => {
-      const units = [];
-      Array.from(el.childNodes).forEach(n => {
-        if (n.nodeType === 3) {
-          n.textContent.split(/(\s+)/).forEach(t => {
-            if (!t) return;
-            if (!t.trim()) { units.push(document.createTextNode(t)); return; }
-            const w = document.createElement('span');
-            w.className = 'goo-w';                      // so it reports its own line box
-            w.textContent = t; units.push(w);
-          });
-        } else if (n.nodeName !== 'BR') {               // a <br> is redundant once lines are blocks
-          units.push(n);
-        }
-      });
-      el.replaceChildren(...units);
-      // group by line box: a new line starts once a unit sits half a line lower
-      const lh = parseFloat(getComputedStyle(el).lineHeight) || parseFloat(getComputedStyle(el).fontSize) * 1.2;
-      const lines = []; let top = null;
-      units.forEach(u => {
-        if (u.nodeType === 3) { if (lines.length) lines[lines.length - 1].push(u); return; }
-        const t = u.getBoundingClientRect().top;
-        if (top === null || t - top > lh * .5) { lines.push([]); top = t; }
-        lines[lines.length - 1].push(u);
-      });
-      const wrapped = lines.map(nodes => {
-        const line = document.createElement('span'); line.className = 'goo-line pre';
-        const inner = document.createElement('span'); inner.className = 'goo-in';
-        inner.append(...nodes); line.appendChild(inner); return line;   // no stagger: the block resolves at once
-      });
-      el.replaceChildren(...wrapped);
-      return wrapped;
+      const chars = [];
+      const walk = node => {
+        Array.from(node.childNodes).forEach(n => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            n.textContent.split(/(\s+)/).forEach(t => {
+              if (!t) return;
+              if (!t.trim()) { frag.appendChild(document.createTextNode(t)); return; }
+              const word = document.createElement('span'); word.className = 'fx-word';
+              Array.from(t).forEach(ch => { const c = document.createElement('span'); c.className = 'fx-char'; c.textContent = ch; c.dataset.r = (Math.random() * 40 - 20).toFixed(1); word.appendChild(c); chars.push(c); });
+              frag.appendChild(word);
+            });
+            n.replaceWith(frag);
+          } else if (n.nodeName !== 'BR' && n.nodeName !== 'SVG') walk(n);
+        });
+      };
+      walk(el);
+      return chars;
     };
-
-    const done = new WeakMap();                          // element -> its original markup
-    const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        obs.unobserve(e.target);
-        done.set(e.target, e.target.innerHTML);
-        const lines = split(e.target);
-        requestAnimationFrame(() => lines.forEach(l => l.classList.remove('pre')));
+    const blocks = Array.from(document.querySelectorAll(FX_PICK))
+      .filter(el => !el.closest(FX_SKIP) && el.textContent.trim() && !el.querySelector(FX_PICK))
+      .map(el => {
+        const chars = split(el), head = HEAD.includes(el.tagName) || el.classList.contains('eyebrow');
+        const each = head ? .03 : Math.min(.4, 1.6 / Math.max(1, chars.length));   // effect 2 / effect 1 staggers
+        el.classList.add('fx', head ? 'fx--head' : 'fx--copy');
+        return { el, chars, head, each, span: 1 + each * (chars.length - 1), done: false };
       });
-    }, { rootMargin: '0px 0px -20% 0px' });              // the demo's "top 80%"
-
-    const targets = Array.from(document.querySelectorAll(GOO_PICK))
-      .filter(el => !el.closest(GOO_SKIP) && el.textContent.trim() && !el.querySelector(GOO_PICK));
-    targets.forEach(el => io.observe(el));
-
-    // line breaks move with the width: once resized, hand the copy back as it was
-    let rt;
-    addEventListener('resize', () => {
-      clearTimeout(rt);
-      rt = setTimeout(() => targets.forEach(el => {
-        const html = done.get(el);
-        if (html !== undefined) { el.innerHTML = html; done.delete(el); }
-      }), 250);
-    });
+    const p4 = t => 1 - Math.pow(1 - t, 4);
+    const backInOut = t => { const s = 1.70158 * 1.525; return t < .5 ? (Math.pow(2 * t, 2) * ((s + 1) * 2 * t - s)) / 2 : (Math.pow(2 * t - 2, 2) * ((s + 1) * (t * 2 - 2) + s) + 2) / 2; };
+    const clamp01 = v => Math.min(1, Math.max(0, v));
+    function fxTick() {
+      const vh = innerHeight;
+      for (const b of blocks) {
+        const r = b.el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh * 1.5) { if (r.top > vh * 1.5 && b.done) { b.done = false; } continue; }
+        // effect 1's window: from the block's centre 20% (of its height) below the viewport bottom, over half a viewport
+        const p = clamp01((vh + r.height * .2 - (r.top + r.height / 2)) / (vh * .5));
+        if (p >= 1 && b.done) continue;
+        b.done = p >= 1;
+        for (let i = 0; i < b.chars.length; i++) {
+          const c = b.chars[i], t = clamp01(p * b.span - b.each * i);
+          if (b.head) {
+            const e = backInOut(t);
+            c.style.opacity = clamp01(t * 3).toFixed(3);
+            c.style.transform = `translateY(${(120 * (1 - e)).toFixed(1)}%) scale(${(.7 + .3 * e).toFixed(3)},${(2.3 - 1.3 * e).toFixed(3)})`;
+          } else {
+            const e = p4(t);
+            c.style.opacity = e.toFixed(3);
+            c.style.transform = `scale(${(.6 + .4 * e).toFixed(3)}) rotate(${(c.dataset.r * (1 - e)).toFixed(1)}deg)`;
+          }
+        }
+      }
+    }
+    addEventListener('scroll', fxTick, { passive: true }); addEventListener('resize', fxTick); fxTick();
+    // collapsed FAQ answers get their pass when they open
+    document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => requestAnimationFrame(fxTick)));
+    window.FX_TICK = fxTick;
   }
   /* ── the particle field ────────────────────────────────────────────────
      The Drive demo (bg-3) mounted as-is: its markup with its data-* settings

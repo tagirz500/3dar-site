@@ -1,0 +1,16 @@
+/* Match the existing “обратной связи” sample: Georgia, regular italic. */
+html body,html body :is(h1,h2,h3,h4,h5,h6,p,a,button,span,div,label,input,textarea,select,option,summary,b,strong,small,em,li,dt,dd){
+  font-family:Georgia,'Times New Roman',serif!important;
+  font-style:italic!important;
+  font-weight:400!important;
+  text-transform:none!important;
+  letter-spacing:normal!important;
+}
+html body :is(h1,h2,h3,h4){line-height:1.18!important}
+html body :is(p,summary,label){line-height:1.55}
+html body :is(input,textarea)::placeholder{font-family:Georgia,'Times New Roman',serif;font-style:italic}
+/* Keep the studio wordmark and SVG icons as brand assets. */
+html body :is(.mark,.mark span,.contact-nav>a,.contact-nav>a span,.ptr-logo text,.ptr-logo tspan){
+  font-family:Oswald,sans-serif!important;font-style:normal!important;font-weight:700!important;letter-spacing:.02em!important;
+}
+html body :is(.mirror-controls button,.video-stream-player>button){font-style:normal!important}

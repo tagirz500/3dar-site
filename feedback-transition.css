@@ -1,0 +1,9 @@
+/* The supplied Drive transition, synchronized across two real same-site pages. */
+@view-transition{navigation:auto}
+html[data-feedback-transition]::view-transition-group(root){animation-duration:.7s}
+html[data-feedback-transition]::view-transition-old(root){mix-blend-mode:normal;transform-origin:50% 50%;animation:feedback-depart .7s linear(0.00000 0%,0.00414 2.5%,0.00977 5%,0.01712 7.5%,0.02626 10%,0.03734 12.5%,0.05050 15%,0.06589 17.5%,0.08362 20%,0.10389 22.5%,0.12691 25%,0.15291 27.5%,0.18220 30%,0.21450 32.5%,0.25020 35%,0.28951 37.5%,0.33218 40%,0.37835 42.5%,0.42751 45%,0.47931 47.5%,0.53257 50%,0.58652 52.5%,0.63954 55%,0.69039 57.5%,0.73851 60%,0.78171 62.5%,0.81912 65%,0.84502 67.5%,0.86773 70%,0.88819 72.5%,0.90660 75%,0.92313 77.5%,0.93787 80%,0.95100 82.5%,0.96235 85%,0.97242 87.5%,0.98101 90%,0.98815 92.5%,0.99386 95%,0.99781 97.5%,1.00000 100%) both}
+html[data-feedback-transition]::view-transition-new(root){mix-blend-mode:normal;z-index:2;animation:feedback-reveal .7s linear(0.00000 0%,0.00414 2.5%,0.00977 5%,0.01712 7.5%,0.02626 10%,0.03734 12.5%,0.05050 15%,0.06589 17.5%,0.08362 20%,0.10389 22.5%,0.12691 25%,0.15291 27.5%,0.18220 30%,0.21450 32.5%,0.25020 35%,0.28951 37.5%,0.33218 40%,0.37835 42.5%,0.42751 45%,0.47931 47.5%,0.53257 50%,0.58652 52.5%,0.63954 55%,0.69039 57.5%,0.73851 60%,0.78171 62.5%,0.81912 65%,0.84502 67.5%,0.86773 70%,0.88819 72.5%,0.90660 75%,0.92313 77.5%,0.93787 80%,0.95100 82.5%,0.96235 85%,0.97242 87.5%,0.98101 90%,0.98815 92.5%,0.99386 95%,0.99781 97.5%,1.00000 100%) both}
+@keyframes feedback-depart{to{transform:translateY(-30vh) scale(.8);opacity:.4}}
+@keyframes feedback-reveal{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+.feedback-page .callback{min-height:100svh;padding-top:110px;margin-top:0}
+@media(prefers-reduced-motion:reduce){html[data-feedback-transition]::view-transition-old(root),html[data-feedback-transition]::view-transition-new(root){animation:none}}

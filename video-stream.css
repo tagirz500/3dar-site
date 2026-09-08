@@ -1,0 +1,15 @@
+.video-stream-page .sub-head{padding:36px 28px 20px;margin:0}
+.video-stream{position:relative;width:100%;height:calc(100svh - 330px);min-height:280px;overflow:hidden;touch-action:pan-y;cursor:grab}
+.video-stream:active{cursor:grabbing}
+.video-stream-slide{position:absolute;bottom:0;left:0;padding:0;border:0;overflow:hidden;border-radius:12px;background:#09112a;color:white;cursor:pointer;will-change:transform}
+.video-stream-slide img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.video-stream-slide span{position:absolute;bottom:0;left:0;right:0;text-align:left;padding:32px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.8));font:500 clamp(12px,1.5vw,22px) Oswald,sans-serif;pointer-events:none}
+.video-stream-controls{display:flex;align-items:center;justify-content:center;gap:24px;padding:24px;color:#a4b3d0}
+.video-stream-controls button{width:46px;height:46px;border:1px solid #ffffff40;border-radius:50%;background:transparent;color:white;cursor:pointer}
+.video-stream-slide:focus-visible{outline:3px solid #6ea8ff;outline-offset:-3px}
+.video-stream-player{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:7vh 6vw;border:0;background:#020718eF;color:white}
+.video-stream-player::backdrop{background:#020718}
+.video-stream-player>div{width:100%;height:100%;display:grid;place-items:center}
+.video-stream-player iframe{width:100%;height:100%;border:0}
+.video-stream-player>button{position:absolute;right:20px;top:16px;width:44px;height:44px;border:1px solid #ffffff70;border-radius:50%;background:#09112a;color:white;font-size:28px;cursor:pointer}
+@media(max-width:700px){.video-stream{height:48svh;min-height:280px}.video-stream-slide span{font-size:12px;padding:22px 8px 8px}}

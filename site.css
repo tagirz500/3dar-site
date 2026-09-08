@@ -30,22 +30,51 @@
    BURGER — fixed top-right, present on every page
    =============================================== */
 .burger{
-  position:fixed;right:0;top:0;z-index:60;
-  height:74px;width:max-content;border:0;padding:0 28px;background:transparent;
+  position:fixed;right:20px;top:16px;z-index:60;
+  height:46px;width:max-content;border:0;border-radius:999px;padding:0 20px;background:transparent;
   display:flex;align-items:center;gap:14px;white-space:nowrap;
   cursor:pointer;overflow:hidden;-webkit-tap-highlight-color:transparent;
   font-family:Oswald,sans-serif;font-weight:500;font-size:13px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--fg);
-  transition:color .4s var(--ease);
+  transition:color .4s var(--ease),opacity .35s ease;
 }
+body.locked .burger{opacity:0;visibility:hidden;pointer-events:none}
 /* the slab that grows down on hover, as in the source */
-.burger__bg{position:absolute;left:0;top:0;width:100%;height:0;z-index:-1;background:var(--accent);transition:height .3s var(--ease)}
+.burger__bg{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:inherit;z-index:-1;background:#fff;opacity:0;transform:scale(.85);transition:opacity .25s,transform .3s var(--ease)}
+.burger:hover .burger__bg,.burger:focus-visible .burger__bg{opacity:1;transform:scale(1)}
 .burger:hover .burger__bg,.burger:focus-visible .burger__bg{height:100%}
-.burger:hover,.burger:focus-visible{color:var(--bg)}
+.burger:hover,.burger:focus-visible{color:#111}
 .burger__icon{flex:none;width:32px;height:7px;overflow:visible}
 .burger__icon line{stroke:var(--fg);transition:stroke .4s var(--ease)}
-.burger:hover .burger__icon line,.burger:focus-visible .burger__icon line{stroke:var(--bg)}
+.burger:hover .burger__icon line,.burger:focus-visible .burger__icon line{stroke:#111}
 .burger__label{position:relative}
+/* Gallery side panel: keep only the link to all renders. */
+.reel__spec > :not(#js-reel-more){display:none!important}
+.reel__spec #js-reel-more{display:inline-flex}
+.has-liquid-glass{position:relative!important;background:transparent!important}
+.liquid-surface{position:absolute;inset:0;pointer-events:none;display:block;border-radius:inherit;z-index:0}
+.has-liquid-glass > :not(.liquid-surface){position:relative;z-index:1}
+.liquid-surface .glass{box-shadow:none!important;display:flex!important}
+.liquid-surface .opacity-0{opacity:0}
+.liquid-surface .bg-black{background:#000}
+.liquid-surface .pointer-events-none{pointer-events:none}
+.liquid-surface .mix-blend-overlay{mix-blend-mode:overlay}
+.liquid-surface .icon-specular-rim{position:absolute;inset:0;width:100%;height:100%;padding:0;box-shadow:none;pointer-events:none;backdrop-filter:none;background:none}
+body.locked .page-blur-host,.menu-open .page-blur-host{display:none}
+.why .why-grid{background:transparent;border:0;gap:20px;overflow:visible}
+.why .why-grid > article{border:0;border-radius:20px;background:transparent}
+.no-body-text-fx .why-grid > article.has-liquid-glass{transform:var(--glass-parallax,none)!important}
+.contact-card:hover .contact-icon.has-liquid-glass,.contact-card:focus-visible .contact-icon.has-liquid-glass{background:#fff!important}
+.control-goo{position:fixed;z-index:59;pointer-events:none;filter:blur(7px) contrast(100) blur(0);mix-blend-mode:lighten}
+.control-goo::before{content:'';position:absolute;inset:-100px;background:#000;z-index:-2}
+.control-goo::after{content:'';position:absolute;inset:0;background:#fff;border-radius:100vw;z-index:-1;animation:controlPill 1.4s both}
+.control-goo--icon::after{display:none}
+.control-goo__particle,.control-goo__point{display:block;width:20px;height:20px;border-radius:100%}
+.control-goo__particle{position:absolute;top:calc(50% - 8px);left:calc(50% - 8px);animation:controlParticle var(--time) ease 1 -350ms both}
+.control-goo__point{background:#fff;animation:controlPoint var(--time) ease 1 -350ms both}
+@keyframes controlPill{0%{transform:scale(0);opacity:0}22%,75%{transform:scale(1);opacity:1}100%{opacity:0}}
+@keyframes controlParticle{0%{transform:rotate(0deg) translate(var(--sx),var(--sy));opacity:1;animation-timing-function:cubic-bezier(.55,0,1,.45)}70%{transform:rotate(calc(var(--r)*.5)) translate(calc(var(--ex)*1.2),calc(var(--ey)*1.2));opacity:1}85%{transform:rotate(calc(var(--r)*.66)) translate(var(--ex),var(--ey));opacity:1}100%{transform:rotate(calc(var(--r)*1.2)) translate(calc(var(--ex)*.5),calc(var(--ey)*.5));opacity:1}}
+@keyframes controlPoint{0%{transform:scale(0);opacity:0;animation-timing-function:cubic-bezier(.55,0,1,.45)}25%{transform:scale(calc(var(--scale)*.25))}38%{opacity:1}65%,85%{transform:scale(var(--scale));opacity:1}100%{transform:scale(0);opacity:0}}
 
 /* ===============================================
    STAIRS — five bars that curtain the screen, then
@@ -247,7 +276,7 @@
   .grid,.grid--wide{grid-template-columns:repeat(2,1fr)}
   .sub-head{padding-top:120px}
   .sub-nav .wrap{padding-right:86px}
-  .burger{height:74px;padding:0 20px}
+  .burger{height:46px;padding:0 14px;right:14px;top:14px}
   .burger__label{display:none}
 }
 @media(max-width:620px){
@@ -270,13 +299,10 @@
 @media (prefers-reduced-motion:reduce){.goo-line{filter:none}.goo-in{transition:none}}
 
 
-/* ---------- the particle field (Drive demo bg-3) ----------
-   The demo's .hero / .particles-container CSS, verbatim, fixed to the viewport. */
+/* ---------- React Bits GhostFibers background ---------- */
 .index.bgx{position:fixed;inset:0;z-index:0;pointer-events:none}
-.bgx__hero{min-height:100dvh;display:grid;place-items:center;
-  background:radial-gradient(75rem 50rem at 50% 45%,rgba(51,199,255,.18),transparent 60%),radial-gradient(56.25rem 43.75rem at 55% 55%,rgba(0,120,255,.14),transparent 62%),linear-gradient(180deg,#030615,#040b1f)}
-.bgx .particles-container{width:100%;min-height:100dvh;position:relative}
-.bgx .particles-container canvas{min-height:100dvh;width:100%;display:block}
+.bgx__ghost{position:absolute;inset:0;overflow:hidden;background:#120f17}
+.bgx__ghost canvas{display:block;width:100%;height:100%}
 body > section,body > main,body > footer{position:relative;z-index:1}
 
 
@@ -286,6 +312,12 @@ body > section,body > main,body > footer{position:relative;z-index:1}
 .ptr path{stroke-linecap:round;stroke-width:200px;stroke-dasharray:99999;stroke-dashoffset:99999}
 .ptr__a{stroke:#071238}   /* navy under, royal blue over */
 .ptr__b{stroke:#3d6fd1}
+.ptr-logo{position:fixed;inset:0;z-index:201;display:grid;place-items:center;pointer-events:none;opacity:0}
+.ptr-logo svg{width:min(60vw,520px);height:auto;overflow:visible}
+.ptr-logo text{font:700 120px Oswald,sans-serif;letter-spacing:.04em;fill:transparent;stroke:#eaf1ff;stroke-width:1.5;stroke-linejoin:round}
+.ptr-logo tspan{stroke:#081a3b}
+.ptr-logo text{stroke:#081a3b}
+.ptr-logo path{fill:#081a3b;fill-opacity:0;stroke:#081a3b;stroke-width:1.4;stroke-linejoin:round}
 
 /* ---------- on-scroll typography: the split copy ---------- */
 .fx-word{display:inline-block;white-space:nowrap}

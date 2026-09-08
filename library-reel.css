@@ -1,0 +1,128 @@
+.reel{position:fixed;inset:0;z-index:90;display:none;overflow:hidden;background:var(--bg);touch-action:none;user-select:none;cursor:grab}
+.reel[open]{display:block}
+.reel.drag{cursor:grabbing}
+.reel__wash{position:absolute;inset:0;z-index:0;opacity:0;
+  background:radial-gradient(ellipse 85% 90% at 50% 50%,var(--tint,transparent) 0%,rgba(2,10,36,0) 74%)}
+.reel__veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 72% 72% at 50% 46%,rgba(2,10,36,.06),rgba(2,10,36,.66))}
+.reel__stage{position:absolute;inset:0;z-index:2;display:grid;place-items:center;perspective:1000px;perspective-origin:50% 50%}
+/* Read off the clip frame by frame: it is a dolly INTO a stack of cards in
+   real depth. Cards alternate two slots (odd left of centre, even right) and
+   sit one behind the other on the z axis; scrolling moves the camera forward,
+   so the front card swells past the lens and washes out while the one behind
+   it comes into focus. Perspective does the scaling — and the sideways drift
+   of the swelling card the clip shows — nothing is scaled by hand. */
+.slide{position:absolute;width:min(56vw,960px);aspect-ratio:16/9;border-radius:8px;overflow:hidden;
+  background:var(--bg-2);box-shadow:0 40px 120px -32px rgba(0,0,0,.8);opacity:0;visibility:hidden;pointer-events:none;
+  will-change:transform,opacity,filter}
+.slide img{display:block;width:100%;height:100%;object-fit:contain}
+@media(max-width:900px){.slide{width:86vw}}
+/* the opening run: the pressed frame, then every other one wiping in over it,
+   landing back on the pressed one — the reel this page had before */
+.reel__intro{opacity:1;visibility:visible;filter:none;background:transparent}
+.reel__intro:not(:has(img.in)){box-shadow:none}   /* no shadow box before the frame has wiped in */
+/* while the run plays, the slider underneath stays out of sight — otherwise its empty card box shows before the first frame has wiped in */
+.reel__stage:has(.reel__intro:not([hidden])) .slide:not(.reel__intro){visibility:hidden !important}
+.reel__intro img{position:absolute;inset:0;clip-path:inset(0 0 100% 0);
+  transition:clip-path 1s cubic-bezier(.25,.46,.45,.94)}
+.reel__intro.fast img{transition-duration:.5s}   /* switching projects: the run at double speed */
+.reel__intro img.in{clip-path:inset(0)}
+/* the thin line that sweeps across on every change */
+.reel__arc{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
+.reel__arc path{fill:none;stroke:rgba(238,240,250,.6);stroke-width:1;vector-effect:non-scaling-stroke;
+  stroke-dasharray:1400;stroke-dashoffset:1400;opacity:0}
+.reel.sweep .reel__arc path{animation:arcSweep 1.5s cubic-bezier(.65,0,.35,1)}
+@keyframes arcSweep{0%{stroke-dashoffset:1400;opacity:0}25%{opacity:.8}100%{stroke-dashoffset:0;opacity:0}}
+/* the demo's hud: index + name at the left, the spec block at the right */
+.reel__hud{position:absolute;inset:0;z-index:26;pointer-events:none;   /* above the enlarged frame, so arrows/dots stay usable */font-family:Oswald,sans-serif;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--fg)}
+.reel__hud > div{position:absolute}
+.reel__id{left:clamp(16px,3.5vw,58px);top:50%;transform:translateY(-50%);display:grid;gap:10px;max-width:190px;font-size:12px;color:var(--fg-2)}
+.reel__id b{font-weight:500;font-size:17px;letter-spacing:.05em;line-height:1.2;color:var(--fg)}
+.reel__id i{display:block;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.reel__spec{right:clamp(16px,3.5vw,58px);top:50%;transform:translateY(-50%);text-align:right;display:grid;gap:8px;font-size:11px;color:var(--fg-2)}
+.reel__spec .lnk{pointer-events:auto;justify-content:flex-end;font-size:11px}
+.reel__bar{left:0;right:0;bottom:clamp(18px,4vh,42px);display:flex;flex-direction:column;gap:14px;align-items:center;pointer-events:auto}
+.reel__row{display:flex;gap:10px;align-items:center}
+.reel__all{padding:9px 16px;border:1px solid rgba(238,240,250,.25);border-radius:999px;color:var(--fg);font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.reel__all:hover,.reel__all[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+/* the other projects, top left: the main render of each, name underneath */
+.reel__others{left:clamp(16px,3.5vw,58px);top:24px;display:flex;gap:14px;pointer-events:auto;max-width:calc(100vw - 260px);overflow-x:auto;scrollbar-width:none}
+.reel__others button{width:112px;flex:none;padding:0;border:0;background:none;color:var(--fg-2);cursor:pointer;text-align:left;
+  font-family:Oswald,sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;line-height:1.3}
+.reel__others img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px;margin-bottom:6px;
+  opacity:.75;transition:opacity .3s,transform .3s}
+.reel__others button:hover img{opacity:1;transform:translateY(-2px)}
+.reel__others button:hover{color:var(--fg)}
+.reel__others span{display:block;max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* every frame of the project at once */
+.reel__grid{position:absolute;inset:0;z-index:20;overflow-y:auto;padding:96px clamp(16px,4vw,64px) 120px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;align-content:start;background:rgba(2,10,36,.92)}
+.reel__grid[hidden]{display:none}
+.reel__tool{pointer-events:auto;justify-self:end;background:none;border:1px solid rgba(238,240,250,.25);border-radius:999px;padding:6px 12px;color:var(--fg);
+  font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.reel__tool:hover{border-color:var(--accent);color:var(--accent)}
+/* the enlarged frame: the whole image, as big as the screen allows */
+.reel__big{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(2,10,36,.96);cursor:zoom-out}
+.reel__big[hidden]{display:none}
+.reel__big img{max-width:96vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border-radius:8px;box-shadow:0 40px 120px -32px rgba(0,0,0,.8);
+  transform-origin:0 0;transition:transform .12s ease-out;cursor:zoom-in;will-change:transform}
+.reel__big.zoomed{cursor:grab}.reel__big.zoomed img{cursor:grab}.reel__big.panning img{cursor:grabbing;transition:none}
+.reel__grid button{padding:0;border:0;background:var(--bg-2);border-radius:8px;overflow:hidden;cursor:pointer;aspect-ratio:16/9;outline:2px solid transparent;transition:outline-color .3s}
+.reel__grid button img{display:block;width:100%;height:100%;object-fit:contain}
+.reel__grid button:hover,.reel__grid button[aria-current]{outline-color:var(--accent)}
+@media(max-width:900px){.reel__others{display:none}}
+#js-reel-dots{display:flex;gap:10px}
+.reel__bar button{padding:0;border:0;background:none;color:var(--fg-2);cursor:pointer}
+.reel__bar .dot{position:relative;width:24px;height:16px}
+.reel__bar .dot::after{content:'';position:absolute;left:0;right:0;top:7px;height:2px;background:rgba(238,240,250,.22);transition:background .35s}
+.reel__bar .dot[aria-current]::after{background:var(--accent)}
+.reel__bar .arw{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(238,240,250,.22);border-radius:50%}
+.reel__bar .arw svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.reel__bar .arw:hover{color:var(--fg);border-color:var(--accent)}
+.reel__bar .arw[disabled]{opacity:.28;cursor:default}
+.reel__skip{position:absolute;right:84px;top:31px;z-index:30;padding:8px 14px;border-radius:999px;border:1px solid rgba(238,240,250,.3);
+  background:rgba(2,10,36,.45);color:var(--fg-2);font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.reel__skip:hover{border-color:var(--accent);color:var(--fg)}
+.reel__close{position:absolute;right:24px;top:24px;z-index:30;width:44px;height:44px;border-radius:50%;border:1px solid rgba(238,240,250,.3);background:rgba(2,10,36,.45);color:var(--fg);cursor:pointer;display:grid;place-items:center}
+.reel__close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.reel__close:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:900px){.slide{width:88vw}.reel__id,.reel__spec{top:auto;bottom:86px;transform:none}
+  .reel__id{max-width:46vw}.reel__spec .lnk{display:none}}
+.mover{position:fixed;background-size:cover;background-position:center;border-radius:14px;pointer-events:none;will-change:clip-path,opacity}
+.reel.opening{background:transparent}.reel{transition:background-color .7s ease-in-out}
+.reel [hidden]{display:none!important}.reel figure{margin:0}.reel button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.reel .slide{display:grid;place-items:center;background:transparent;box-shadow:none;overflow:visible}
+.reel .slide img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;box-shadow:0 24px 70px -24px #0008}
+.reel .reel__intro img{inset:0;margin:auto}
+.reel__big img{border-radius:12px}
+/* Gallery refinement: remove the right-side metadata/tools and give the image
+   a little more breathing room without cropping it. */
+.reel .slide{width:min(48vw,820px)}
+@media(max-width:900px){.reel .slide{width:72vw}}
+
+/* The opened gallery stays minimal. Leave only the bottom frame navigation
+   and close cross, with clear space between the image and arrow circles. */
+.reel__stage{top:10vh;bottom:10vh}
+.reel__spec{display:grid}
+.reel__spec > :not(#js-reel-more){display:none!important}
+.reel__spec #js-reel-more{display:inline-flex}
+
+/* Clicking the picture opens the clean image-only mode. The cross is outside
+   these groups, so it remains available to return to the normal gallery. */
+.reel.is-full-image .reel__hud,
+.reel.is-full-image .reel__skip,
+.reel.is-full-image .reel__arc,
+.reel.is-full-image .reel__grid{display:none!important}
+
+/* Fullscreen is image-only; the close cross deliberately remains outside these groups. */
+.reel:fullscreen .reel__hud,
+.reel:fullscreen .reel__skip,
+.reel:fullscreen .reel__arc,
+.reel:fullscreen .reel__grid,
+.reel:-webkit-full-screen .reel__hud,
+.reel:-webkit-full-screen .reel__skip,
+.reel:-webkit-full-screen .reel__arc,
+.reel:-webkit-full-screen .reel__grid{display:none!important}
+@media(max-width:900px){.reel__stage{perspective-origin:38% 50%}#js-reel-dots{gap:2px;max-width:65vw}.reel__bar .dot{width:12px}.reel__id b{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.slide,.reel__wash{transition:none}.reel.sweep .reel__arc path{animation:none}}

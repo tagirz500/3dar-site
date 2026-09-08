@@ -1,0 +1,23 @@
+.service-transition{position:fixed;inset:0;z-index:310;overflow:hidden;background:var(--bg,#020a24);color:#eaf1ff;isolation:isolate;touch-action:none}
+.st-lightfall{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,#0a29ff55,transparent 70%);pointer-events:none}
+.st-world{position:absolute;left:50%;top:50%;width:1440px;height:1026px;transform-origin:center}
+.st-collection{position:absolute;inset:0;perspective:1450px;perspective-origin:720px 513px}
+.st-camera{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:720px 513px;will-change:transform}
+.st-orbit{position:absolute;left:720px;top:513px;width:520px;height:775px;margin:-387.5px 0 0 -260px;transform-style:preserve-3d}
+.st-panel{position:absolute;inset:0;transform-style:preserve-3d}
+.st-back{position:absolute;inset:0;border-radius:40px;border:1px solid #a6c8ff88;background:linear-gradient(#07142c55,#07142cee),var(--st-image) center/cover;backface-visibility:hidden;transform:translateZ(-8px) rotateY(180deg);box-shadow:0 12px 60px #0008}
+.st-panel-edge{position:absolute;inset:0;border:3px solid #a6c8ff66;border-radius:40px;background:#13254a;transform:translateZ(-4px);pointer-events:none}
+.st-panel>.st-card{transform:translateZ(1px);outline:1px solid #a6c8ff33;outline-offset:-2px}
+.st-card{position:absolute;inset:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;padding:44px;border-radius:40px;overflow:hidden;background-color:#07142c;background-image:linear-gradient(180deg,rgba(2,8,25,.08) 0%,rgba(2,8,25,.3) 32%,rgba(2,8,25,.96) 58%,#07142c 100%),var(--st-image);background-size:100% 100%,100% auto;background-position:center top,center top;background-repeat:no-repeat;border:1px solid #d4e3ff66;backface-visibility:hidden;color:#fff;box-shadow:0 28px 80px rgba(0,8,28,.25)}
+.st-number{font:500 18px Oswald,sans-serif;letter-spacing:.15em;opacity:.7}
+.st-card>svg{width:92px;height:92px;margin:62px 0 42px;flex-shrink:0;color:#b5d2ff}
+.st-card h2{font:500 56px/1.08 Oswald,sans-serif;letter-spacing:-.02em;margin:0 0 26px;text-transform:uppercase;overflow-wrap:normal;text-shadow:0 2px 18px rgba(0,0,0,.72)}
+.st-card p{font:400 25px/1.4 Arial,sans-serif;margin:0;max-width:100%;color:#f1f5ff;text-shadow:0 2px 14px rgba(0,0,0,.82)}
+.st-fold{position:absolute;left:50%;top:50%;overflow:hidden;background:#0a1630;z-index:2;will-change:transform,width,height}
+.st-fold canvas{position:absolute;width:100%;height:100%;object-fit:cover}
+.st-fold-copy{position:absolute;left:50%;top:50%;width:520px;height:775px;transform-origin:center}
+.st-star{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);fill:var(--bg,#020a24);z-index:3;max-width:none;pointer-events:none}
+.st-controls{position:absolute;left:50%;bottom:28px;z-index:4;display:flex;align-items:center;gap:18px;transform:translateX(-50%);font:500 12px Oswald,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#eaf1ff;opacity:0;transition:opacity .3s ease}
+.st-controls.ready{opacity:.72}
+.st-dots{display:flex;gap:7px}.st-dots i{display:block;width:18px;height:2px;background:#eaf1ff;opacity:.25;transition:opacity .25s,width .25s}.st-dots i.on{width:34px;opacity:1}
+@media(max-width:700px){.st-controls{bottom:18px}.st-card{padding:42px}.st-card h2{font-size:50px}.st-card p{font-size:23px}}

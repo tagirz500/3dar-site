@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="transition-boot.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D ролики. STUDIO 3DAR</title>
@@ -10,18 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css?v=20260906b">
+<link rel="stylesheet" href="video-stream.css">
+<link rel="stylesheet" href="mirror-hall/gallery.css">
+<link rel="stylesheet" href="editorial-type.css">
+<link rel="stylesheet" href="feedback-transition.css">
 </head>
-<body class="subpage">
+<body class="subpage video-gallery-page">
 
-<header class="sub-nav">
-  <div class="wrap">
-    <a class="mark" href="index.html">3DAR<span>.</span></a>
-    <a class="sub-back" href="index.html">
-      <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
-      На главную
-    </a>
-  </div>
-</header>
+<a class="mark video-home" href="index.html#typo" aria-label="3DAR — на главную после видео">3DAR<span>.</span></a>
 
 <main>
   <div class="wrap sub-head">
@@ -139,6 +136,6 @@
 
 <footer class="sub-foot"><div class="wrap"><span>STUDIO 3DAR</span><span>Архитектурная визуализация, 2025</span></div></footer>
 
-<script src="site.js?v=20260906b"></script>
+<script type="module" src="mirror-hall/gallery.js"></script><script src="site.js?v=20260906b"></script>
 </body>
 </html>

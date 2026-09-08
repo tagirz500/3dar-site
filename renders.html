@@ -1,138 +1,71 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="transition-boot.js"></script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Рендеры. STUDIO 3DAR</title>
-<meta name="description" content="Фотореалистичная 3D-визуализация жилых комплексов: 55 рендеров по семи проектам.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Проекты — STUDIO 3DAR</title>
+<meta name="description" content="Семь архитектурных проектов студии 3DAR. Выберите проект, чтобы посмотреть все рендеры.">
 <link rel="icon" href="data:,">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css?v=20260906b">
+<link rel="stylesheet" href="library-reel.css">
+<link rel="stylesheet" href="project-library.css">
+<link rel="stylesheet" href="library-border.css">
+<link rel="stylesheet" href="editorial-type.css">
+<link rel="stylesheet" href="feedback-transition.css">
 </head>
-<body class="subpage">
-
-<header class="sub-nav">
-  <div class="wrap">
-    <a class="mark" href="index.html">3DAR<span>.</span></a>
-    <a class="sub-back" href="index.html">
-      <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
-      На главную
-    </a>
+<body class="subpage project-library">
+<div class="library-shell" data-nogoo>
+<header class="library-nav"><a class="library-mark" href="index.html" aria-label="3DAR — на главную">3DAR<span>.</span></a><span>БИБЛИОТЕКА ПРОЕКТОВ</span></header>
+<main class="library" aria-label="Слайдер проектов">
+  <div class="library-copy">
+    <span class="library-eyebrow">АРХИТЕКТУРА В КАДРЕ · 01—07</span>
+    <h1>В<br><em>фокусе.</em></h1>
+    <p>Семь проектов. Разные истории.<br>Листайте коллекцию и откройте<br>тот, что привлёк ваше внимание.</p>
+    <button class="library-open" type="button">Открыть проект <span aria-hidden="true">↗</span></button>
   </div>
-</header>
-
-<main>
-  <div class="wrap sub-head">
-    <h1>Рендеры</h1>
-    <p>Фотореалистичная визуализация архитектуры и окружения. Нажмите на кадр, чтобы открыть его крупно.</p>
+  <div class="cascade" role="region" aria-roledescription="карусель" aria-label="Семь проектов"></div>
+  <div class="library-progress">
+    <div class="library-count"><strong>01</strong><span>/07</span></div>
+    <div class="library-track" aria-label="Выбрать проект"><div class="library-rail" aria-hidden="true"><i></i></div></div>
+    <span class="library-scroll">ПРОКРУТИТЕ</span>
   </div>
-
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК ЦентроПарк</h2><span class="proj__count">17 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/centropark/01.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/01.jpg" alt="ЖК ЦентроПарк, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/02.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/02.jpg" alt="ЖК ЦентроПарк, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/03.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/03.jpg" alt="ЖК ЦентроПарк, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/04.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/04.jpg" alt="ЖК ЦентроПарк, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/05.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/05.jpg" alt="ЖК ЦентроПарк, рендер 5" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/06.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/06.jpg" alt="ЖК ЦентроПарк, рендер 6" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/07.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/07.jpg" alt="ЖК ЦентроПарк, рендер 7" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/08.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/08.jpg" alt="ЖК ЦентроПарк, рендер 8" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/09.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/09.jpg" alt="ЖК ЦентроПарк, рендер 9" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/10.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/10.jpg" alt="ЖК ЦентроПарк, рендер 10" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/11.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/11.jpg" alt="ЖК ЦентроПарк, рендер 11" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/12.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/12.jpg" alt="ЖК ЦентроПарк, рендер 12" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/13.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/13.jpg" alt="ЖК ЦентроПарк, рендер 13" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/14.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/14.jpg" alt="ЖК ЦентроПарк, рендер 14" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/15.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/15.jpg" alt="ЖК ЦентроПарк, рендер 15" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/16.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/16.jpg" alt="ЖК ЦентроПарк, рендер 16" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark/17.jpg" data-project="ЖК ЦентроПарк"><img src="media/wall/centropark/17.jpg" alt="ЖК ЦентроПарк, рендер 17" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК ЦЕНТРОПАРК 2</h2><span class="proj__count">7 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/centropark2/01.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/01.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/02.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/02.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/03.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/03.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/04.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/04.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/05.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/05.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 5" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/06.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/06.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 6" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/centropark2/07.jpg" data-project="ЖК ЦЕНТРОПАРК 2"><img src="media/wall/centropark2/07.jpg" alt="ЖК ЦЕНТРОПАРК 2, рендер 7" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК Хуторская</h2><span class="proj__count">5 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/hutorskaya/01.jpg" data-project="ЖК Хуторская"><img src="media/wall/hutorskaya/01.jpg" alt="ЖК Хуторская, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/hutorskaya/02.jpg" data-project="ЖК Хуторская"><img src="media/wall/hutorskaya/02.jpg" alt="ЖК Хуторская, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/hutorskaya/03.jpg" data-project="ЖК Хуторская"><img src="media/wall/hutorskaya/03.jpg" alt="ЖК Хуторская, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/hutorskaya/04.jpg" data-project="ЖК Хуторская"><img src="media/wall/hutorskaya/04.jpg" alt="ЖК Хуторская, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/hutorskaya/05.jpg" data-project="ЖК Хуторская"><img src="media/wall/hutorskaya/05.jpg" alt="ЖК Хуторская, рендер 5" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК Мириады</h2><span class="proj__count">8 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/miriady/01.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/01.jpg" alt="ЖК Мириады, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/02.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/02.jpg" alt="ЖК Мириады, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/03.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/03.jpg" alt="ЖК Мириады, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/04.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/04.jpg" alt="ЖК Мириады, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/05.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/05.jpg" alt="ЖК Мириады, рендер 5" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/06.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/06.jpg" alt="ЖК Мириады, рендер 6" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/07.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/07.jpg" alt="ЖК Мириады, рендер 7" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/miriady/08.jpg" data-project="ЖК Мириады"><img src="media/wall/miriady/08.jpg" alt="ЖК Мириады, рендер 8" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК Зеленые Аллеи</h2><span class="proj__count">5 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/alleyi/01.jpg" data-project="ЖК Зеленые Аллеи"><img src="media/wall/alleyi/01.jpg" alt="ЖК Зеленые Аллеи, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/alleyi/02.jpg" data-project="ЖК Зеленые Аллеи"><img src="media/wall/alleyi/02.jpg" alt="ЖК Зеленые Аллеи, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/alleyi/03.jpg" data-project="ЖК Зеленые Аллеи"><img src="media/wall/alleyi/03.jpg" alt="ЖК Зеленые Аллеи, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/alleyi/04.jpg" data-project="ЖК Зеленые Аллеи"><img src="media/wall/alleyi/04.jpg" alt="ЖК Зеленые Аллеи, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/alleyi/05.jpg" data-project="ЖК Зеленые Аллеи"><img src="media/wall/alleyi/05.jpg" alt="ЖК Зеленые Аллеи, рендер 5" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК Озёрный</h2><span class="proj__count">7 рендеров</span></div>
-    <div class="grid">
-      <button class="shot" type="button" data-full="media/gal/ozerny/01.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/01.jpg" alt="ЖК Озёрный, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/02.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/02.jpg" alt="ЖК Озёрный, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/03.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/03.jpg" alt="ЖК Озёрный, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/04.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/04.jpg" alt="ЖК Озёрный, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/05.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/05.jpg" alt="ЖК Озёрный, рендер 5" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/06.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/06.jpg" alt="ЖК Озёрный, рендер 6" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/ozerny/07.jpg" data-project="ЖК Озёрный"><img src="media/wall/ozerny/07.jpg" alt="ЖК Озёрный, рендер 7" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-  <section class="proj wrap">
-    <div class="proj__bar"><h2>ЖК Инноград</h2><span class="proj__count">6 рендеров</span></div>
-    <div class="grid grid--43">
-      <button class="shot" type="button" data-full="media/gal/innograd/01.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/01.jpg" alt="ЖК Инноград, рендер 1" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/innograd/02.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/02.jpg" alt="ЖК Инноград, рендер 2" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/innograd/03.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/03.jpg" alt="ЖК Инноград, рендер 3" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/innograd/04.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/04.jpg" alt="ЖК Инноград, рендер 4" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/innograd/05.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/05.jpg" alt="ЖК Инноград, рендер 5" loading="lazy" decoding="async"></button>
-      <button class="shot" type="button" data-full="media/gal/innograd/06.jpg" data-project="ЖК Инноград"><img src="media/wall/innograd/06.jpg" alt="ЖК Инноград, рендер 6" loading="lazy" decoding="async"></button>
-    </div>
-  </section>
-
-  <div class="lb" id="js-lb" role="dialog" aria-modal="true" aria-label="Просмотр рендера">
-    <img alt="">
-    <button class="lb__close" data-close type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="lb__bar">
-      <button data-prev type="button" aria-label="Предыдущий"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <span data-cap></span><span data-num></span>
-      <button data-next type="button" aria-label="Следующий"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-    </div>
-  </div>
+  <div class="library-bottom"><span>STUDIO 3DAR © 2026</span><span class="library-status" aria-live="polite"></span><div class="library-arrows"><button type="button" data-direction="-1" aria-label="Предыдущий проект">↑</button><button type="button" data-direction="1" aria-label="Следующий проект">↓</button></div></div>
 </main>
-
-<footer class="sub-foot"><div class="wrap"><span>STUDIO 3DAR</span><span>Архитектурная визуализация, 2025</span></div></footer>
-
+</div>
+<div class="reel" id="js-reel" role="dialog" aria-modal="true" aria-label="Проект">
+  <div class="reel__wash" id="js-reel-w0"></div>
+  <div class="reel__wash" id="js-reel-w1"></div>
+  <div class="reel__veil"></div>
+  <div class="reel__stage" id="js-reel-stage"><figure class="slide reel__intro" id="js-reel-intro" hidden></figure></div>
+  <svg class="reel__arc" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M-120 780C260 520 880 910 1560 430"/></svg>
+  <div class="reel__hud">
+    <div class="reel__others" id="js-reel-others" aria-label="Другие проекты"></div>
+    <div class="reel__id"><i></i><b id="js-reel-name"></b><span id="js-reel-num"></span></div>
+    <div class="reel__spec">
+      <span id="js-reel-count"></span>
+      <span>STUDIO 3DAR</span>
+      <button class="reel__tool" id="js-reel-fs" type="button">Во весь экран</button>
+      <button class="reel__tool" id="js-reel-zoom" type="button">Увеличить</button>
+      <a class="lnk" id="js-reel-more" href="renders.html">Все рендеры <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="reel__bar">
+      <button class="reel__all" id="js-reel-all" type="button" aria-pressed="false">Все кадры</button>
+      <div class="reel__row">
+        <button class="arw" id="js-reel-prev" type="button" aria-label="Предыдущий кадр"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div id="js-reel-dots"></div>
+        <button class="arw" id="js-reel-next" type="button" aria-label="Следующий кадр"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="reel__grid" id="js-reel-grid" hidden></div>
+  <div class="reel__big" id="js-reel-big" hidden><img alt=""></div>
+  <button class="reel__skip" id="js-reel-skip" type="button" hidden>Пропустить</button>
+  <button class="reel__close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
 <script src="site.js?v=20260906b"></script>
+<script src="library-reel.js"></script>
+<script src="project-library.js"></script>
 </body>
 </html>

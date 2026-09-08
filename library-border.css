@@ -1,0 +1,61 @@
+/* BorderGlow on the hovered tile: edgeSensitivity 24, glowRadius 80, coneSpread 25.
+   --edge-proximity and --cursor-angle are written by the script per pointer move. */
+.project-card{
+  --edge-proximity:0;--cursor-angle:45deg;--edge-sensitivity:24;--color-sensitivity:44;--cone-spread:25;--glow-padding:80px;
+  --glow-color:hsl(218deg 92% 72% / 100%);
+  --glow-color-60:hsl(218deg 92% 72% / 100%);
+  --glow-color-50:hsl(218deg 92% 72% / 100%);
+  --glow-color-40:hsl(218deg 92% 72% / 100%);
+  --glow-color-30:hsl(218deg 92% 72% / 90%);
+  --glow-color-20:hsl(218deg 92% 72% / 60%);
+  --glow-color-10:hsl(218deg 92% 72% / 30%);
+  --gradient-one:radial-gradient(at 80% 55%,#6ea8ff 0px,transparent 50%);
+  --gradient-two:radial-gradient(at 69% 34%,#a9c9ff 0px,transparent 50%);
+  --gradient-three:radial-gradient(at 8% 6%,#3d6fd1 0px,transparent 50%);
+  --gradient-four:radial-gradient(at 41% 38%,#6ea8ff 0px,transparent 50%);
+  --gradient-five:radial-gradient(at 86% 85%,#a9c9ff 0px,transparent 50%);
+  --gradient-six:radial-gradient(at 82% 18%,#3d6fd1 0px,transparent 50%);
+  --gradient-seven:radial-gradient(at 51% 4%,#a9c9ff 0px,transparent 50%);
+  --gradient-base:linear-gradient(#6ea8ff 0 100%);
+}
+.project-card::before,.project-card > .edge{content:"";position:absolute;inset:0;border-radius:18px;transition:opacity .25s ease-out;z-index:-1;pointer-events:none}
+.project-card:not(.hot)::before,.project-card:not(.hot) > .edge{opacity:0;transition:opacity .75s ease-in-out}
+.project-card::before{
+  border:1px solid transparent;
+  background:
+    linear-gradient(#071238 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box,
+    var(--gradient-one) border-box,var(--gradient-two) border-box,var(--gradient-three) border-box,
+    var(--gradient-four) border-box,var(--gradient-five) border-box,var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,var(--gradient-base) border-box;
+  opacity:calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  -webkit-mask-image:conic-gradient(from var(--cursor-angle) at center,black calc(var(--cone-spread) * 1%),transparent calc((var(--cone-spread) + 15) * 1%),transparent calc((100 - var(--cone-spread) - 15) * 1%),black calc((100 - var(--cone-spread)) * 1%));
+  mask-image:conic-gradient(from var(--cursor-angle) at center,black calc(var(--cone-spread) * 1%),transparent calc((var(--cone-spread) + 15) * 1%),transparent calc((100 - var(--cone-spread) - 15) * 1%),black calc((100 - var(--cone-spread)) * 1%));
+}
+.project-card > .edge{
+  inset:calc(var(--glow-padding) * -1);z-index:1;
+  -webkit-mask-image:conic-gradient(from var(--cursor-angle) at center,black 2.5%,transparent 10%,transparent 90%,black 97.5%);
+  mask-image:conic-gradient(from var(--cursor-angle) at center,black 2.5%,transparent 10%,transparent 90%,black 97.5%);
+  opacity:calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+  mix-blend-mode:plus-lighter;
+}
+.project-card > .edge::before{
+  content:"";position:absolute;inset:var(--glow-padding);border-radius:18px;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 1px 0 var(--glow-color-60),
+    inset 0 0 3px 0 var(--glow-color-50),
+    inset 0 0 6px 0 var(--glow-color-40),
+    inset 0 0 15px 0 var(--glow-color-30),
+    inset 0 0 25px 2px var(--glow-color-20),
+    inset 0 0 50px 2px var(--glow-color-10),
+    0 0 1px 0 var(--glow-color-60),
+    0 0 3px 0 var(--glow-color-50),
+    0 0 6px 0 var(--glow-color-40),
+    0 0 15px 0 var(--glow-color-30),
+    0 0 25px 2px var(--glow-color-20),
+    0 0 50px 2px var(--glow-color-10);
+}
+
+.project-card{overflow:visible}.project-card img,.project-card::after{border-radius:inherit}.project-card>.edge{border-radius:inherit}
+

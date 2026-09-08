@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script src="transition-boot.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>STUDIO 3DAR. Креативная студия архитектурной визуализации</title>
 <meta name="description" content="3D-визуализация, архитектурная анимация, VR-туры и брендинг для девелоперов. Студия премиум-класса, 35+ реализованных проектов.">
-<link rel="preload" as="video" href="media/hero.mp4" type="video/mp4">
+<link rel="preload" as="video" href="media/hero-2k60.mp4" type="video/mp4">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="site.css?v=20260906b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,21 +262,59 @@ h1,h2,h3,.display{
   .nav::before{animation:navbg linear both;animation-timeline:scroll();animation-range:40vh 85vh}
   @keyframes navbg{to{opacity:1}}
 }
-.nav .wrap{display:flex;align-items:center;gap:36px;width:100%;padding-right:160px}
+.nav .wrap{display:flex;align-items:center;gap:36px;width:100%;padding-right:110px}
 @media(max-width:900px){.nav .wrap{padding-right:86px}}
 .mark{font-family:Oswald,sans-serif;font-weight:700;font-size:22px;letter-spacing:.02em}
 .mark span{color:var(--accent)}
 .nav nav{
-  margin-left:auto;display:flex;gap:30px;
+  display:flex;
   font-family:Oswald,sans-serif;font-weight:500;text-transform:uppercase;
   letter-spacing:.1em;font-size:13px;color:rgba(238,240,250,.88);
 }
-.nav nav a:hover{color:var(--accent)}
-@media(max-width:900px){.nav nav{display:none}.nav .cta{margin-left:auto}}
+.nav .gooey-nav-container{--color-1:#6ea8ff;--color-2:#79e9ff;--color-3:#8a6cff;--color-4:#eef4ff;position:relative;margin-left:auto;isolation:isolate;font-family:Oswald,sans-serif;font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:13px}
+.nav .gooey-nav-container nav{position:relative;transform:translate3d(0,0,.01px)}
+.nav .gooey-nav-container ul{position:relative;z-index:3;display:flex;align-items:center;gap:5px;list-style:none;margin:0;padding:0;color:#eef4ff;text-shadow:0 1px 1px rgba(0,12,35,.28)}
+.nav .gooey-nav-container li{position:relative;border-radius:999px;cursor:pointer;color:#eef4ff;box-shadow:0 0 .5px 1.5px transparent;transition:color .3s ease,box-shadow .3s ease}
+.nav .gooey-nav-container li a{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;padding:.65em 1em;color:inherit;border-radius:999px;overflow:hidden}
+.nav .gooey-nav-container .hover-circle{position:absolute;left:50%;bottom:var(--circle-bottom,-70px);z-index:1;display:block;width:var(--circle-size,110px);height:var(--circle-size,110px);border-radius:50%;background:#06112d;pointer-events:none;transform:translateX(-50%) scale(0);transform-origin:50% var(--circle-origin,90px);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.nav .gooey-nav-container .label-stack{position:relative;z-index:2;display:inline-block;line-height:1;white-space:nowrap}
+.nav .gooey-nav-container .pill-label,.nav .gooey-nav-container .pill-label-hover{display:inline-block;line-height:1;will-change:transform,opacity;transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .3s ease}
+.nav .gooey-nav-container .pill-label-hover{position:absolute;inset:0;color:#eef4ff;opacity:0;transform:translateY(calc(100% + 18px))}
+.nav .gooey-nav-container li a:hover .hover-circle,.nav .gooey-nav-container li a:focus-visible .hover-circle{transform:translateX(-50%) scale(1.2)}
+.nav .gooey-nav-container li a:hover .pill-label,.nav .gooey-nav-container li a:focus-visible .pill-label{transform:translateY(calc(-100% - 18px))}
+.nav .gooey-nav-container li a:hover .pill-label-hover,.nav .gooey-nav-container li a:focus-visible .pill-label-hover{opacity:1;transform:translateY(0)}
+.nav .gooey-nav-container li:focus-within:has(:focus-visible){box-shadow:0 0 .5px 1.5px #eef4ff}
+.nav .gooey-nav-container li::after{content:"";position:absolute;inset:0;border-radius:999px;background:#eef4ff;opacity:0;transform:scale(0);transition:opacity .3s ease,transform .3s ease;z-index:-1}
+.nav .gooey-nav-container li.active{color:#06112d;text-shadow:none}
+.nav .gooey-nav-container li.active::after{opacity:1;transform:scale(1)}
+.nav .gooey-nav-container .effect{position:absolute;left:0;top:0;width:0;height:0;opacity:1;pointer-events:none;display:grid;place-items:center;z-index:1;border-radius:999px}
+.nav .gooey-nav-container .effect.text{color:#eef4ff;transition:color .3s ease}
+.nav .gooey-nav-container .effect.text.active{color:#06112d}
+.nav .gooey-nav-container .effect.filter{filter:blur(7px) contrast(100) blur(0);mix-blend-mode:lighten}
+.nav .gooey-nav-container .effect.filter::before{content:"";position:absolute;inset:-54px;z-index:-2;background:transparent}
+.nav .gooey-nav-container .effect.filter::after{content:"";position:absolute;inset:0;background:#eef4ff;transform:scale(0);opacity:0;z-index:-1;border-radius:999px}
+.nav .gooey-nav-container .effect.active::after{animation:gooeyPill .3s ease both}
+.nav .gooey-nav-container .particle,.nav .gooey-nav-container .point{display:block;opacity:0;width:20px;height:20px;border-radius:50%;transform-origin:center}
+.nav .gooey-nav-container .particle{position:absolute;top:calc(50% - 8px);left:calc(50% - 8px);animation:gooeyParticle var(--time) ease 1 -350ms}
+.nav .gooey-nav-container .point{background:var(--color);opacity:1;animation:gooeyPoint var(--time) ease 1 -350ms}
+@keyframes gooeyPill{to{transform:scale(1);opacity:1}}
+@keyframes gooeyParticle{
+  0%{transform:rotate(0deg) translate(var(--start-x),var(--start-y));opacity:1;animation-timing-function:cubic-bezier(.55,0,1,.45)}
+  70%{transform:rotate(calc(var(--rotate)*.5)) translate(calc(var(--end-x)*1.2),calc(var(--end-y)*1.2));opacity:1;animation-timing-function:ease}
+  85%{transform:rotate(calc(var(--rotate)*.66)) translate(var(--end-x),var(--end-y));opacity:1}
+  100%{transform:rotate(calc(var(--rotate)*1.2)) translate(calc(var(--end-x)*.5),calc(var(--end-y)*.5));opacity:1}
+}
+@keyframes gooeyPoint{
+  0%{transform:scale(0);opacity:0;animation-timing-function:cubic-bezier(.55,0,1,.45)}
+  25%{transform:scale(calc(var(--scale)*.25))}38%{opacity:1}65%,85%{transform:scale(var(--scale));opacity:1}100%{transform:scale(0);opacity:0}
+}
+@media(max-width:900px){.nav .gooey-nav-container{display:none}}
 
 /* ---------- hero ---------- */
 .hero{position:relative;height:100dvh;overflow:hidden;background:var(--bg)}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:none}
+#film-reverse{opacity:0;pointer-events:none}
+#film-reverse.is-playing{opacity:1}
 .hero::after{
   content:"";position:absolute;inset:0;pointer-events:none;
   background:
@@ -284,7 +323,7 @@ h1,h2,h3,.display{
 }
 /* above the shrinking clip (z 35) so the split halves stay in front of it, as the component layers its title over the media */
 /* skips the scroll-driven clip: shown only while the hero holds the page */
-.hero-skip{display:none;position:absolute;right:clamp(16px,3.5vw,58px);bottom:150px;z-index:37;padding:9px 16px;border-radius:999px;
+.hero-skip{display:none;position:absolute;left:50%;right:auto;top:18px;bottom:auto;z-index:61;padding:9px 16px;border-radius:999px;transform:translateX(-50%);
   border:1px solid rgba(238,240,250,.3);background:rgba(2,10,36,.45);color:var(--fg-2);cursor:pointer;
   font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .hero-skip:hover{border-color:var(--accent);color:var(--fg)}
@@ -303,9 +342,9 @@ body.locked .nav{opacity:0;pointer-events:none}
 .blk-logo svg{width:min(60vw,520px);height:auto;overflow:visible}
 .blk-logo text{font-family:Oswald,sans-serif;font-weight:700;font-size:120px;letter-spacing:.04em;fill:transparent;stroke:#eaf1ff;stroke-width:1.5;stroke-linejoin:round}
 .blk-logo tspan{fill:transparent;stroke:var(--accent)}
-@media(max-width:900px){.hero-skip{bottom:auto;top:90px}}
-.hero-copy{position:absolute;left:0;right:0;bottom:92px;z-index:36}
-.hero-copy .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end}
+@media(max-width:900px){.hero-skip{top:18px}}
+.hero-copy{position:absolute;left:0;right:0;bottom:clamp(28px,5vh,54px);z-index:36}
+.hero-copy .wrap{display:block;max-width:none;margin:0;padding:0 clamp(30px,3.4vw,62px)}
 /* StrokeText headline: measured SVG glyphs, one tspan per character, outline drawn then filled.
    strokeWidth 1.4, draw 1.6s, stagger .05s, fill wipes in behind the outline. */
 /* the three phrases resolve out of ink (the gooey text reveal, same as the site copy),
@@ -313,21 +352,11 @@ body.locked .nav{opacity:0;pointer-events:none}
 /* VFX-JS rasterizes the element itself (SVG foreignObject), where web fonts are not available —
    so the phrase is set in a system face and given room, or the second line wraps and is cropped */
 .hero-h{display:block;max-width:820px;margin:0;font-family:"Arial Narrow",Arial,Helvetica,sans-serif;font-weight:700;text-transform:uppercase;
-  font-size:clamp(24px,2.6vw,38px);line-height:1.1;letter-spacing:.01em;color:var(--fg);white-space:nowrap}
-.hero-sub{margin-top:18px;max-width:none;line-height:0}
-.hero-sub svg{display:block;overflow:visible;margin-top:4px}
+  font-size:clamp(27px,2.9vw,43px);line-height:1.1;letter-spacing:.01em;color:var(--fg);white-space:nowrap}
 .swap{transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .swapping .swap{opacity:0;transform:translateY(10px)}
-.steps{display:flex;gap:8px;padding-bottom:10px}
-.steps i{
-  display:block;width:46px;height:3px;border-radius:2px;
-  background:rgba(238,240,250,.24);transition:background .4s var(--ease);
-}
-.steps i.on{background:var(--accent)}
 @media(max-width:900px){
-  .hero-copy{bottom:64px}
-  .hero-copy .wrap{grid-template-columns:1fr}
-  .steps{padding-bottom:0}
+  .hero-copy{bottom:28px}
 }
 
 /* Parallax: past the clip the video becomes a fixed backdrop drifting at a third of
@@ -341,10 +370,131 @@ body.locked .nav{opacity:0;pointer-events:none}
 .services,.work,.about,.why,.trust,.faq,.contact{position:relative}
 .work,.why,.trust,.contact{background:transparent}
 
-/* ---------- services ---------- */
-/* the parallax backdrop continues under the top of this section, then the navy takes over */
-.services{padding:40px 0 30px}
-.services .wrap{display:grid;grid-template-columns:1fr}
+/* ---------- services: one-gesture dimensional card reveal ---------- */
+.services{
+  position:relative;min-height:100svh;overflow:clip;isolation:isolate;
+  background:rgba(2,10,36,.58);
+}
+.services::before,.services::after{
+  content:"";position:absolute;inset:-28%;z-index:-2;pointer-events:none;
+  background:
+    linear-gradient(rgba(110,168,255,.055) 1px,transparent 1px) 0 0/72px 72px,
+    linear-gradient(90deg,rgba(110,168,255,.055) 1px,transparent 1px) 0 0/72px 72px,
+    radial-gradient(ellipse at 20% 30%,rgba(54,111,231,.44),transparent 34%),
+    radial-gradient(ellipse at 78% 68%,rgba(108,79,220,.27),transparent 31%),
+    radial-gradient(ellipse at 52% 44%,rgba(71,156,255,.18),transparent 28%);
+  filter:blur(18px);transform:translate3d(-3%,-2%,0) scale(1.08);
+  animation:serviceAurora 15s ease-in-out infinite alternate;
+}
+.services::after{
+  z-index:-1;opacity:.55;filter:blur(54px);transform:translate3d(5%,3%,0) scale(1.16);
+  animation-duration:21s;animation-direction:alternate-reverse;
+}
+@keyframes serviceAurora{
+  0%{transform:translate3d(-4%,-3%,0) scale(1.06) rotate(-2deg)}
+  50%{transform:translate3d(4%,2%,0) scale(1.13) rotate(2deg)}
+  100%{transform:translate3d(-1%,5%,0) scale(1.09) rotate(-1deg)}
+}
+.services__stage{
+  min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;
+  align-items:center;padding-top:clamp(76px,10vh,118px);padding-bottom:clamp(28px,5vh,56px);
+}
+.services__head{position:relative;z-index:6;display:grid;justify-items:center;text-align:center;gap:8px}
+.services__head h2{font-size:clamp(2rem,4.6vw,5.4rem);line-height:.94}
+.services__hint{max-width:32ch;text-align:center;color:var(--fg-2);font-size:13px;line-height:1.5}
+.service-deck{
+  position:relative;width:100%;max-width:1400px;min-height:470px;height:clamp(470px,50vh,540px);margin:auto;perspective:1600px;
+  transform-style:preserve-3d;touch-action:pan-y;
+}
+.service-card{
+  --card-accent:110,168,255;
+  position:absolute;left:50%;top:50%;z-index:var(--z,1);
+  width:clamp(240px,22vw,304px);height:420px;
+  padding:23px 25px;border:1px solid rgba(var(--card-accent),.34);border-radius:18px;
+  display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+  color:var(--fg);background:
+    linear-gradient(145deg,rgba(18,42,96,.92),rgba(5,14,45,.9) 58%,rgba(13,23,67,.94));
+  box-shadow:0 32px 90px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.09);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  transform-style:preserve-3d;transform-origin:50% 90%;backface-visibility:hidden;will-change:transform,opacity,filter;
+  transition:transform 1500ms cubic-bezier(.25,.8,.2,1),border-color .4s ease,box-shadow .4s ease,filter .85s ease;
+  transition-delay:0ms;
+}
+.service-card::before{
+  content:"";position:absolute;inset:-1px;pointer-events:none;
+  background:radial-gradient(circle at 20% 8%,rgba(var(--card-accent),.23),transparent 42%);
+}
+.service-card:nth-child(1){--slot:1;--z:4;transform:translate3d(-50%,-43%,60px) rotate(0deg)}
+.service-card:nth-child(2){--slot:0;--z:3;transform:translate3d(-72%,-48%,10px) rotate(-9deg);filter:brightness(.72)}
+.service-card:nth-child(3){--slot:2;--z:1;transform:translate3d(-47%,-59%,-90px) rotate(3deg);filter:brightness(.64)}
+.service-card:nth-child(4){--slot:3;--z:2;transform:translate3d(-28%,-49%,-30px) rotate(9deg);filter:brightness(.72)}
+.services.is-open .service-card{--z:3;transform:translate3d(calc(-50% + (var(--slot) - 1.5) * (100% + 16px)),-46%,0) rotate(0deg);filter:none;transition-delay:0ms}
+.services.is-open .service-card:nth-child(1),.services.is-open .service-card:nth-child(3){transition-delay:65ms}
+.service-card:hover,.service-card:focus-within{
+  border-color:rgba(var(--card-accent),.85);box-shadow:0 38px 100px rgba(0,0,0,.54),0 0 0 1px rgba(var(--card-accent),.25),0 0 48px rgba(var(--card-accent),.15);
+}
+.service-card__top{position:relative;display:flex;align-items:center;justify-content:flex-start}
+.service-card__top svg{width:34px;height:34px;color:rgb(var(--card-accent))}
+.service-card__body{position:relative;margin:auto 0;display:grid;gap:clamp(18px,2.2vh,26px)}
+.service-card h3{font-size:clamp(1.85rem,2.7vw,3rem);line-height:.92;margin:0}
+.service-card h3 em{display:block;font-style:normal;color:rgb(var(--card-accent))}
+.service-card p{color:#bdcae8;font-size:clamp(.82rem,.92vw,.94rem);line-height:1.55}
+.service-deck__toggle{
+  justify-self:center;position:relative;z-index:7;border:1px solid rgba(110,168,255,.45);border-radius:999px;
+  min-width:230px;padding:11px 19px;display:inline-flex;align-items:center;justify-content:center;gap:11px;
+  color:var(--fg);background:rgba(5,16,51,.64);font:500 12px/1 Oswald,sans-serif;letter-spacing:.16em;text-transform:uppercase;
+  cursor:pointer;backdrop-filter:blur(14px);transition:border-color .3s ease,background .3s ease;
+}
+.service-deck__toggle:hover,.service-deck__toggle:focus-visible{border-color:var(--accent);background:rgba(16,39,91,.85);outline:none}
+.service-deck__toggle svg{width:16px;height:16px;transition:transform .5s var(--ease)}
+.services.is-open .service-deck__toggle svg{transform:rotate(180deg)}
+
+.brand-service{
+  position:relative;min-height:76svh;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(circle at 76% 42%,rgba(92,77,210,.18),transparent 36%),
+    linear-gradient(#020a24,#030615);
+}
+.brand-service__inner{display:grid;grid-template-columns:minmax(430px,.95fr) minmax(0,1.05fr);gap:clamp(54px,8vw,130px);align-items:center;padding-top:12vh;padding-bottom:12vh}
+.brand-service__mark{color:var(--accent);display:flex;align-items:center;gap:18px}
+.brand-service__mark svg{width:42px;height:42px;flex:none}
+.brand-service h2{font-size:clamp(3rem,7vw,8rem);line-height:.9}
+.brand-service h2 em{font-style:normal;color:var(--accent)}
+.brand-service p{max-width:38ch;color:var(--fg-2);font-size:clamp(1.05rem,1.55vw,1.35rem);line-height:1.7}
+.brand-service__inner>*{opacity:0;transform:translateY(34px);transition:opacity .85s ease,transform 1.05s var(--ease)}
+.brand-service__inner>:last-child{transition-delay:.12s}
+.brand-service.is-visible .brand-service__inner>*{opacity:1;transform:none}
+
+@media(max-width:900px){.services__hint{display:none}}
+@media(max-width:850px){
+  .service-card{width:min(76vw,290px);height:420px;padding:24px}
+  .service-deck{min-height:490px;height:490px;transition:min-height 1.1s cubic-bezier(.22,.85,.18,1),height 1.1s cubic-bezier(.22,.85,.18,1)}
+  .services.is-open .service-deck{min-height:940px;height:940px}
+  .services.is-open .service-card{width:calc((100% - 12px)/2);height:440px;top:0;left:0;padding:22px;transition-delay:0ms}
+  .services.is-open .service-card:nth-child(2){transform:translate3d(0,20px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(1){transform:translate3d(calc(100% + 12px),20px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(3){transform:translate3d(0,480px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(4){transform:translate3d(calc(100% + 12px),480px,0) rotate(0deg)}
+}
+@media(max-width:500px){
+  .services__stage{padding-top:76px;padding-bottom:22px}
+  .services__head h2{font-size:clamp(2.2rem,11vw,3.7rem)}
+  .service-deck{height:490px;min-height:490px}
+  .service-card{width:min(82vw,340px);height:clamp(170px,20svh,205px);border-radius:20px;padding:19px 21px}
+  .service-card__top svg{width:25px;height:25px}.service-card h3{font-size:clamp(1.6rem,8vw,2.35rem);margin-bottom:9px}
+  .service-card h3 em{display:inline}.service-card p{font-size:12px;line-height:1.42}.service-card__number{font-size:10px}
+  .services.is-open .service-deck{min-height:1780px;height:1780px}
+  .services.is-open .service-card{width:100%;height:420px}
+  .services.is-open .service-card:nth-child(2){transform:translate3d(0,20px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(1){transform:translate3d(0,460px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(3){transform:translate3d(0,900px,0) rotate(0deg)}
+  .services.is-open .service-card:nth-child(4){transform:translate3d(0,1340px,0) rotate(0deg)}
+  .brand-service{min-height:68svh}
+}
+@media(prefers-reduced-motion:reduce){
+  .services::before,.services::after{animation:none}
+  .service-card,.service-deck__toggle svg,.brand-service__inner>*{transition:none}
+}
 /* the statement: full screen, the demo's 12vw title, copy centred beneath */
 /* a long scroll: the block is 2.8 screens tall, the words stay pinned in the middle while
    the scroll reveals the title letter by letter and then the paragraph word by word */
@@ -356,33 +506,18 @@ body.locked .nav{opacity:0;pointer-events:none}
 .typo__title .char{display:inline-block;will-change:opacity,transform}
 .typo__title .word{white-space:nowrap;display:inline-block}
 .typo__p{max-width:660px;margin:2.2rem auto 0;font-size:clamp(1.05rem,1.4vw,1.25rem);line-height:1.5;color:var(--fg-2)}
-/* each service is its own screen, like the statement above: icon, the fanned title, then the copy
-   set large enough to fill the screen while its letters settle in (site-wide on-scroll typography) */
-.svc article{min-height:100vh;display:grid;place-content:center;justify-items:center;text-align:center;padding:8vh 0;box-sizing:border-box}
-.svc svg{width:34px;height:34px;color:var(--accent);margin-bottom:2.4vh}
-.svc h3{font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:-.01em;font-size:clamp(2.6rem,7.5vw,8.5rem);line-height:.9}
-.svc h3 em{font-style:normal;color:var(--accent)}
-/* TextRepetitionEffect (Codrops, demo 5): the title is stacked eight times; as it scrolls up the
-   copies fan out down-right into a fading trail behind the solid top copy */
-.text-rep{display:grid;position:relative}
-.text-rep>span{grid-area:1/1;line-height:1.05;will-change:transform,opacity}
-.text-rep>span:not(:last-child){color:var(--accent-2);opacity:0}
-.text-rep>span:not(:last-child) em{color:var(--accent-2)}
-.svc p{color:var(--fg);margin:3.2vh auto 0;font-size:clamp(1.35rem,2.5vw,2.5rem);line-height:1.28;max-width:30ch}
-@media(max-width:900px){.services{padding-top:40px}}
-
-/* ---------- portfolio: drift wall over the whole library, pinned for 300vh ---------- */
+/* ---------- portfolio: a self-contained, independently scrollable drift wall ---------- */
 .work{padding:64px 0}
 .work-head{display:flex;align-items:flex-end;justify-content:space-between;gap:28px}
-#wall-track{position:relative;height:300vh;margin-top:44px}
-#wall-frame{position:sticky;top:0;height:100dvh;overflow:hidden;background:transparent}
+#wall-track{position:relative;width:calc(100% - 48px);max-width:1680px;height:clamp(620px,78vh,860px);margin:44px auto 0;overflow:hidden;border:1px solid rgba(166,196,255,.13);border-radius:24px;background:rgba(3,10,34,.32)}
+#wall-frame{position:relative;height:100%;overflow:hidden;background:transparent}
 /* Drift wall: every tunable is a --dw-* variable set from wall-settings.js (see wall-test.html) */
 #wall-vignette{position:absolute;inset:0;perspective:var(--dw-perspective,1200px);perspective-origin:50% 50%;
   -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 46%,#000 var(--dw-edge,95%),transparent 100%),linear-gradient(to top,#000 var(--dw-edge,95%),transparent 100%);
   -webkit-mask-composite:source-in;
   mask-image:radial-gradient(ellipse 78% 82% at 50% 46%,#000 var(--dw-edge,95%),transparent 100%),linear-gradient(to top,#000 var(--dw-edge,95%),transparent 100%);
   mask-composite:intersect}
-#wall-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(var(--dw-tilt,20deg)) rotateY(var(--dw-turn,-9deg)) rotateZ(var(--dw-roll,0deg)) translateZ(calc(var(--dw-depth,230px) * -1));display:flex}
+#wall-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(var(--dw-tilt,20deg)) rotateY(var(--dw-turn,-9deg)) rotateZ(var(--dw-roll,0deg)) translateZ(calc(var(--dw-depth,230px) * -1));display:flex;align-items:center}
 .col{flex:none;width:calc(var(--dw-tile-w,192px) + var(--dw-gap,10px));display:flex;flex-direction:column;will-change:transform;transform-style:preserve-3d}   /* without this the column flattens its tiles and the hover lift has no depth */
 .tile{
   position:relative;display:block;flex:none;width:var(--dw-tile-w,192px);height:var(--dw-tile-h,148px);margin-bottom:var(--dw-gap,10px);
@@ -403,9 +538,8 @@ body.locked .nav{opacity:0;pointer-events:none}
 .tile.hot,.tile:focus-visible{opacity:1;transform:translateZ(var(--dw-lift,48px));box-shadow:0 24px 60px -18px rgba(0,0,0,.7)}
 .tile.hot img,.tile:focus-visible img{filter:saturate(1.05) brightness(1)}
 .tile.hot .veil,.tile:focus-visible .veil{opacity:0}
-/* the project's name sits on the tile itself, bottom left, on hover */
-.tile .cap{position:absolute;left:16px;bottom:14px;right:16px;font-family:Oswald,sans-serif;font-weight:500;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);
-  text-shadow:0 1px 10px rgba(0,0,0,.7);opacity:0;transform:translateY(8px);transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .35s cubic-bezier(.22,1,.36,1);pointer-events:none}
+/* Project names return on hover, but remain contained inside their own image. */
+.tile .cap{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;font-family:Oswald,sans-serif;font-weight:500;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);text-shadow:0 1px 10px rgba(0,0,0,.85);opacity:0;transform:translateY(8px);transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .35s cubic-bezier(.22,1,.36,1);pointer-events:none}
 .tile.hot .cap,.tile:focus-visible .cap{opacity:1;transform:none}
 /* BorderGlow on the hovered tile: edgeSensitivity 24, glowRadius 80, coneSpread 25.
    --edge-proximity and --cursor-angle are written by the script per pointer move. */
@@ -465,10 +599,10 @@ body.locked .nav{opacity:0;pointer-events:none}
     0 0 25px 2px var(--glow-color-20),
     0 0 50px 2px var(--glow-color-10);
 }
-#wall-foot{position:absolute;left:0;right:0;bottom:0;z-index:5}
-#wall-foot .wrap{padding-bottom:56px;display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+#wall-foot{position:relative;z-index:5}
+#wall-foot .wrap{padding-top:36px;display:flex;align-items:baseline;justify-content:space-between;gap:24px}
 .wall-count{font-family:Oswald,sans-serif;font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2)}
-@media(max-width:900px){.work{padding:56px 0}}
+@media(max-width:900px){.work{padding:56px 0}#wall-track{width:calc(100% - 24px);border-radius:16px}}
 
 /* ---------- project reel: the wall's click-through ----------
    The Drive demo's slide changer, in plain CSS: the outgoing frame zooms up and
@@ -629,6 +763,59 @@ details .body p+p{margin-top:12px}
 details .body strong{color:var(--fg);font-weight:500}
 @media(max-width:900px){.faq{padding:56px 0}.faq .wrap{grid-template-columns:1fr;gap:36px}}
 
+/* Screenshot-inspired FAQ: sticky contact panel and independent question columns. */
+.faq-grid{padding:110px 0;scroll-margin-top:90px}
+.faq-grid .wrap{grid-template-columns:minmax(0, .8fr) minmax(0,1.2fr);gap:clamp(28px,4vw,64px)}
+.faq-contact{position:sticky;top:104px;padding:clamp(28px,3vw,50px);border:1px solid var(--line);border-radius:30px;background:var(--bg-2)}
+.faq-contact h2{font-family:Onest,sans-serif;font-size:clamp(30px,3.2vw,52px);font-weight:600;line-height:1.13;letter-spacing:-.045em;text-transform:none}
+.faq-contact>p{margin-top:28px;color:var(--fg-2);font-size:17px;line-height:1.75}
+.faq-stats{display:grid;grid-template-columns:1fr 1fr;margin:48px 0 32px;border-block:1px solid var(--line)}
+.faq-stats>div{padding:24px 0;display:grid;gap:6px}
+.faq-stats>div+div{border-left:1px solid var(--line);padding-left:24px}
+.faq-stats strong{font-size:34px;line-height:1.2;font-weight:600;letter-spacing:-.04em}
+.faq-stats span{font-size:13px;color:var(--fg-2);line-height:1.5}
+.faq-email{display:flex;align-items:center;justify-content:space-between;gap:30px;width:100%;max-width:290px;padding:18px 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:600;font-size:15px;transition:background .2s,transform .2s}
+.faq-email:hover{background:var(--accent);transform:translateY(-2px)}
+.faq-contact small{display:block;margin-top:20px;color:var(--fg-2);font-size:13px;line-height:1.65}
+.faq-questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.faq-column{display:flex;flex-direction:column;gap:20px}
+.faq-grid details{border:1px solid var(--line);border-radius:20px;background:rgba(2,10,36,.7);overflow:hidden;transition:background .25s,border-color .25s}
+.faq-grid details[open]{background:var(--bg-2);border-color:rgba(143,166,217,.35)}
+.faq-grid summary{padding:28px 46px 28px 26px;font-family:Onest,sans-serif;font-size:16px;font-weight:600;line-height:1.5;letter-spacing:-.02em;text-transform:none}
+.faq-grid summary::after{top:29px;right:22px;font-size:23px;color:var(--fg-2)}
+.faq-grid .body{padding:0 26px 28px;font-size:15px;line-height:1.75}
+.faq-grid .body a{color:var(--accent);overflow-wrap:anywhere}
+.faq-grid summary:focus-visible,.faq-email:focus-visible{outline:2px solid var(--accent);outline-offset:-5px}
+@media(max-width:1000px){.faq-grid .wrap{grid-template-columns:minmax(0,.8fr) minmax(0,1fr)}.faq-questions{grid-template-columns:1fr}.faq-contact{top:90px}}
+@media(max-width:700px){.faq-grid{padding:64px 0}.faq-grid .wrap{grid-template-columns:1fr;gap:28px}.faq-contact{position:static;border-radius:24px}.faq-contact h2{font-size:36px}.faq-stats{margin-top:32px}.faq-grid summary{padding:24px 46px 24px 24px}.faq-grid summary::after{top:26px}}
+
+/* FAQ 5 reference: centred heading, single-column rounded accordions, contact card below. */
+.faq-grid{padding:110px 0 100px;background:rgba(2,10,36,.62);scroll-margin-top:74px}
+.faq-grid .wrap{display:block;max-width:1020px}
+.faq-head{text-align:center;margin:0 auto 52px}
+.faq-head h2{font-family:Onest,sans-serif;font-size:clamp(38px,5vw,66px);font-weight:600;line-height:1.08;letter-spacing:-.05em;text-transform:none}
+.faq-head p{margin:18px auto 0;max-width:620px;color:var(--fg-2);font-size:17px;line-height:1.7}
+.faq-contact{position:static;max-width:620px;margin:44px auto 0;padding:0;border:0;border-radius:0;background:transparent;scroll-margin-top:110px;text-align:center}
+.faq-links{margin-top:0;background:var(--bg-2);border:1px solid var(--line);border-radius:20px;overflow:hidden;text-align:left}
+.faq-links>a{display:flex;align-items:center;gap:18px;padding:24px;color:var(--fg);font-size:clamp(14px,1.3vw,18px);font-weight:500;transition:background .2s}
+.faq-links>a+a{border-top:1px solid var(--line)}
+.faq-links>a:hover{background:rgba(110,168,255,.08)}
+.faq-link-icon{display:grid;place-items:center;width:48px;height:48px;flex:none;border:1px solid var(--line);border-radius:50%;background:var(--bg);font-size:22px;color:var(--fg-2)}
+.faq-link-icon svg{width:20px;height:20px}
+.faq-link-arrow{margin-left:auto;color:var(--fg-2)}
+.faq-contact>.cta{margin-top:30px}
+.faq-questions{display:grid;grid-template-columns:1fr;gap:14px;border:0}
+.faq-grid details,.faq-grid details[open]{border:1px solid rgba(143,166,217,.16);border-radius:18px;background:rgba(255,255,255,.035);overflow:hidden;transition:background .25s,border-color .25s}
+.faq-grid details[open]{background:rgba(255,255,255,.065);border-color:rgba(143,166,217,.28)}
+.faq-grid summary{padding:26px 64px 26px 28px;font-size:18px;line-height:1.5;letter-spacing:-.02em}
+.faq-grid summary::before{content:none}
+.faq-grid summary::after{content:'+';right:26px;top:50%;width:auto;height:auto;background:none;color:var(--fg-2);font:300 26px/1 Onest,sans-serif;transform:translateY(-50%)}
+.faq-grid details[open] summary::after{content:'−';background:none;color:var(--fg);transform:translateY(-50%)}
+.faq-grid .body{padding:0 64px 28px 28px;max-width:none;font-size:16px;line-height:1.8}
+.faq-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+@media(max-width:900px){.faq-grid{padding:76px 0}.faq-head{margin-bottom:38px}.faq-grid summary{font-size:17px}}
+@media(max-width:480px){.faq-links>a{padding:18px 16px;gap:12px}.faq-link-icon{width:38px;height:38px}.faq-grid summary{padding:22px 48px 22px 20px;font-size:16px}.faq-grid summary::after{right:20px}.faq-grid .body{padding:0 20px 22px;font-size:15px}}
+
 /* ---------- contact ---------- */
 .contact{padding:72px 0 56px;overflow:hidden}
 .contact .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:48px;align-items:end}
@@ -659,6 +846,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   .cta *{animation:none !important;transition:none !important}
   .cta .state-2{display:none}
   .hero-h [data-stroke] tspan{stroke-dashoffset:0 !important;transition:none !important}
+  .hero-h{animation:none}
   .hero-h [data-wipe]{transition:none !important}
   /* the wall becomes a flat grid: no pin, no tilt, no drift */
   #wall-track{height:auto}
@@ -672,11 +860,65 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   .tile .clip{position:static}
   #wall-foot{position:static;padding-top:24px}
 }
+
+/* Body copy remains static while the original post-video statement and four
+   service sections stay visible in the normal page flow. */
+.no-body-text-fx .rv{animation:none!important;opacity:1!important;transform:none!important}
+body.no-body-text-fx > .typo,
+body.no-body-text-fx > .services,
+body.no-body-text-fx > .work,
+body.no-body-text-fx > .about,
+body.no-body-text-fx > .why,
+body.no-body-text-fx > .trust,
+body.no-body-text-fx > .faq{background:transparent!important}
+body.no-body-text-fx > .services::before,body.no-body-text-fx > .services::after{opacity:.13}
+.no-body-text-fx .typo{height:auto;min-height:70vh;padding:clamp(90px,14vh,150px) 0;display:grid;place-items:center}
+.no-body-text-fx .typo__inner{position:relative;top:auto;height:auto}
+.no-body-text-fx .typo .char,.no-body-text-fx .typo .word{opacity:1!important;transform:none!important;will-change:auto}
+
+/* Full-bleed drift wall. Layered navy fog and soft blue cloud banks hide the
+   wall's hard limits so it dissolves into the surrounding page. */
+.no-body-text-fx .work{padding:72px 0 84px;overflow:hidden}
+.no-body-text-fx #wall-track{width:100vw;max-width:none;height:clamp(680px,92vh,980px);margin:24px calc(50% - 50vw) 0;border:0;border-radius:0;background:transparent;isolation:isolate}
+.no-body-text-fx #wall-frame{background:transparent}
+.no-body-text-fx #wall-vignette{inset:-7% -4%;
+  -webkit-mask-image:radial-gradient(ellipse 92% 82% at 50% 48%,#000 60%,rgba(0,0,0,.9) 74%,transparent 100%);
+  mask-image:radial-gradient(ellipse 92% 82% at 50% 48%,#000 60%,rgba(0,0,0,.9) 74%,transparent 100%)}
+.no-body-text-fx #wall-track::before,.no-body-text-fx #wall-track::after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none}
+.no-body-text-fx #wall-track::before{inset:-10% -5%;filter:blur(30px);opacity:.9;background:
+  radial-gradient(ellipse 30% 15% at 8% 12%,rgba(151,184,255,.14),transparent 72%),
+  radial-gradient(ellipse 34% 16% at 91% 16%,rgba(112,157,255,.13),transparent 74%),
+  radial-gradient(ellipse 38% 18% at 14% 88%,rgba(105,148,238,.12),transparent 74%),
+  radial-gradient(ellipse 36% 18% at 86% 86%,rgba(159,190,255,.12),transparent 74%)}
+.no-body-text-fx #wall-track::after{background:
+  linear-gradient(to bottom,rgba(2,10,36,.2),transparent 18%,transparent 82%,rgba(2,10,36,.2)),
+  linear-gradient(to right,rgba(2,10,36,.22),transparent 14%,transparent 86%,rgba(2,10,36,.22))}
+@media(max-width:900px){
+  .no-body-text-fx .typo{min-height:55vh;padding:80px 0}
+  .no-body-text-fx #wall-track{width:100vw;height:78vh;margin-left:calc(50% - 50vw)}
+}
+/* A single continuous background; only content cards have their own surfaces. */
+body.no-body-text-fx > section:not(.hero){background:transparent!important;border-block:0;box-shadow:none}
+body.no-body-text-fx .services::before,body.no-body-text-fx .services::after{display:none}
+body.no-body-text-fx .typo{min-height:58vh;padding:clamp(64px,9vh,100px) 0}
+body.no-body-text-fx .services,body.no-body-text-fx .services__stage{min-height:86svh}
+body.no-body-text-fx .services__stage{padding-top:48px;padding-bottom:32px}
+body.no-body-text-fx .work{padding:48px 0 44px}
+body.no-body-text-fx .about,body.no-body-text-fx .why{padding-block:48px}
+body.no-body-text-fx .trust{padding-block:38px}
+body.no-body-text-fx .faq-grid{padding-block:64px}
+body.no-body-text-fx #wall-track::before,body.no-body-text-fx #wall-track::after{display:none}
+body.no-body-text-fx #wall-frame{-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 17%,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 17%,#000 80%,transparent 100%)}
+body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 84% 75% at 50% 50%,#000 48%,rgba(0,0,0,.85) 68%,transparent 100%);mask-image:radial-gradient(ellipse 84% 75% at 50% 50%,#000 48%,rgba(0,0,0,.85) 68%,transparent 100%)}
 </style>
+<link rel="stylesheet" href="editorial-type.css">
+<script src="media/bundles/hero-goo-text.js"></script>
+<link rel="stylesheet" href="feedback-transition.css">
 </head>
-<body class="locked">
+<body class="locked no-body-text-fx">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><filter id="blur-matrix" x="-50%" y="-50%" width="200%" height="200%"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"/></filter></defs>
   <symbol id="cta-splash" viewBox="0 0 342 208">
     <path stroke-linecap="round" stroke-width="3" d="M54.1054 99.7837C54.1054 99.7837 40.0984 90.7874 26.6893 97.6362C13.2802 104.485 1.5 97.6362 1.5 97.6362"/>
     <path stroke-linecap="round" stroke-width="3" d="M285.273 99.7841C285.273 99.7841 299.28 90.7879 312.689 97.6367C326.098 104.486 340.105 95.4893 340.105 95.4893"/>
@@ -697,30 +939,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></symbol>
 </svg>
 
-<header class="nav">
-  <div class="wrap">
-    <a class="mark" href="#top">3DAR<span>.</span></a>
-    <nav>
-      <a href="#services">Услуги</a>
-      <a href="renders.html">Портфолио</a>
-      <a href="#about">О нас</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">Контакты</a>
-    </nav>
-    <a class="cta" href="#contact" data-a="Связаться" style="--w:150px;--h:48px;--fs:15px">Связаться</a>
-  </div>
-</header>
 
 <section class="hero" id="top">
-  <video id="film" src="media/hero.mp4" poster="media/poster.jpg" muted playsinline preload="auto"></video>
+  <video id="film" src="media/hero-2k60.mp4" poster="media/poster.jpg" muted playsinline preload="auto"></video>
+  <video id="film-reverse" src="media/hero-2k60-reverse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
   <button class="hero-skip" id="hero-skip" type="button">Пропустить</button>
   <div class="hero-copy">
     <div class="wrap">
       <div>
         <h1 class="hero-h" id="h"></h1>
-        <p class="hero-sub swap" id="s">Визуальные проекты для ведущих компаний рынка недвижимости.</p>
       </div>
-      <div class="steps" id="steps" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
     </div>
   </div>
 </section>
@@ -730,43 +958,64 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 <section class="typo" id="typo">
   <div class="typo__inner">
     <span class="eyebrow">Что мы делаем</span>
-    <h2 class="typo__title" id="js-typo" data-nogoo><span>Ваше желание,</span><span>наше исполнение</span></h2>
+    <h2 class="typo__title" id="js-typo" data-nogoo><span>Наше исполнение,</span><span>ваши желания</span></h2>
     <p class="typo__p" id="js-typo-p" data-nogoo>Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
   </div>
 </section>
 
-<section class="services" id="services">
-  <div class="wrap">
-    <div class="svc">
-      <article>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
-        <div>
-          <h3 data-text-rep data-nogoo><em>3D</em> визуализации</h3>
+<section class="services" id="services" aria-labelledby="services-title" tabindex="-1">
+  <div class="services__stage wrap">
+    <header class="services__head">
+      <div>
+        <span class="eyebrow">Что мы делаем</span>
+        <h2 id="services-title">Наши услуги</h2>
+      </div>
+      <p class="services__hint">Прокрутите один раз, чтобы раскрыть направления</p>
+    </header>
+
+    <div class="service-deck" id="service-deck" aria-label="Направления студии">
+      <article class="service-card">
+        <div class="service-card__top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+        </div>
+        <div class="service-card__body">
+          <h3><em>3D</em> визуализации</h3>
           <p>Фотореалистичная визуализация, моделирование архитектуры и окружения, атмосферные рендеры, 3D-проектирование и создание контента для отдела продаж.</p>
         </div>
       </article>
-      <article>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>
-        <div>
-          <h3 data-text-rep data-nogoo><em>3D</em> анимация</h3>
+      <article class="service-card">
+        <div class="service-card__top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>
+        </div>
+        <div class="service-card__body">
+          <h3><em>3D</em> анимация</h3>
           <p>Сюжетные короткометражные фильмы и рекламные ролики. Организация съёмочного процесса. Интеграция натурных и персонажных кадров в 3D-сцену.</p>
         </div>
       </article>
-      <article>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3l-2-3h-4l-2 3H5a2 2 0 0 1-2-2V9z"/><circle cx="8.5" cy="12" r="1.5"/><circle cx="15.5" cy="12" r="1.5"/></svg>
-        <div>
-          <h3 data-text-rep data-nogoo><em>VR</em> туры</h3>
+      <article class="service-card">
+        <div class="service-card__top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3l-2-3h-4l-2 3H5a2 2 0 0 1-2-2V9z"/><circle cx="8.5" cy="12" r="1.5"/><circle cx="15.5" cy="12" r="1.5"/></svg>
+        </div>
+        <div class="service-card__body">
+          <h3><em>VR</em> туры</h3>
           <p>Иммерсивные 3D-панорамы, разработка сценариев, интеграция натурных съёмок с хромакеем и 3D-графики.</p>
         </div>
       </article>
-      <article>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4z"/><path d="M13 8l3 3"/><path d="M14 4l6 6"/></svg>
-        <div>
-          <h3 data-text-rep data-nogoo><em>Brand</em> решения</h3>
+      <article class="service-card">
+        <div class="service-card__top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 10-10-3-3L5 16l-1 4z"/><path d="M13 8l3 3"/><path d="M14 4l6 6"/></svg>
+        </div>
+        <div class="service-card__body">
+          <h3><em>Brand</em> решения</h3>
           <p>От разработки бренда и визуального образа до создания контента для онлайн и офлайн-носителей. Отражение мировых трендов и внедрение собственных ноу-хау.</p>
         </div>
       </article>
     </div>
+
+    <button class="service-deck__toggle" id="service-deck-toggle" type="button" aria-expanded="false" aria-controls="service-deck">
+      <span>Раскрыть направления</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
   </div>
 </section>
 
@@ -774,18 +1023,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   <div class="wrap">
     <div class="work-head rv">
       <h2 class="sec-h">Наши работы</h2>
-      <span class="eyebrow">35+ проектов</span>
+      <span class="eyebrow">7 проектов</span>
     </div>
   </div>
   <div id="wall-track">
     <div id="wall-frame">
       <div id="wall-vignette"><div id="wall-plane"></div></div>
-      <div id="wall-foot">
-        <div class="wrap">
-          <button class="lnk" id="wall-label" type="button"><span id="wall-name">Посмотреть проекты</span> <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg></button>
-          <span class="wall-count" id="wall-count"></span>
-        </div>
-      </div>
+    </div>
+  </div>
+  <div id="wall-foot">
+    <div class="wrap">
+      <button class="lnk" id="wall-label" type="button"><span id="wall-name">Посмотреть проекты</span> <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow"/></svg></button>
+      <span class="wall-count" id="wall-count"></span>
     </div>
   </div>
 </section>
@@ -845,11 +1094,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   </div>
 </section>
 
-<section class="faq" id="faq">
+<section class="faq faq-grid" id="faq" aria-labelledby="faq-title" data-nogoo>
   <div class="wrap">
-    <h2 class="sec-h rv">Частые вопросы</h2>
-    <div class="rv">
-      <details>
+    <header class="faq-head">
+      <h2 id="faq-title">Частые вопросы</h2>
+      <p>Мы поможем вам показать будущее уже сегодня. Ответим в рабочие часы по московскому времени.</p>
+    </header>
+    <div class="faq-questions">
+      <details name="studio-faq">
         <summary>Что такое 3D архитектурная анимация и чем она отличается от статичных рендеров?</summary>
         <div class="body">
           <p>Это видео, которое динамично проводит зрителя по объекту, показывая его в движении, со сменой ракурсов, света и, часто, сюжетом.</p>
@@ -858,7 +1110,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
           <p><strong>Эффект.</strong> Рендер позволяет рассмотреть детали. Анимация вызывает эмоции и полное погружение, так как добавляет фактор времени.</p>
         </div>
       </details>
-      <details>
+      <details name="studio-faq">
         <summary>Какая информация или материалы нужны для создания 3D визуализации?</summary>
         <div class="body">
           <p><strong>Исходники.</strong> Архитектурная модель в 3ds Max, Revit, SketchUp или аналогичном формате, планы, фасады, ведомости отделок.</p>
@@ -867,13 +1119,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
           <p>Чем точнее ответы, тем эффективнее результат. Это на 50% экономит время и бюджет.</p>
         </div>
       </details>
-      <details>
+      <details name="studio-faq">
         <summary>Можно ли вносить правки? Сколько раз и на каком этапе?</summary>
         <div class="body">
           <p>Да. На стадии выбора ракурсов правки вносятся любое количество раз, до получения нужного результата. После создания проработанных изображений доступны до двух итераций корректировок.</p>
         </div>
       </details>
-      <details>
+      <details name="studio-faq">
         <summary>Как рассчитывается стоимость визуализации архитектурных проектов?</summary>
         <div class="body">
           <p>Стоимость рассчитывается индивидуально, после брифа и консультации.</p>
@@ -881,26 +1133,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
         </div>
       </details>
     </div>
+    <aside class="faq-contact" id="contact">
+      <a class="cta" href="contact.html" data-a="Связаться" style="--w:176px;--h:62px;--fs:18px">Связаться</a>
+    </aside>
   </div>
 </section>
 
-<section class="contact" id="contact">
-  <div class="wrap">
-    <div class="rv">
-      <h2 class="lead">То, что нельзя показать, невозможно продать</h2>
-      <p class="note">Мы поможем вам показать будущее уже сегодня. Ответим в рабочие часы по московскому времени.</p>
-    </div>
-    <div class="cta-list rv">
-      <a href="tel:+79932496726">+7 (993) 249-67-26</a>
-      <a href="mailto:art@3darstudio.ru">art@3darstudio.ru</a>
-      <a class="cta" href="mailto:art@3darstudio.ru" data-a="Связаться" style="--w:176px;--h:62px;--fs:18px">Связаться</a>
-    </div>
-  </div>
-  <footer><div class="wrap"><span>STUDIO 3DAR</span><span>Архитектурная визуализация, 2025</span></div></footer>
-</section>
-
-<div class="blk" id="js-blk" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-<div class="blk-logo" id="js-blk-logo" aria-hidden="true"><svg viewBox="0 0 420 150"><text id="js-blk-text" x="12" y="118">3DAR<tspan>.</tspan></text></svg></div>
 
 <div class="reel" id="js-reel" role="dialog" aria-modal="true" aria-label="Проект">
   <div class="reel__wash" id="js-reel-w0"></div>
@@ -934,6 +1172,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 </div>
 
 <script src="wall-settings.js"></script>
+<script src="media/bundles/hero-dissolve.js"></script>
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -972,16 +1211,79 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     a.addEventListener('pointerdown', () => { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); setTimeout(() => a.classList.remove('pop'), 900); });
   });
 
+  /* ---------- React Bits GooeyNav, adapted to the static header ---------- */
+  const gooeyNav = $('gooey-nav');
+  if (gooeyNav) {
+    const items = Array.from(gooeyNav.querySelectorAll('li'));
+    const filter = gooeyNav.querySelector('.effect.filter');
+    const effectText = gooeyNav.querySelector('.effect.text');
+    const particleCount = 8, particleDistances = [90, 10], particleR = 200;
+    const animationTime = 600, timeVariance = 200, colors = [1,2,3,1,2,3,1,4];
+    let activeIndex = Math.max(0, items.findIndex(item => item.classList.contains('active')));
+    const noise = (n = 1) => n / 2 - Math.random() * n;
+    const getXY = (distance, pointIndex, totalPoints) => {
+      const angle = ((360 + noise(8)) / totalPoints) * pointIndex * Math.PI / 180;
+      return [distance * Math.cos(angle), distance * Math.sin(angle)];
+    };
+    const updateEffectPosition = item => {
+      const containerRect = gooeyNav.getBoundingClientRect(), pos = item.getBoundingClientRect();
+      const styles = { left:`${pos.x-containerRect.x}px`, top:`${pos.y-containerRect.y}px`, width:`${pos.width}px`, height:`${pos.height}px` };
+      Object.assign(filter.style, styles); Object.assign(effectText.style, styles);
+      effectText.textContent = item.querySelector('.pill-label')?.textContent || item.innerText;
+    };
+    const layoutPills = () => items.forEach(item => {
+      const link = item.querySelector('a'), circle = item.querySelector('.hover-circle');
+      if (!link || !circle) return;
+      const { width:w, height:h } = link.getBoundingClientRect();
+      const radius = ((w*w)/4+h*h)/(2*h), diameter = Math.ceil(2*radius)+2;
+      const delta = Math.ceil(radius-Math.sqrt(Math.max(0,radius*radius-(w*w)/4)))+1;
+      link.style.setProperty('--circle-size',`${diameter}px`);
+      link.style.setProperty('--circle-bottom',`${-delta}px`);
+      link.style.setProperty('--circle-origin',`${diameter-delta}px`);
+    });
+    const makeParticles = element => {
+      const bubbleTime = animationTime * 2 + timeVariance;
+      element.style.setProperty('--time', `${bubbleTime}ms`);
+      for (let i = 0; i < particleCount; i++) {
+        const t = animationTime * 2 + noise(timeVariance * 2);
+        const rotateNoise = noise(particleR / 10);
+        const start = getXY(particleDistances[0], particleCount-i, particleCount);
+        const end = getXY(particleDistances[1] + noise(7), particleCount-i, particleCount);
+        const rotate = rotateNoise > 0 ? (rotateNoise + particleR/20)*10 : (rotateNoise - particleR/20)*10;
+        element.classList.remove('active');
+        setTimeout(() => {
+          const particle = document.createElement('span'), point = document.createElement('span');
+          particle.className = 'particle'; point.className = 'point';
+          particle.style.cssText = `--start-x:${start[0]}px;--start-y:${start[1]}px;--end-x:${end[0]}px;--end-y:${end[1]}px;--time:${t}ms;--scale:${1+noise(.2)};--color:var(--color-${colors[Math.floor(Math.random()*colors.length)]},white);--rotate:${rotate}deg`;
+          particle.appendChild(point); element.appendChild(particle);
+          requestAnimationFrame(() => element.classList.add('active'));
+          setTimeout(() => particle.remove(), t);
+        }, 30);
+      }
+    };
+    const activate = (item, index, particles = true) => {
+      if (!item || (activeIndex === index && particles)) return;
+      activeIndex = index; items.forEach((node, i) => node.classList.toggle('active', i === index));
+      items.forEach((node, i) => i === index ? node.querySelector('a')?.setAttribute('aria-current','page') : node.querySelector('a')?.removeAttribute('aria-current'));
+      updateEffectPosition(item);
+      filter.querySelectorAll('.particle').forEach(p => p.remove());
+      effectText.classList.remove('active'); void effectText.offsetWidth; effectText.classList.add('active');
+      if (particles && !reduce) makeParticles(filter);
+    };
+    items.forEach((item, index) => item.addEventListener('click', () => activate(item, index)));
+    items[activeIndex]?.querySelector('a')?.setAttribute('aria-current','page');
+    layoutPills(); updateEffectPosition(items[activeIndex]); effectText.classList.add('active');
+    if (document.fonts?.ready) document.fonts.ready.then(() => { layoutPills(); updateEffectPosition(items[activeIndex]); }).catch(() => {});
+    new ResizeObserver(() => { layoutPills(); updateEffectPosition(items[activeIndex]); }).observe(gooeyNav);
+  }
+
   /* ---------- hero: three scroll gestures, one camera move each ---------- */
   const film = $('film');
-  const bars = $('steps').children;
   const hEl  = $('h');
-  const sEl  = $('s');
-  const copy = document.querySelector('.hero-copy');
 
   // one entry per scroll gesture: [start, end] in seconds.
   // The clip is encoded at 1.5x, so these are the original 5.4 / 9.6 / 15.0 cuts divided by 1.5.
-  const SEG = [[0, 3.60], [3.60, 6.40], [6.40, 10.04]];
+  const SEG = [[0, 3.40], [3.40, 6.40], [6.40, 10.00]];
   const TEXT = [
     ['Креативная студия<br>архитектурной визуализации', 'Визуальные проекты для ведущих компаний рынка недвижимости.'],
     ['Ваше желание,<br>наше исполнение', 'Творческий подход и безупречное техническое исполнение.'],
@@ -1070,21 +1372,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   const wrapSub = t => { if (t.length <= 44) return [t]; const i = t.lastIndexOf(' ', Math.ceil(t.length / 2) + 6); return i > 0 ? [t.slice(0, i), t.slice(i + 1)] : [t]; };
 
   function setText(i){
-    if (i < 0) { hEl.dataset.line = ''; hEl.textContent = ''; sEl.textContent = ''; return; }
-    const [h, s] = TEXT[i];
+    if (i < 0) { window.HERO_TEXT?.clear(hEl);hEl.dataset.line = ''; hEl.textContent = ''; return; }
+    const h = TEXT[i][0];
     if (hEl.dataset.line === h) return;
     hEl.dataset.line = h;
-    hEl.innerHTML = h;                     // plain lines; the pixel scan (module below) draws them in
-    if (window.PIXELSCAN) window.PIXELSCAN.scan(hEl);
-    copy.classList.add('swapping');        // only the sub-headline waits out a cross-fade
-    clearTimeout(swap);
-    // the small line keeps the site's text animation: it resolves out of ink (gooey reveal)
-    // the small line: blue outline drawn letter by letter, white fill wiping in behind it
-    swap = setTimeout(() => { copy.classList.remove('swapping'); drawStroke(sEl, wrapSub(s), SUB); }, 260);
+    hEl.innerHTML = h;
+    if (window.HERO_TEXT) window.HERO_TEXT.scan(hEl);
   }
 
   function paint(){
-    for (let i = 0; i < 3; i++) bars[i].classList.toggle('on', i < Math.max(step, 1));
     setText(Math.min(step, 3) - 1);
   }
 
@@ -1093,6 +1389,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   // fallbacks: rAF alone stalls on a backgrounded tab and the clip runs past the cut.
   function forward(i){
     const [a, b] = SEG[i], g = gen;
+    hideReverse();
     busy = true;
     setText(i);
     film.currentTime = Math.max(a, film.currentTime);
@@ -1116,70 +1413,84 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     }).catch(stop);
   }
 
-  // reverse: seek back toward the segment start, interpolated against the clock — a seek
-  // can outlast one tick, and a fixed-step loop then crawls instead of scrubbing.
+  const reverseFilm = $('film-reverse');
+  const hideReverse = () => { reverseFilm.pause(); reverseFilm.classList.remove('is-playing'); };
+  // A pre-reversed 60fps clip uses native playback in both directions.
+  // The forward frame stays underneath until the reverse seek has completed.
   function backward(i){
     const a = SEG[i][0];
     setText(i - 1);
-    const from = film.currentTime, span = Math.max(0.001, from - a), ms = 700;
+    const from = film.currentTime, g = gen;
     busy = true;
     film.pause();
     clearInterval(rev);
-    const t0 = performance.now();
-    rev = setInterval(() => {
-      const p = Math.min(1, (performance.now() - t0) / ms);
-      film.currentTime = from - span * p;
-      if (p >= 1) { clearInterval(rev); film.currentTime = a; done(i); }
-    }, 33);
+    const begin = () => {
+      if (g !== gen || handing) return;
+      const duration = reverseFilm.duration - 1 / 60;
+      const stopAt = Math.max(0, duration - a);
+      const ready = () => {
+        if (g !== gen || handing) return;
+        reverseFilm.classList.add('is-playing');
+        reverseFilm.play().catch(() => { clearInterval(rev); hideReverse(); film.currentTime = a; if (g === gen) done(i); });
+        rev = setInterval(() => {
+          if (g !== gen || handing) { clearInterval(rev); hideReverse(); return; }
+          if (reverseFilm.currentTime >= stopAt - .02 || reverseFilm.ended) {
+            clearInterval(rev); reverseFilm.pause();
+            film.addEventListener('seeked', () => { hideReverse(); if (g === gen) done(i); }, {once:true});
+            film.currentTime = a;
+          }
+        }, 16);
+      };
+      const startAt = Math.max(0, duration - from);
+      if (Math.abs(reverseFilm.currentTime - startAt) < .001 && reverseFilm.readyState >= 2) ready();
+      else { reverseFilm.addEventListener('seeked', ready, {once:true}); reverseFilm.currentTime = startAt; }
+    };
+    if (reverseFilm.readyState >= 1) begin();
+    else reverseFilm.addEventListener('loadedmetadata', begin, {once:true});
   }
 
   function done(next){
     step = next; paint();
     lock(true);                                    // the clip keeps the page until it hands over
     setTimeout(() => { busy = false; }, 350);  // swallow trackpad momentum
-    if (step === 3) setTimeout(leaveHero, 700);    // the clip is over: hand over to the site
+    if (step === 3) setTimeout(() => { if (step === 3 && !busy) leaveHero(); }, 700);    // allow reversing before the handover
   }
 
-  /* ---------- the clip ↔ the site: block + logo transition (Drive: Silhouette) ---------- */
-  /* ---------- the clip <-> the site: block + logo transition (Drive: Silhouette) ---------- */
-  const blocks = Array.from($('js-blk').children), blkLogo = $('js-blk-logo'), blkText = $('js-blk-text');
-  const heroEl = document.querySelector('.hero'), servicesEl = $('services');
+  // Bidirectional dissolve between the video and the site.
+  const heroEl = document.getElementById('top'), servicesEl = $('services');
   let heroLeft = false, handing = false;
-  const OUT = 'cubic-bezier(.25,.46,.45,.94)', INOUT = 'cubic-bezier(.45,0,.55,1)';
-  const wait = ms => new Promise(r => setTimeout(r, ms));
-  function blkCover() {                          // coverPage(): blocks in from the left, then the wordmark draws and fills
-    blocks.forEach((b, i) => { b.style.transformOrigin = 'left'; b.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 400, delay: i * 20, easing: OUT, fill: 'forwards' }); });
-    const L = blkText.getComputedTextLength ? blkText.getComputedTextLength() * 1.15 : 1600;
-    blkText.style.strokeDasharray = L; blkText.style.strokeDashoffset = L; blkText.style.fill = 'transparent';
-    return wait(400 + 19 * 20 - 200).then(() => {
-      blkLogo.style.opacity = '1';
-      blkText.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: 800, easing: INOUT, fill: 'forwards' });
-      return wait(550);
-    }).then(() => {
-      blkText.animate([{ fill: 'transparent' }, { fill: '#eaf1ff' }], { duration: 350, easing: OUT, fill: 'forwards' });
-      return wait(450);
-    }).then(() => { blkLogo.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: OUT, fill: 'forwards' }).finished; return wait(200); })
-      .then(() => { blkLogo.style.opacity = '0'; blkLogo.getAnimations().forEach(a => a.cancel()); });
-  }
-  function blkReveal() {                         // revealPage(): blocks out to the right
-    blocks.forEach((b, i) => { b.style.transformOrigin = 'right'; b.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 400, delay: i * 20, easing: OUT, fill: 'forwards' }); });
-    return wait(400 + 19 * 20);
-  }
-  function leaveHero() {                         // the clip has finished (or was skipped): into the site
+  async function leaveHero() {                   // final frame dissolves automatically into the statement
     if (heroLeft || handing) return; handing = true;
-    if (reduce) { heroEl.classList.add('is-left'); heroLeft = true; lock(false); scrollTo({ top: 0, behavior: 'instant' }); handing = false; return; }
-    blkCover().then(() => {
-      film.pause(); heroEl.classList.add('is-left'); heroLeft = true; lock(false);
-      scrollTo({ top: 0, behavior: 'instant' });   // the site now starts at «Услуги»
-      repWarm = 0; warmReps(); if (window.TYPO_WARM) TYPO_WARM(); if (window.FX_TICK) FX_TICK();
-      return blkReveal();
-    }).then(() => { handing = false; });
+    clearInterval(rev); hideReverse(); film.pause();
+    const reveal = () => {
+      window.prepareBodyPixelReveal?.();
+      heroEl.classList.add('is-left'); heroLeft = true;
+      if (window.PIXELSCAN) { try { window.PIXELSCAN.vfx.remove(hEl); } catch {} }
+      scrollTo({top:0,behavior:'instant'});
+      if (window.TYPO_WARM) TYPO_WARM(); if (window.FX_TICK) FX_TICK();
+      setTimeout(()=>window.startBodyPixelReveal?.(),450);
+    };
+    try {
+      if (film.seeking) await new Promise(resolve => {
+        const ready = () => { clearTimeout(timer); film.removeEventListener('seeked', ready); resolve(); };
+        const timer = setTimeout(ready, 2000);
+        film.addEventListener('seeked', ready, {once:true});
+      });
+      if (window.dissolveHeroFrame) await window.dissolveHeroFrame(film,reveal);
+      else reveal();
+    } finally { lock(false); handing = false; window.startBodyPixelReveal?.(); }
   }
-  function returnHero() {                        // scrolled up past the top: back to the clip, at its last frame
+  async function returnHero() {                  // same dissolve in reverse, back to the first video frame
     if (!heroLeft || handing) return; handing = true;
-    const back = () => { heroEl.classList.remove('is-left'); heroLeft = false; lock(true); scrollTo({ top: 0, behavior: 'instant' }); step = 3; film.currentTime = SEG[2][1]; paint(); };
-    if (reduce) { back(); handing = false; return; }
-    blkCover().then(() => { back(); return blkReveal(); }).then(() => { handing = false; });
+    gen++;clearInterval(rev);hideReverse();film.pause();lock(true);window.stopBodyPixelReveal?.();
+    const back = () => { heroEl.classList.remove('is-left'); heroLeft = false; scrollTo({ top: 0, behavior: 'instant' }); step = 0; busy = false; paint(); };
+    try {
+      if(film.currentTime!==0) await new Promise(resolve=>{
+        const ready=()=>{clearTimeout(timer);film.removeEventListener('seeked',ready);resolve()};
+        const timer=setTimeout(ready,2000);film.addEventListener('seeked',ready,{once:true});film.currentTime=0;
+      });
+      if(window.dissolveHeroFrame)await window.dissolveHeroFrame(film,back,true);else back();
+    } finally {handing=false;}
   }
   addEventListener('wheel', e => {               // at the very top of the site, one more scroll up returns to the clip
     if (heroLeft && !handing && scrollY === 0 && e.deltaY < -4) returnHero();
@@ -1224,6 +1535,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 
   film.addEventListener('loadeddata', () => { film.currentTime = 0; }, { once: true });
   paint();
+  // A section URL enters the ordinary page, not the scroll-locked video intro.
+  function openLinkedSection(){
+    const id=decodeURIComponent(location.hash.slice(1));
+    if(!id||id==='top')return;
+    const section=document.getElementById(id);if(!section)return;
+    gen++;clearInterval(rev);hideReverse();film.pause();busy=false;handing=false;
+    step=3;heroLeft=true;heroEl.classList.add('is-left');lock(false);
+    document.documentElement.style.overflow='';
+    requestAnimationFrame(()=>section.scrollIntoView({behavior:'instant',block:'start'}));
+  }
+  openLinkedSection();
+  addEventListener('hashchange',openLinkedSection);
+  addEventListener('pageshow',event=>{if(event.persisted){if(heroLeft)lock(false);openLinkedSection()}});
   if (new URLSearchParams(location.search).has('wall')) {          // wall-test.html: skip the clip, go to the wall
     heroEl.classList.add('is-left'); heroLeft = true; lock(false);
     requestAnimationFrame(() => { const t = document.getElementById('wall-track'); scrollTo({ top: t.getBoundingClientRect().top + scrollY + innerHeight * .6, behavior: 'instant' }); });   // (offsetTop is relative to the positioned .work section)
@@ -1246,7 +1570,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     if (!href.startsWith('#')) return;
     if (a.getAttribute('href') === '#top') { e.preventDefault(); if (heroLeft) returnHero(); return; }
     if (!heroLeft) { e.preventDefault(); gen++; clearInterval(rev); film.pause(); step = 3; film.currentTime = SEG[2][1]; paint(); busy = false;
-      leaveHero(); const t = href.slice(1); setTimeout(() => { const el = document.getElementById(t); if (el) el.scrollIntoView({ behavior: 'instant' }); }, reduce ? 0 : 3300); }
+      const transition = leaveHero(); const t = href.slice(1); Promise.resolve(transition).then(() => { const el = document.getElementById(t); if (el) el.scrollIntoView({ behavior: 'instant' }); }); }
   });
 
 
@@ -1289,67 +1613,83 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     window.TYPO_WARM = typoTick;                                             // (nothing to warm now: the scroll is the timeline)
   }
 
-  /* ---------- TextRepetitionEffect (Codrops demo 5) on the service titles ----------
-     totalWords 8, tyIncrement 16, txIncrement 2, opacityIncrement .15, delayIncrement .01,
-     ease none, progress = how far the element has travelled up through the viewport. */
-  const REP = { n: 8, ty: 16, tx: 2, op: .15, delay: .01 };
-  const reps = Array.from(document.querySelectorAll('[data-text-rep]')).map(el => {
-    const html = el.innerHTML, copies = [];
-    el.innerHTML = '';
-    for (let i = 0; i < REP.n; i++) {
-      const sp = document.createElement('span'); sp.innerHTML = html;
-      const last = i === REP.n - 1;
-      sp.dataset.ty = last ? 0 : (REP.n - i) * REP.ty; sp.dataset.tx = last ? 0 : (REP.n - i) * REP.tx;
-      sp.dataset.op = last ? 1 : Math.min(i * REP.op, 1); sp.dataset.delay = last ? 0 : (REP.n - i) * REP.delay;
-      el.appendChild(sp); if (!last) copies.push(sp);
-    }
-    el.classList.add('text-rep');
-    // room for the trail below (the demo's paddingBottom = height x words x tyIncrement)
-    el.style.paddingBottom = (el.getBoundingClientRect().height * REP.n * REP.ty / 100) + 'px';
-    return { el, copies, span: 1 + REP.n * REP.delay };
-  });
-  // titles already on screen when the site appears fan out over 1.2s instead of arriving pre-extended
-  let repWarm = 0, repWarmT0 = 0;
-  function warmReps() { repWarmT0 = performance.now(); const step = () => { repWarm = Math.min(1, (performance.now() - repWarmT0) / 1200); repTick(); if (repWarm < 1) requestAnimationFrame(step); }; requestAnimationFrame(step); }
-  function repTick() {
-    const vh = innerHeight;
-    for (const r of reps) {
-      const b = r.el.getBoundingClientRect();
-      if (b.bottom < -vh || b.top > vh * 2) continue;
-      const p = Math.min(1, Math.max(0, (vh - b.top) / (vh + b.height)));   // 0 at the bottom edge, 1 once it has left the top
-      for (const c of r.copies) {
-        const t = Math.min(1, Math.max(0, (p * r.span - c.dataset.delay))) * repWarm;   // the demo's per-copy delay inside the timeline
-        c.style.transform = `translate(${(c.dataset.tx * t).toFixed(2)}%,${(c.dataset.ty * t).toFixed(2)}%)`;
-        c.style.opacity = (c.dataset.op * t).toFixed(3);
+  /* ---------- services: stacked once, one gesture opens all three ---------- */
+  {
+    const serviceSection = $('services');
+    const serviceToggle = $('service-deck-toggle');
+    const serviceLabel = serviceToggle.querySelector('span');
+    let serviceOpen = false, serviceWheel = 0, serviceWheelAt = 0, serviceLockUntil = 0, serviceTouchY = 0;
+
+    const setServiceOpen = (open, source = 'gesture') => {
+      if (serviceOpen === open) return;
+      serviceOpen = open;
+      serviceSection.classList.toggle('is-open', open);
+      serviceToggle.setAttribute('aria-expanded', String(open));
+      serviceLabel.textContent = open ? 'Сложить направления' : 'Раскрыть направления';
+      serviceLockUntil = source === 'wheel' ? performance.now() + (reduce ? 80 : 900) : 0;
+    };
+    const serviceInView = () => {
+      const r = serviceSection.getBoundingClientRect();
+      return r.top < innerHeight * .62 && r.bottom > innerHeight * .38;
+    };
+
+    serviceSection.addEventListener('wheel', e => {
+      if (!serviceInView() || Math.abs(e.deltaY) < 3) return;
+      const now = performance.now();
+      if (now - serviceWheelAt > 220) serviceWheel = 0;
+      serviceWheelAt = now;
+
+      if (now < serviceLockUntil && e.deltaY > 0) { e.preventDefault(); return; }
+      if (!serviceOpen && e.deltaY > 0) {
+        e.preventDefault(); serviceWheel += e.deltaY;
+        if (serviceWheel > 24) { serviceWheel = 0; setServiceOpen(true, 'wheel'); }
       }
-    }
+    }, { passive:false });
+
+    serviceToggle.addEventListener('click', () => setServiceOpen(!serviceOpen, 'button'));
+    serviceSection.addEventListener('touchstart', e => { serviceTouchY = e.touches[0].clientY; }, { passive:true });
+    serviceSection.addEventListener('touchend', e => {
+      const dy = serviceTouchY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) < 42) return;
+      if (dy > 0 && !serviceOpen) setServiceOpen(true, 'touch');
+    }, { passive:true });
+    addEventListener('keydown', e => {
+      if (!serviceInView() || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+      const down = ['ArrowDown','PageDown',' '].includes(e.key), up = ['ArrowUp','PageUp','Escape'].includes(e.key);
+      if (down && !serviceOpen) { e.preventDefault(); setServiceOpen(true, 'keyboard'); }
+    });
+
+    if (reduce) setServiceOpen(true, 'reduced-motion');
   }
-  addEventListener('scroll', repTick, { passive: true }); addEventListener('resize', repTick); repTick();
-  if (!document.body.classList.contains('locked')) warmReps();      // (on the site straight away, e.g. reduced motion)
 
   /* ---------- portfolio: the drift wall ---------- */
-  // The studio's whole library: every crawled render and animation poster, by project.
-  // Order, spelling and counts are the real site's /3drender page, top to bottom.
-  const SETS = [
-    ['ЖК ЦентроПарк', 'centropark', 17],
-    ['ЖК ЦЕНТРОПАРК 2', 'centropark2', 7],
-    ['ЖК Хуторская', 'hutorskaya', 5],
-    ['ЖК Мириады', 'miriady', 8],
-    ['ЖК Зеленые Аллеи', 'alleyi', 5],
-    ['ЖК Озёрный', 'ozerny', 7],
-    ['ЖК Инноград', 'innograd', 6],
+  // The drift wall contains renders only: every image from these seven projects,
+  // exactly once. Film posters intentionally stay out of this section.
+  const PROJECTS = [
+    { key:'centropark', title:'ЖК ЦентроПарк', dir:'centropark', renders:17 },
+    { key:'centropark2', title:'ЖК ЦЕНТРОПАРК 2', dir:'centropark2', renders:7 },
+    { key:'hutorskaya', title:'ЖК Хуторская', dir:'hutorskaya', renders:5 },
+    { key:'miriady', title:'ЖК Мириады', dir:'miriady', renders:8 },
+    { key:'alleyi', title:'ЖК Зеленые Аллеи', dir:'alleyi', renders:5 },
+    { key:'ozerny', title:'ЖК Озёрный', dir:'ozerny', renders:7 },
+    { key:'innograd', title:'ЖК Инноград', dir:'innograd', renders:6 }
   ];
-  // Posters are the real Kinescope thumbnails of the 15 films, pulled per video id,
-  // so every frame is paired with its own project rather than guessed.
-  const POSTER_NAMES = ['ЖК ПРЕМЬЕР КВАРТАЛ','ЖК Урбан Виллы','ЖК ПРИТЯЖЕНИЕ','ЖК АЙВАЗОВСКИЙ','КП Лукоморье',
-    'Квартира, в которой можно жить сразу','ЖК Мириады','ЖК Хуторская - МОП','ЖК УНАЙ','ЖК СОНАТА ПАРК',
-    'ЖК Зеленые Аллеи','ЖК ЗАРЯДНОЕ','ЖК DOLCE VITA','ЖК ПАРК МАЯК','ЖК ГОРОД НОВАТОРОВ'];
-  const pool = [];
-  for (const [title, dir, n] of SETS)
-    for (let i = 1; i <= n; i++) pool.push({ src: `media/wall/${dir}/${String(i).padStart(2, '0')}.jpg`, caption: title, href: 'renders.html', dir, n, i });
-  for (let i = 1; i <= 15; i++) {
-    const nn = String(i).padStart(2, '0');
-    pool.push({ src: `media/wall/posters/${nn}.jpg`, caption: POSTER_NAMES[i - 1], href: 'animation.html', dir: 'posters', n: 1, poster: nn, i: 1 });
+  const projectByKey = new Map(PROJECTS.map(p => [p.key, p]));
+  const assetsOf = p => {
+    const assets = [];
+    for (let i = 1; i <= (p.renders || 0); i++) {
+      const n = String(i).padStart(2, '0');
+      assets.push({ kind:'render', full:`media/gal/${p.dir}/${n}.jpg`, thumb:`media/wall/${p.dir}/${n}.jpg` });
+    }
+    return assets;
+  };
+  const pool = PROJECTS.flatMap(project => assetsOf(project).map((asset, i) => ({ project, asset, i:i + 1 })));
+  // A fixed shuffle makes the wall feel scattered while remaining stable on reload.
+  let seed = 0x3da72026;
+  const random = () => ((seed = Math.imul(seed ^ seed >>> 15, 1 | seed), seed ^= seed + Math.imul(seed ^ seed >>> 7, 61 | seed), ((seed ^ seed >>> 14) >>> 0) / 4294967296));
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
   }
 
   // settings: wall-settings.js, overridden by a ?wall=<json> query (wall-test.html uses it)
@@ -1365,67 +1705,92 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     v.setProperty('--dw-edge', (100 - Math.min(100, Math.max(0, WALL.fade * 100))) + '%'); v.setProperty('--dw-dim', WALL.dim);
     v.setProperty('--dw-overlay', WALL.overlay); v.setProperty('--dw-overlay-a', WALL.overlayOpacity); v.setProperty('--dw-gray', WALL.grayscale ? 1 : 0);
   }
-  const COLS = WALL.columns, TILE_H = WALL.tileHeight, GAP = WALL.gap;
-  const RATE = 0.55;        // wall px per px of page scroll — endless, not clamped to the pin
-  const IDLE_PX = WALL.speed, IDLE_AFTER = 2000;
+  const COLS = WALL.columns;
   const TILT = { rx: WALL.tilt, ry: WALL.turn, rz: WALL.roll, sway: 4.8 * WALL.parallax };
-  // One row per column per image: COLS x rows covers the pool, so no image repeats in the
-  // wall. Each column's strip is rendered three times, which is what makes the wrap
-  // seamless: tile k and tile k+rows are identical by construction, and the column is
-  // centred on the frame while it travels up to one loop, so it has to be at least
-  // 2 loops + a viewport tall or its end drifts into view. Once is enough for the flat grid.
-  const rows = Math.ceil(pool.length / COLS);
-  const passes = reduce ? 1 : 3;
   const plane = $('wall-plane');
+  const columnItems = Array.from({ length: COLS }, () => []);
+  pool.forEach((item, i) => columnItems[i % COLS].push(item));
   for (let c = 0; c < COLS; c++) {
     const col = document.createElement('div');
     col.className = 'col';
-    for (let p = 0; p < passes; p++) for (let r = 0; r < rows; r++) {
-      const t = pool[(c * rows + r) % pool.length];
+    col.dataset.column = c;
+    for (const t of columnItems[c]) {
       const a = document.createElement('a');
-      a.className = 'tile'; a.href = t.href;
-      a.dataset.dir = t.dir; a.dataset.n = t.n; a.dataset.caption = t.caption; a.dataset.i = t.i;
-      if (t.poster) a.dataset.poster = t.poster;
-      a.innerHTML = `<span class="edge"></span><span class="clip"><img src="${t.src}" alt="${t.caption}"><span class="veil"></span><span class="cap">${t.caption}</span></span>`;
+      a.className = 'tile'; a.href = 'renders.html';
+      a.dataset.project = t.project.key; a.dataset.caption = t.project.title; a.dataset.i = t.i;
+      a.innerHTML = `<span class="edge"></span><span class="clip"><img src="${t.asset.thumb}" alt="${t.project.title}"><span class="veil"></span><span class="cap">${t.project.title}</span></span>`;
       col.appendChild(a);
     }
     plane.appendChild(col);
   }
-  $('wall-count').textContent = `${pool.length} изображений`;
+  $('wall-count').textContent = `${PROJECTS.length} проектов · ${pool.length} изображений`;
 
   let hotTile = null, setHot = () => {};                 // assigned inside the motion block below
   if (!reduce) {
-    const frame = $('wall-frame'), track = $('wall-track');
-    const loopH = rows * (TILE_H + GAP);
-    const factor = c => 1 + WALL.variance * ((((c * 0.618 + 0.35) % 1) * 2) - 1);
-    const dir = c => WALL.direction === 'down' ? 1 : WALL.direction === 'alternate' ? (c % 2 ? 1 : -1) : -1;
-    let idleAcc = 0, lastScroll = performance.now(), prev = lastScroll;
-    let wx = 0, wy = 0, tx = 0, ty = 0, hoverCol = -1, glowTile = null;
+    const frame = $('wall-frame');
+    const cols = Array.from(plane.children);
+    const offsets = cols.map(() => 0), limits = cols.map(() => 0);
+    const velocities = cols.map((_, c) => WALL.speed * (.7 + ((c * .37) % 1) * .45) * (c % 2 ? -1 : 1));
+    let wx = 0, wy = 0, tx = 0, ty = 0, prev = performance.now(), glowTile = null, hoverCol = -1;
 
+    let wallVisible=false;
+    new IntersectionObserver(([entry])=>{wallVisible=entry.isIntersecting}).observe(frame);
     const wallStep = () => {
       const now = performance.now();
       const dt = Math.min(64, now - prev);
       prev = now;
+      if(!wallVisible||document.hidden)return;
       const k = 1 - Math.exp(-dt / 120);
       wx += (tx - wx) * k;
       wy += (ty - wy) * k;
       plane.style.transform = `translate(-50%,-50%) rotateX(${(TILT.rx + wy * TILT.sway).toFixed(3)}deg) rotateY(${(TILT.ry + wx * TILT.sway).toFixed(3)}deg) rotateZ(${TILT.rz}deg) translateZ(${-WALL.depth}px)`;
-      if (now - lastScroll > IDLE_AFTER) idleAcc += (IDLE_PX * dt) / 1000;
-      const base = -track.getBoundingClientRect().top * RATE;
-      const cols = plane.children;
-      for (let c = 0; c < cols.length; c++) {
-        if (WALL.pauseOnHover && c === hoverCol) continue;
-        const stagger = ((c * 0.37) % 1) * loopH;
-        const raw = stagger + (base + idleAcc) * factor(c) * dir(c);
-        const pos = ((raw % loopH) + loopH) % loopH;
-        cols[c].style.transform = `translate3d(0,${(-pos).toFixed(2)}px,0)`;
+      if (measured) {
+        cols.forEach((col, c) => {
+          if (c === hoverCol || !limits[c]) return;
+          offsets[c] += velocities[c] * dt / 1000;
+          if (offsets[c] >= limits[c]) { offsets[c] = limits[c]; velocities[c] *= -1; }
+          else if (offsets[c] <= -limits[c]) { offsets[c] = -limits[c]; velocities[c] *= -1; }
+        });
+        positionColumns();
       }
     };
-    // Also step from scroll, not just rAF: a throttled or backgrounded frame stalls rAF,
-    // which would leave the wall frozen while the page is being scrolled.
-    addEventListener('scroll', () => { lastScroll = performance.now(); wallStep(); }, { passive: true });
     const loop = () => { wallStep(); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
+
+    // Each column is a finite, unique strip. Give the strips different starting
+    // positions, then move only the one beneath the wheel pointer.
+    let measured = false;
+    const positionColumns = () => cols.forEach((col, c) => {
+      col.style.transform = `translate3d(0,${(-offsets[c]).toFixed(2)}px,0)`;
+    });
+    const measureColumns = () => {
+      cols.forEach((col, c) => {
+        limits[c] = Math.max(0, (col.scrollHeight - innerHeight * .78) / 2);
+        if (!measured) offsets[c] = limits[c] * ((c / Math.max(1, COLS - 1)) - .5) * .55;
+        offsets[c] = Math.max(-limits[c], Math.min(limits[c], offsets[c]));
+      });
+      measured = true; positionColumns();
+    };
+    requestAnimationFrame(measureColumns);
+    addEventListener('resize', measureColumns, { passive:true });
+    // Only images and a 30px vertical buffer capture scrolling, not empty lanes.
+    const columnAt = e => {
+      const area=frame.getBoundingClientRect();
+      if(e.clientY<area.top||e.clientY>area.bottom)return null;
+      return cols.flatMap(col=>Array.from(col.children).map(tile=>({col,r:tile.getBoundingClientRect()})))
+        .filter(({r})=>r.bottom>area.top&&r.top<area.bottom&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top-30&&e.clientY<=r.bottom+30)
+        .sort((a,b)=>Math.abs(e.clientY-(a.r.top+a.r.bottom)/2)-Math.abs(e.clientY-(b.r.top+b.r.bottom)/2))[0]?.col||null;
+    };
+    frame.addEventListener('wheel', e => {
+      const col = columnAt(e);
+      if (!col) return;                                        // outside a strip: scroll the page
+      const c = +col.dataset.column;
+      hoverCol = c;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
+      const next = Math.max(-limits[c], Math.min(limits[c], offsets[c] + e.deltaY * unit));
+      e.preventDefault();
+      offsets[c] = next; positionColumns();
+    }, { passive:false });
 
     frame.addEventListener('pointermove', e => {
       const r = frame.getBoundingClientRect();
@@ -1456,21 +1821,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       tx = 0; ty = 0; label(null); setHot(null); hoverCol = -1;
       if (glowTile) { glowTile.style.setProperty('--edge-proximity', '0'); glowTile = null; }
     });
-    // The hovered COLUMN holds still, decided from the pointer's position — not from
-    // :hover on the tile. The lift re-projects a tile under a cursor near its edge and
-    // the gaps between tiles used to release the column, so it crept and flickered.
-    // The tile stays hot while the pointer is anywhere in its column's gaps.
+    // Keep the nearest image active while the pointer is in a gap inside its column.
     frame.addEventListener('pointermove', e => {
-      const col = e.target.closest && e.target.closest('.col');
+      const col = columnAt(e);
       const tile = e.target.closest && e.target.closest('.tile');
-      // hysteresis: a lifted tile overhangs its column, so a pointer just past its
-      // edge still counts as on it — otherwise the edge flickers hot/cold
       const near = hotTile && (() => { const r = hotTile.getBoundingClientRect(); return e.clientX > r.left - 14 && e.clientX < r.right + 14 && e.clientY > r.top - 14 && e.clientY < r.bottom + 14; })();
-      hoverCol = col ? Array.prototype.indexOf.call(plane.children, col) : near ? hoverCol : -1;
+      hoverCol = col ? +col.dataset.column : near ? +hotTile.parentElement.dataset.column : -1;
       if (tile) setHot(tile);
-      else if (!col) { if (!near) setHot(null); }   // over the frame but outside every column
+      else if (!col) { if (!near) setHot(null); }
       else if (!hotTile || hotTile.parentElement !== col) {
-        // entered a column through a gap: the nearest tile is the one being looked at
         let best = null, d = Infinity;
         for (const t of col.children) { const r = t.getBoundingClientRect(); const dd = Math.abs((r.top + r.bottom) / 2 - e.clientY); if (dd < d) { d = dd; best = t; } }
         setHot(best);
@@ -1481,11 +1840,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   /* ---------- the corner label + the project reel ---------- */
   const plural = (n, one, few, many) => n % 10 === 1 && n % 100 !== 11 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
   const wallName = $('wall-name'), wallCount = $('wall-count'), wallLabel = $('wall-label');
+  const mediaLabel = p => `${p.renders} ${plural(p.renders, 'рендер', 'рендера', 'рендеров')}`;
   let current = null;                                   // the project under the cursor
   function label(tile) {
-    if (!tile) { current = null; wallName.textContent = 'Посмотреть проекты'; wallCount.textContent = `${pool.length} изображений`; return; }
-    current = tile.dataset;                          // the name is on the tile itself now
-    wallCount.textContent = current.dir === 'posters' ? 'ролик' : `${current.n} ${plural(+current.n, 'рендер', 'рендера', 'рендеров')}`;
+    if (!tile) { current = null; wallName.textContent = 'Посмотреть проекты'; wallCount.textContent = `${PROJECTS.length} проектов · ${pool.length} изображений`; return; }
+    current = tile.dataset;
+    wallName.textContent = current.caption;
+    wallCount.textContent = mediaLabel(projectByKey.get(current.project));
   }
   label(null);
 
@@ -1586,17 +1947,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   const CLIP = { from: 'inset(100% 0% 0% 0%)', reveal: 'inset(0% 0% 0% 0%)', hide: 'inset(0% 0% 100% 0%)' };
   function openFromTile(tile) {
     const d = tile.dataset;
+    const project = projectByKey.get(d.project);
+    const projectAssets = assetsOf(project);
     if (reduce) { openReel(d); return; }
     const from = tile.getBoundingClientRect();
-    const start = Math.min(Math.max(+d.i || 1, 1), +d.n || 1) - 1;
+    const start = Math.min(Math.max(+d.i || 1, 1), projectAssets.length) - 1;
     const w = Math.min(innerWidth * (innerWidth > 900 ? .56 : .86), 960), h = w * 9 / 16;
     const cx = innerWidth / 2 + (start % 2 ? SLOT : -SLOT) / 100 * innerWidth, cy = innerHeight / 2;
     const to = { left: cx - w / 2, top: cy - h / 2, width: w, height: h };
     // one copy per image of the project, the other frames first and the pressed
     // one last, so the trail that hops to the card runs through the whole project
-    const total = +d.n || 1, isFilm = d.dir === 'posters';
+    const total = projectAssets.length;
     const order = [...Array.from({ length: total }, (_, k) => k).filter(k => k !== start), start];
-    const srcOf = k => isFilm ? `media/wall/posters/${d.poster}.jpg` : `media/wall/${d.dir}/${pad(k + 1)}.jpg`;
+    const srcOf = k => projectAssets[k].thumb;
     plane.classList.add('gone'); setHot(tile);
     const steps = order.length, n = steps + 2, movers = [];
     for (let k = 1; k < n - 1; k++) {
@@ -1619,17 +1982,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   function openReel(d, quick, viaMovers) {
     if (!d) return;
     stopIntro(); showGrid(false);
-    const isFilm = d.dir === 'posters';
-    // the other real projects, main render first — press one to switch to it
-    others.replaceChildren(...SETS.filter(([, dir]) => dir !== d.dir).map(([title, dir, n]) => {
+    const project = projectByKey.get(d.project);
+    if (!project) return;
+    const projectAssets = assetsOf(project);
+    // Every other unique project appears once, using its first available image.
+    others.replaceChildren(...PROJECTS.filter(p => p.key !== project.key).map(p => {
+      const cover = assetsOf(p)[0];
       const b = document.createElement('button'); b.type = 'button';
-      b.innerHTML = `<img src="media/wall/${dir}/01.jpg" alt=""><span>${title}</span>`;
-      b.addEventListener('click', () => { if (locked && !intro.hidden) return; const open = () => openReel({ dir, n, caption: title, i: 1 }, true);
+      b.innerHTML = `<img src="${cover.thumb}" alt=""><span>${p.title}</span>`;
+      b.addEventListener('click', () => { if (locked && !intro.hidden) return; const open = () => openReel({ project:p.key, caption:p.title, i:1 }, true);
         if (window.PTR && !reduce) { locked = true; PTR.leave().then(() => { open(); PTR.enter(); }); } else open(); });
       return b;
     }));
-    srcs = isFilm ? [`media/anim/${d.poster}.jpg`]
-      : Array.from({ length: +d.n }, (_, i) => `media/gal/${d.dir}/${pad(i + 1)}.jpg`);
+    srcs = projectAssets.map(a => a.full);
     const start = Math.min(Math.max(+d.i || 1, 1), srcs.length) - 1;   // the frame that was pressed
     stage.replaceChildren(intro); dotsEl.textContent = '';   // keep the intro layer, drop the old slides
     slides = srcs.map((src, i) => {
@@ -1641,16 +2006,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       b.addEventListener('click', () => jumpTo(i)); dotsEl.appendChild(b);
       return f;
     });
-    grid.replaceChildren(...srcs.map((src, i) => {
+    grid.replaceChildren(...projectAssets.map((asset, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `Кадр ${i + 1}`);
-      b.innerHTML = `<img src="${isFilm ? src : `media/wall/${d.dir}/${pad(i + 1)}.jpg`}" alt="" loading="lazy">`;
+      b.innerHTML = `<img src="${asset.thumb}" alt="" loading="lazy">`;
       b.addEventListener('click', () => { showGrid(false); locked = false; prog = target = i; render(); });
       return b;
     }));
-    $('js-reel-name').textContent = d.caption;
-    $('js-reel-count').textContent = isFilm ? 'ролик' : `${d.n} ${plural(+d.n, 'рендер', 'рендера', 'рендеров')}`;
-    $('js-reel-more').href = isFilm ? 'animation.html' : 'renders.html';
-    $('js-reel-more').firstChild.textContent = isFilm ? 'Смотреть ролик ' : 'Все рендеры ';
+    $('js-reel-name').textContent = project.title;
+    $('js-reel-count').textContent = mediaLabel(project);
+    $('js-reel-more').href = 'renders.html';
+    $('js-reel-more').firstChild.textContent = 'Все рендеры ';
     reel.setAttribute('open', ''); atY = scrollY;                // locking <html> clamps the page to 0
     document.documentElement.style.overflow = 'hidden';
     idx = -1;
@@ -1936,7 +2301,59 @@ const vfx = new VFX({ zIndex: 35 });
 const el = document.getElementById('h');
 const opts = { shader, overflow: 30, intersection: { threshold: 0.99 }, uniforms: { mode: 0, width: 0.2, layers: 3, speed: 0.25, delay: 0 } };   // 3x slower than the demo's .75 (2x, then 1.5x slower again)
 window.PIXELSCAN = { vfx, scan(e) { try { vfx.remove(e); } catch (err) {} if (e.textContent.trim()) vfx.add(e, opts); } };
-if (el && el.textContent.trim()) window.PIXELSCAN.scan(el);
+// Feed the original blue scan shader a canvas using the browser's real font/layout.
+document.querySelectorAll('#js-typo > span, #js-typo-p').forEach(e=>{e.textContent=e.textContent});
+const bodyCopy=Array.from(document.querySelectorAll('#typo h2, #typo p')).flatMap(e=>e.id==='js-typo'?Array.from(e.children):[e]);
+const revealedCopy=new Set();
+const copyTimers=new Map();
+let copyObserver,copyStarted=false;
+const reducedCopy=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+function revealCopy(target){
+  if(revealedCopy.has(target))return;
+  revealedCopy.add(target);
+  const bounds=target.getBoundingClientRect(),canvas=document.createElement('canvas');
+  const dpr=Math.min(devicePixelRatio,2),pad=6;
+  canvas.width=Math.ceil((bounds.width+pad*2)*dpr);canvas.height=Math.ceil((bounds.height+pad*2)*dpr);
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
+  let node;
+  while(node=walker.nextNode()){
+    const style=getComputedStyle(node.parentElement);
+    ctx.font=`${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    ctx.fillStyle=style.color;ctx.textBaseline='alphabetic';
+    for(let i=0;i<node.length;i++){
+      const range=document.createRange();range.setStart(node,i);range.setEnd(node,i+1);
+      const r=range.getBoundingClientRect();
+      const char=style.textTransform==='uppercase'?node.data[i].toUpperCase():node.data[i];
+      const metrics=ctx.measureText(char);
+      ctx.fillText(char,r.left-bounds.left+pad,r.top-bounds.top+pad+(metrics.fontBoundingBoxAscent||parseFloat(style.fontSize)*.85));
+    }
+  }
+  canvas.setAttribute('aria-hidden','true');
+  canvas.style.cssText=`position:fixed;pointer-events:none;z-index:34;width:${bounds.width+pad*2}px;height:${bounds.height+pad*2}px`;
+  const position=()=>{const r=target.getBoundingClientRect();canvas.style.left=r.left-pad+'px';canvas.style.top=r.top-pad+'px'};
+  position();document.body.append(canvas);target.style.visibility='hidden';
+  let raf,timer;
+  const cleanup=()=>{cancelAnimationFrame(raf);clearTimeout(timer);try{vfx.remove(canvas)}catch{}canvas.remove();target.style.visibility='visible';copyTimers.delete(target)};
+  copyTimers.set(target,cleanup);
+  const track=()=>{position();raf=requestAnimationFrame(track)};track();
+  try{vfx.add(canvas,{...opts,intersection:{threshold:0},uniforms:{...opts.uniforms,speed:.3}});timer=setTimeout(cleanup,3500)}catch{cleanup()}
+}
+window.prepareBodyPixelReveal=()=>{
+  if(reducedCopy())return;
+  bodyCopy.forEach(e=>{if(!revealedCopy.has(e))e.style.visibility='hidden'});
+};
+window.startBodyPixelReveal=()=>{
+  if(reducedCopy()||copyStarted)return;
+  copyStarted=true;
+  copyObserver=new IntersectionObserver(entries=>entries.forEach(({target,isIntersecting})=>{
+    if(!isIntersecting||revealedCopy.has(target))return;
+    revealCopy(target);copyObserver.unobserve(target);
+  }),{threshold:.2});
+  bodyCopy.forEach(e=>{if(!revealedCopy.has(e))copyObserver.observe(e)});
+};
+window.stopBodyPixelReveal=()=>{copyObserver?.disconnect();copyStarted=false;[...copyTimers.values()].forEach(cleanup=>cleanup());bodyCopy.forEach(e=>{e.style.visibility='visible'});revealedCopy.clear()};
+if (el && el.textContent.trim()) window.HERO_TEXT?.scan(el);
 </script>
 <script src="site.js?v=20260906b"></script>
 </body>

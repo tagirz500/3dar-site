@@ -23,23 +23,63 @@ the segments in reverse.
 
 | Scroll | Clip time | Motion |
 |---|---|---|
-| 1 | 0 – 3.60s | through the cloud layer, the complex appears below |
-| 2 | 3.60 – 6.40s | descent and tilt down to street level |
-| 3 | 6.40 – 10.04s | lateral glide along the facade |
+| 1 | 0 – 3.40s | through the complete cloud layer, stopping on the overhead building view |
+| 2 | 3.40 – 6.40s | descent and tilt down to street level |
+| 3 | 6.40 – 10.00s | lateral glide along the facade |
 
-`media/hero.mp4` is encoded at 1.5x with a keyframe every 12 frames — the dense
-keyframes are what make the reverse scrub smooth.
+The hero now uses `media/hero-2k60.mp4`: 2560×1440, motion-interpolated 60fps,
+encoded from the saved 1080p source with Lanczos scaling. The separate
+`media/hero-2k60-reverse.mp4` plays backward segments through native playback,
+avoiding repeated seeks. Both use a keyframe every 12 frames. Original files
+remain available. The video fills the viewport edge to edge.
+
+## Post-video flow
+
+The original block-and-logo wipe now hands directly from the video to the
+single-page statement and a four-card service deck. The cards begin as a
+dimensional overlapping stack; one downward wheel gesture unfolds all four,
+and one upward gesture restacks them. The same state change is available by
+button, keyboard, and touch, with a reduced-motion mode.
+
+The deck contains 3D visualisation, 3D animation, VR tours, and Brand Solution,
+all using the original copy. A slowly drifting navy aurora remains behind the
+card interaction.
+
+An earlier background was the unmodified React Bits JS-CSS Lightfall component from
+https://reactbits.dev/r/Lightfall-JS-CSS.json in `components/Lightfall.jsx` and
+`components/Lightfall.css`. `components/lightfall-entry.jsx` mounts this isolated
+React component into the otherwise plain HTML/JavaScript site with the requested
+colors and settings. OGL and React are bundled locally; no CDN runtime is needed.
+The canvas is unmounted when the intro ends; a CSS fallback remains if WebGL fails.
+
+After changing the component, run `npm ci` then `npm run build`. Generated files
+in `media/bundles/` are served directly by the existing static server.
 
 ## Pages
 
 | File | What it is |
 |---|---|
 | `index.html` | home — scroll hero, services, drift wall, about, FAQ, contacts |
-| `renders.html` | 3D визуализация — 55 renders across 7 projects, click to open a lightbox |
+| `renders.html` | Full-screen falling-card library — 7 project covers; click opens the drift-wall-style viewer with all 55 renders |
 | `animation.html` | 3D ролики — 15 films, click a poster to load its Kinescope player |
 
 Project order, names and counts on both gallery pages are taken verbatim from the
 live site's `/3drender` and `/3danimation`, so the two stay in step.
+
+The project library uses `project-library.css` and `project-library.js` for the
+scroll-driven cascade from the supplied reference video. `library-reel.js` and
+`library-reel.css` reuse the homepage image-trail and depth-viewer implementation
+without altering the homepage. Each cover is its project's `01.jpg`. Wheel,
+touch, arrow keys, arrow buttons and the vertical range control navigate all
+seven projects; closing the viewer returns to the selected library card.
+The library is framed in a responsive square. Seven clickable progress dots
+replace the range input; the violet rail fills continuously with scroll travel.
+Cards rotate down onto a perspective floor while the next card advances from
+the stack. The last cover occupies the floor at the beginning of the sequence.
+
+The home-page wall presents all 55 render images from the seven render projects,
+without repeats. Opening any wall image starts the project reel on that exact
+image.
 
 ## The menu
 

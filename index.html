@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>STUDIO 3DAR. Креативная студия архитектурной визуализации</title>
 <meta name="description" content="3D-визуализация, архитектурная анимация, VR-туры и брендинг для девелоперов. Студия премиум-класса, 35+ реализованных проектов.">
-<link rel="preload" as="video" href="media/hero-2k60.mp4" type="video/mp4">
+<link rel="preload" as="video" href="media/hero-sound.mp4" type="video/mp4">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="site.css?v=20260906b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -329,6 +329,8 @@ h1,h2,h3,.display{
 .hero-skip:hover{color:#a6caff}
 .hero-skip:focus-visible{outline:2px solid #6ea8ff;outline-offset:3px}
 body.locked .hero-skip{display:inline-flex}
+.hero-sound{position:absolute;right:24px;bottom:24px;z-index:61;padding:10px 16px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(4,12,36,.55);color:#fff;font:14px Onest,sans-serif;cursor:pointer}
+.hero-sound:focus-visible{outline:2px solid #6ea8ff;outline-offset:3px}
 /* the clip is its own screen: no top bar while it plays (the menu button is separate and stays) */
 .nav{transition:opacity .4s ease}
 body.locked .nav{opacity:0;pointer-events:none}
@@ -945,8 +947,9 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
 
 
 <section class="hero" id="top">
-  <video id="film" src="media/hero-2k60.mp4" poster="media/poster.jpg" muted playsinline preload="auto"></video>
-  <video id="film-reverse" src="media/hero-2k60-reverse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+  <video id="film" src="media/hero-sound.mp4" poster="media/poster.jpg" playsinline preload="auto"></video>
+  <video id="film-reverse" src="media/hero-sound-reverse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+  <button class="hero-sound" id="hero-sound" type="button" aria-label="Выключить звук" aria-pressed="true">Звук включён</button>
   <button class="hero-skip" id="hero-skip" type="button">Пропустить</button>
   <div class="hero-copy">
     <div class="wrap">
@@ -1290,10 +1293,28 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
   /* ---------- hero: three scroll gestures, one camera move each ---------- */
   const film = $('film');
   const hEl  = $('h');
+  const soundButton = $('hero-sound');
+  const syncSoundButton = () => {
+    soundButton.textContent = film.muted ? 'Включить звук' : 'Звук включён';
+    soundButton.setAttribute('aria-label', film.muted ? 'Включить звук' : 'Выключить звук');
+    soundButton.setAttribute('aria-pressed', String(!film.muted));
+  };
+  soundButton.addEventListener('click', () => {
+    film.muted = !film.muted;
+    syncSoundButton();
+  });
+  const playForward = () => film.play().catch(error => {
+    if(error.name !== 'NotAllowedError' || film.muted) throw error;
+    // Wheel gestures do not unlock audio in every browser. Keep scrolling usable
+    // and let the sound button provide the required explicit click.
+    film.muted = true;
+    syncSoundButton();
+    return film.play();
+  });
 
   // one entry per scroll gesture: [start, end] in seconds.
-  // The clip is encoded at 1.5x, so these are the original 5.4 / 9.6 / 15.0 cuts divided by 1.5.
-  const SEG = [[0, 3.40], [3.40, 6.40], [6.40, 10.00]];
+  // Original 15-second clip, with its audio kept at its natural speed.
+  const SEG = [[0, 5.10], [5.10, 9.60], [9.60, 14.97]];
   const TEXT = [
     ['Креативная студия<br>архитектурной визуализации', 'Визуальные проекты для ведущих компаний рынка недвижимости.'],
     ['Ваше желание,<br>наше исполнение', 'Творческий подход и безупречное техническое исполнение.'],
@@ -1418,7 +1439,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const perFrame = () => { check(); if (!stopped) film.requestVideoFrameCallback(perFrame); };
 
     film.addEventListener('timeupdate', check);
-    film.play().then(() => {
+    playForward().then(() => {
       if (film.requestVideoFrameCallback) film.requestVideoFrameCallback(perFrame);
       // Advance only when the media reaches the cut, never on elapsed wall time.
       safety = setInterval(check, 50);
@@ -1432,7 +1453,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
 
   const reverseFilm = $('film-reverse');
   const hideReverse = () => { reverseFilm.pause(); reverseFilm.classList.remove('is-playing'); };
-  // A pre-reversed 60fps clip uses native playback in both directions.
+  // A matching pre-reversed 30fps clip uses native playback in both directions.
   // The forward frame stays underneath until the reverse seek has completed.
   function backward(i){
     const a = SEG[i][0];
@@ -1443,7 +1464,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     clearInterval(rev);
     const begin = () => {
       if (g !== gen || handing) return;
-      const duration = reverseFilm.duration - 1 / 60;
+      const duration = reverseFilm.duration - 1 / 30;
       const stopAt = Math.max(0, duration - a);
       const ready = () => {
         if (g !== gen || handing) return;

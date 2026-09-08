@@ -91,14 +91,12 @@ const mediaLabel = p => `${p.renders} рендеров`;
   }
   const kick = () => { if (!raf) raf = requestAnimationFrame(render); };
   function setTarget(t) { if (locked || !slides.length) return; target = clampP(t); kick(); }
-  // a button jump (arrows, dots, keys, the project row) goes through the stroke
-  // transition; wheel and drag scrub as before
+  // In-gallery navigation uses the same smooth movement as wheel and drag.
   function jumpTo(n) {
     if (locked || !slides.length) return;
     n = clampP(Math.round(n)); if (n === Math.round(target)) return;
-    if (!window.PTR || reduce) { setTarget(n); return; }
-    locked = true;
-    PTR.leave().then(() => { prog = target = n; render(); return PTR.enter(); }).then(() => { locked = false; });
+    clearTimeout(snapT);
+    setTarget(n);
   }
   // let go and the reel settles on the nearest frame
   function snapSoon() { clearTimeout(snapT); snapT = setTimeout(() => setTarget(Math.round(target)), 160); }

@@ -1,7 +1,0 @@
-__pycache__/
-*.pyc
-
-*.bak
-node_modules/
-.env.local
-.env.*.local

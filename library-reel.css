@@ -41,7 +41,9 @@
 .reel__id b{font-weight:500;font-size:17px;letter-spacing:.05em;line-height:1.2;color:var(--fg)}
 .reel__id i{display:block;width:9px;height:9px;border-radius:50%;background:var(--accent)}
 .reel__spec{right:clamp(16px,3.5vw,58px);top:50%;transform:translateY(-50%);text-align:right;display:grid;gap:8px;font-size:11px;color:var(--fg-2)}
-.reel__spec .lnk{pointer-events:auto;justify-content:flex-end;font-size:11px}
+.reel__spec .lnk{display:inline-flex;align-items:center;gap:10px;color:var(--accent);font-family:Oswald,sans-serif;font-weight:500;text-transform:uppercase;letter-spacing:.08em;pointer-events:auto;justify-content:flex-end;font-size:11px}
+.reel__spec .lnk svg{width:18px;height:18px;flex:none;transition:transform .25s var(--ease)}
+.reel__spec .lnk:hover svg{transform:translateX(5px)}
 .reel__bar{left:0;right:0;bottom:clamp(18px,4vh,42px);display:flex;flex-direction:column;gap:14px;align-items:center;pointer-events:auto}
 .reel__row{display:flex;gap:10px;align-items:center}
 .reel__all{padding:9px 16px;border:1px solid rgba(238,240,250,.25);border-radius:999px;color:var(--fg);font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase}

@@ -1505,6 +1505,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
   async function returnHero() {                  // same dissolve in reverse, back to the first video frame
     if (!heroLeft || handing) return; handing = true;
     gen++;clearInterval(rev);hideReverse();film.pause();lock(true);window.stopBodyPixelReveal?.();
+    window.dispatchEvent(new Event('3dar:intro-reset'));
     const back = () => { heroEl.classList.remove('is-left'); heroLeft = false; scrollTo({ top: 0, behavior: 'instant' }); step = 0; busy = false; paint(); };
     try {
       if(film.currentTime!==0) await new Promise(resolve=>{
@@ -1840,7 +1841,6 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     v.setProperty('--dw-overlay', WALL.overlay); v.setProperty('--dw-overlay-a', WALL.overlayOpacity); v.setProperty('--dw-gray', WALL.grayscale ? 1 : 0);
   }
   const COLS = WALL.columns;
-  const TILT = { rx: WALL.tilt, ry: WALL.turn, rz: WALL.roll, sway: 4.8 * WALL.parallax };
   const plane = $('wall-plane');
   const columnItems = Array.from({ length: COLS }, () => []);
   pool.forEach((item, i) => columnItems[i % COLS].push(item));
@@ -1874,7 +1874,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const offsets = cols.map(() => 0), periods = cols.map(() => 0);
     const wrap = (value, period) => period ? ((value + period / 2) % period + period) % period - period / 2 : 0;
     const velocities = cols.map((_, c) => WALL.speed * (.7 + ((c * .37) % 1) * .45) * (c % 2 ? -1 : 1));
-    let wx = 0, wy = 0, tx = 0, ty = 0, prev = performance.now(), glowTile = null, hoverCol = -1;
+    let prev = performance.now(), glowTile = null, hoverCol = -1;
 
     let wallVisible=false;
     new IntersectionObserver(([entry])=>{wallVisible=entry.isIntersecting}).observe(frame);
@@ -1883,10 +1883,6 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       const dt = Math.min(64, now - prev);
       prev = now;
       if(!wallVisible||document.hidden)return;
-      const k = 1 - Math.exp(-dt / 120);
-      wx += (tx - wx) * k;
-      wy += (ty - wy) * k;
-      plane.style.transform = `translate(-50%,-50%) rotateX(${(TILT.rx + wy * TILT.sway).toFixed(3)}deg) rotateY(${(TILT.ry + wx * TILT.sway).toFixed(3)}deg) rotateZ(${TILT.rz}deg) translateZ(${-WALL.depth}px)`;
       if (measured) {
         cols.forEach((col, c) => {
           if (c === hoverCol || !periods[c]) return;
@@ -1915,17 +1911,49 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     };
     requestAnimationFrame(measureColumns);
     addEventListener('resize', measureColumns, { passive:true });
-    // Only images and a 30px vertical buffer capture scrolling, not empty lanes.
+    // Four zero-size probes per column describe stable perspective boundaries.
+    // They are attached to the plane, so hovering/lifting a card cannot move them.
+    const rails = cols.map(col => {
+      const points = Array.from({length:4}, () => {
+        const point = document.createElement('span');
+        point.setAttribute('aria-hidden','true');
+        point.style.cssText='position:absolute;width:0;height:0;pointer-events:none;';
+        plane.appendChild(point);
+        return point;
+      });
+      const place = () => points.forEach((p,i) => {
+        p.style.left=(col.offsetLeft+(i%2 ? col.offsetWidth-WALL.gap : 0))+'px';
+        p.style.top='calc(50% + '+(i<2 ? -100 : 100)+'px)';
+      });
+      place(); addEventListener('resize',place,{passive:true});
+      return {col,points};
+    });
     const columnAt = e => {
       const area=frame.getBoundingClientRect();
-      if(e.clientY<area.top||e.clientY>area.bottom)return null;
-      return cols.flatMap(col=>Array.from(col.children).map(tile=>({col,r:tile.getBoundingClientRect()})))
-        .filter(({r})=>r.bottom>area.top&&r.top<area.bottom&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top-30&&e.clientY<=r.bottom+30)
-        .sort((a,b)=>Math.abs(e.clientY-(a.r.top+a.r.bottom)/2)-Math.abs(e.clientY-(b.r.top+b.r.bottom)/2))[0]?.col||null;
+      if(e.clientX<area.left || e.clientX>area.right || e.clientY<Math.max(0,area.top) || e.clientY>Math.min(innerHeight,area.bottom)) return null;
+      const xAt=(a,b)=>a.left+(b.left-a.left)*(e.clientY-a.top)/(b.top-a.top);
+      return rails.find(({points})=>{
+        const p=points.map(point=>point.getBoundingClientRect());
+        const left=xAt(p[0],p[2]),right=xAt(p[1],p[3]);
+        return e.clientX>=Math.min(left,right) && e.clientX<=Math.max(left,right);
+      })?.col || null;
+    };
+    const tileInColumn = (col,e) => {
+      if(!col) return null;
+      if(hotTile?.parentElement===col) {
+        const r=hotTile.getBoundingClientRect();
+        if(e.clientY>=r.top-14 && e.clientY<=r.bottom+14) return hotTile;
+      }
+      let best=null,distance=Infinity;
+      for(const tile of col.children) {
+        const r=tile.getBoundingClientRect(), d=Math.abs((r.top+r.bottom)/2-e.clientY);
+        if(d<distance) {best=tile;distance=d;}
+      }
+      return best;
     };
     frame.addEventListener('wheel', e => {
       const col = columnAt(e);
-      if (!col) return;                                        // outside a strip: scroll the page
+      if (!col) return; // outside the continuous column: scroll the page
       const c = +col.dataset.column;
       hoverCol = c;
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
@@ -1934,12 +1962,12 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       offsets[c] = next; positionColumns();
     }, { passive:false });
 
-    frame.addEventListener('pointermove', e => {
-      const r = frame.getBoundingClientRect();
-      tx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
-      ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+    addEventListener('pointermove', e => {
       // BorderGlow: edge proximity + cursor angle, measured against the hovered tile
-      const tile = e.target.closest && e.target.closest('.tile');
+      const col=columnAt(e), tile=tileInColumn(col,e);
+      hoverCol=col ? +col.dataset.column : -1;
+      setHot(tile);
+      if(!col) label(null);
       if (glowTile && glowTile !== tile) { glowTile.style.setProperty('--edge-proximity', '0');glowTile.style.translate='0px 0px';glowTile.style.rotate='none'; glowTile = null; }
       if (!tile) return;
       glowTile = tile;
@@ -1952,9 +1980,6 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       let deg = (dx === 0 && dy === 0) ? 0 : Math.atan2(dy, dx) * (180 / Math.PI) + 90;
       if (deg < 0) deg += 360;
       tile.style.setProperty('--edge-proximity', '100');
-      const nx=Math.max(-1,Math.min(1,dx/cx)),ny=Math.max(-1,Math.min(1,dy/cy));
-      tile.style.translate=(nx*10)+'px '+(ny*8)+'px';
-      tile.style.rotate=(-ny)+' '+nx+' 0 '+(Math.hypot(nx,ny)*2)+'deg';
       tile.style.setProperty('--cursor-angle', deg.toFixed(3) + 'deg');
     });
     setHot = tile => {
@@ -1963,30 +1988,15 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       hotTile = tile; if (tile) { tile.classList.add('hot'); label(tile); }
     };
     frame.addEventListener('pointerleave', () => {
-      tx = 0; ty = 0; label(null); setHot(null); hoverCol = -1;
+      label(null); setHot(null); hoverCol = -1;
       if (glowTile) { glowTile.style.setProperty('--edge-proximity', '0');glowTile.style.translate='0px 0px';glowTile.style.rotate='none'; glowTile = null; }
     });
-    // Keep the nearest image active while the pointer is in a gap inside its column.
-    frame.addEventListener('pointermove', e => {
-      const col = columnAt(e);
-      const tile = e.target.closest && e.target.closest('.tile');
-      const near = hotTile && (() => { const r = hotTile.getBoundingClientRect(); return e.clientX > r.left - 14 && e.clientX < r.right + 14 && e.clientY > r.top - 14 && e.clientY < r.bottom + 14; })();
-      hoverCol = col ? +col.dataset.column : near ? +hotTile.parentElement.dataset.column : -1;
-      if (tile) setHot(tile);
-      else if (!col) { if (!near) setHot(null); }
-      else if (!hotTile || hotTile.parentElement !== col) {
-        let best = null, d = Infinity;
-        for (const t of col.children) { const r = t.getBoundingClientRect(); const dd = Math.abs((r.top + r.bottom) / 2 - e.clientY); if (dd < d) { d = dd; best = t; } }
-        setHot(best);
-      }
-    });
   }
-
   /* ---------- the corner label + the project reel ---------- */
   const plural = (n, one, few, many) => n % 10 === 1 && n % 100 !== 11 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
   const wallName = $('wall-name'), wallCount = $('wall-count'), wallLabel = $('wall-label');
   const mediaLabel = p => `${p.renders} ${plural(p.renders, 'рендер', 'рендера', 'рендеров')}`;
-  let current = null;                                   // the project under the cursor
+  let current = null;
   function label(tile) {
     if (!tile) { current = null; wallName.textContent = 'Посмотреть проекты'; wallCount.textContent = `${PROJECTS.length} проектов · ${pool.length} изображений`; return; }
     current = tile.dataset;
@@ -2479,7 +2489,7 @@ function revealCopy(target){
   const position=()=>{const r=target.getBoundingClientRect();canvas.style.left=r.left-pad+'px';canvas.style.top=r.top-pad+'px'};
   position();document.body.append(canvas);target.style.visibility='hidden';
   let raf,timer;
-  const cleanup=()=>{cancelAnimationFrame(raf);clearTimeout(timer);try{vfx.remove(canvas)}catch{}canvas.remove();target.style.visibility='visible';copyTimers.delete(target)};
+  const cleanup=()=>{cancelAnimationFrame(raf);clearTimeout(timer);try{vfx.remove(canvas)}catch{}canvas.remove();target.style.visibility='visible';copyTimers.delete(target);if(revealedCopy.size===bodyCopy.length&&!copyTimers.size){document.getElementById('typo').dataset.revealComplete='true';window.dispatchEvent(new Event('3dar:intro-revealed'))}};
   copyTimers.set(target,cleanup);
   const track=()=>{position();raf=requestAnimationFrame(track)};track();
   try{vfx.add(canvas,{...opts,intersection:{threshold:0},uniforms:{...opts.uniforms,speed:.3}});timer=setTimeout(cleanup,3500)}catch{cleanup()}
@@ -2501,5 +2511,6 @@ window.stopBodyPixelReveal=()=>{copyObserver?.disconnect();copyStarted=false;[..
 if (el && el.textContent.trim()) window.HERO_TEXT?.scan(el);
 </script>
 <script src="site.js?v=20260906b"></script>
+<script src="media/bundles/services-parallax.js"></script>
 </body>
 </html>

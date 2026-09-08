@@ -329,7 +329,10 @@ h1,h2,h3,.display{
 .hero-skip:hover{color:#a6caff}
 .hero-skip:focus-visible{outline:2px solid #6ea8ff;outline-offset:3px}
 body.locked .hero-skip{display:inline-flex}
-.hero-sound{position:absolute;right:24px;bottom:24px;z-index:61;padding:10px 16px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(4,12,36,.55);color:#fff;font:14px Onest,sans-serif;cursor:pointer}
+.hero-sound{position:absolute;right:20px;bottom:20px;z-index:61;display:grid;place-items:center;width:40px;height:40px;padding:10px;border:1px solid rgba(255,255,255,.25);border-radius:50%;background:rgba(4,12,36,.3);color:#fff;cursor:pointer}
+.hero-sound svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hero-sound .sound-off,.hero-sound[aria-pressed="false"] .sound-on{display:none}
+.hero-sound[aria-pressed="false"] .sound-off{display:block}
 .hero-sound:focus-visible{outline:2px solid #6ea8ff;outline-offset:3px}
 /* the clip is its own screen: no top bar while it plays (the menu button is separate and stays) */
 .nav{transition:opacity .4s ease}
@@ -949,7 +952,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
 <section class="hero" id="top">
   <video id="film" src="media/hero-sound.mp4" poster="media/poster.jpg" playsinline preload="auto"></video>
   <video id="film-reverse" src="media/hero-sound-reverse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
-  <button class="hero-sound" id="hero-sound" type="button" aria-label="Выключить звук" aria-pressed="true">Звук включён</button>
+  <button class="hero-sound" id="hero-sound" type="button" aria-label="Выключить звук" title="Выключить звук" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></g><path class="sound-off" d="m16 9 6 6m0-6-6 6"/></svg></button>
   <button class="hero-skip" id="hero-skip" type="button">Пропустить</button>
   <div class="hero-copy">
     <div class="wrap">
@@ -1295,7 +1298,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
   const hEl  = $('h');
   const soundButton = $('hero-sound');
   const syncSoundButton = () => {
-    soundButton.textContent = film.muted ? 'Включить звук' : 'Звук включён';
+    soundButton.title = film.muted ? 'Включить звук' : 'Выключить звук';
     soundButton.setAttribute('aria-label', film.muted ? 'Включить звук' : 'Выключить звук');
     soundButton.setAttribute('aria-pressed', String(!film.muted));
   };

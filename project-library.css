@@ -37,7 +37,11 @@
 .project-library{min-height:100svh;display:grid;place-items:center;background:#111512}
 .library-shell{width:min(94vw,94svh);height:auto;aspect-ratio:1;min-height:0;border-radius:18px;container-type:inline-size;box-shadow:0 20px 80px #0005}
 .library-nav{padding:3.5cqw 5cqw;gap:4cqw}.library-mark{font-size:3.7cqw}.library-nav>span{font-size:1cqw}
-.project-library>.burger{color:#eaf1ff}.project-library>.burger .burger__icon line{stroke:#eaf1ff}
+.project-library>.burger{color:#eaf1ff;z-index:110;opacity:1;visibility:visible;pointer-events:auto}.project-library>.burger .burger__icon line{stroke:currentColor}
+.project-library:has(.reel[open])>.burger{right:82px}
+.project-library:has(.reel.is-full-image)>.burger{visibility:hidden;pointer-events:none}
+.project-library>.menu{z-index:130}.project-library>.stairs{z-index:120}
+.project-library .library-nav{padding-right:170px}
 .library-copy{left:6%;top:46%;transform:translateY(-50%);max-width:42%}
 .library-eyebrow{font-size:.85cqw;letter-spacing:.2em;margin-bottom:2.5cqw}
 .library-copy h1{font-size:8.5cqw;line-height:.98;margin:0 0 2.7cqw}.library-copy h1 br{display:block}.library-copy h1 em{margin:0}

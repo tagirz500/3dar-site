@@ -1,0 +1,18 @@
+.service-card[data-service-scan]{--scan-progress:0;--icon-progress:0;--scan-color:#6ea8ff}
+.service-card[data-service-scan] .service-card__body{mask-image:linear-gradient(transparent,transparent)}
+.service-card[data-service-scan] .service-card__top{transform:translateY(calc((1 - var(--icon-progress)) * 155px)) scale(calc(1 + (1 - var(--icon-progress)) * 1.3));transform-origin:center;justify-content:center}
+.service-scan-band{position:absolute;pointer-events:none;z-index:5}
+.service-scan-band[hidden]{display:none}
+/* Anchor focus must not draw a viewport-wide white rectangle. */
+#services,#services:focus,#services:focus-visible{outline:none;border-block:0}
+.services.is-restored .service-card{transition:none!important}
+.services__head .services__hint{margin-top:20px}
+.service-card .service-card__body{width:100%;min-width:0;grid-template-columns:minmax(0,1fr)}
+.service-card .service-card__body h3{font-size:clamp(24px,2vw,30px);line-height:1.12;text-align:center;width:100%;min-width:0;overflow-wrap:anywhere}
+.service-card .service-card__body p{min-width:0;max-width:100%;overflow-wrap:break-word}
+.services:not(.is-hover-ready) .service-card{translate:none!important;rotate:none!important}
+.services:not(.is-hover-ready) .service-card:hover,
+.services:not(.is-hover-ready) .service-card:focus-within,
+.services:not(.is-hover-ready) .service-card.pointer-active{border-color:rgba(var(--card-accent),.34);box-shadow:0 32px 90px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.09)}
+.service-card.pointer-active{border-color:rgba(var(--card-accent),.95);box-shadow:0 32px 90px #0006,0 0 0 1px rgba(var(--card-accent),.4),0 0 34px rgba(var(--card-accent),.25)}
+@media(prefers-reduced-motion:reduce){.service-card[data-service-scan] .service-card__body{mask-image:none}}

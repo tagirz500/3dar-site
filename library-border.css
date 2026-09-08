@@ -58,4 +58,6 @@
 }
 
 .project-card{overflow:visible}.project-card img,.project-card::after{border-radius:inherit}.project-card>.edge{border-radius:inherit}
-
+/* Illuminate the complete perimeter, including when pointing at the centre. */
+.project-card::before,.project-card > .edge{-webkit-mask-image:none;mask-image:none}
+.project-card.hot::before,.project-card.hot > .edge,.project-card:focus-visible::before,.project-card:focus-visible > .edge{opacity:.4}

@@ -5,7 +5,8 @@
 .mirror-gallery.is-opening .mirror-caption,.mirror-gallery.is-opening .mirror-controls{opacity:0;pointer-events:none;transition:opacity .3s}
 .video-flight{background:transparent}
 .video-home{display:inline-block;margin:28px 5vw 12px;position:relative;z-index:10}
-.video-gallery-page .burger{display:none!important}
+.video-gallery-page .burger{display:flex;opacity:1;visibility:visible;pointer-events:auto}
+.video-gallery-page:has(.video-stream-player[open]) .burger,.video-gallery-page:has(.mirror-gallery.is-opening) .burger{visibility:hidden;pointer-events:none}
 .video-gallery-page{height:100svh;overflow:hidden!important;overscroll-behavior:none}
 .video-gallery-page main{height:100%;margin:0;padding:0;max-width:none}
 .video-gallery-page .sub-head{display:none}
@@ -18,7 +19,9 @@
 .mirror-gallery{background:transparent}
 .mirror-home-page #wall-track[hidden],.mirror-home-page #wall-foot,.mirror-video-page .proj[hidden]{display:none!important}
 .mirror-caption{position:absolute;z-index:2;top:4%;left:20%;width:60%;text-align:center;pointer-events:none}
-.mirror-caption span{font-size:13px;color:#969ba4;font-variant-numeric:tabular-nums}
+.mirror-caption > span{font-size:13px;color:#969ba4;font-variant-numeric:tabular-nums}
+.mirror-caption h2 .gallery-blur-title{justify-content:center}
+.mirror-caption h2 .hero-goo-line,.mirror-caption h2 .hero-goo-line > span{font:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;color:inherit!important}
 .mirror-caption h2{font-size:clamp(22px,3vw,44px);line-height:1.15;margin:12px 0;color:#f5f5f7}
 .mirror-caption button{pointer-events:auto;border:0;background:none;color:#c5d7ec;padding:8px;font-size:14px;cursor:pointer}
 .mirror-controls{position:absolute;bottom:5%;left:0;right:0;display:flex;justify-content:center;gap:14px;z-index:2}

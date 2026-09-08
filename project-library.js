@@ -25,7 +25,7 @@
     card.className = 'project-card'; card.type = 'button';
     card.dataset.project = project.key; card.dataset.caption = project.title; card.dataset.i = '1';
     card.setAttribute('aria-label', `Открыть ${project.title}`);
-    card.innerHTML = `<img src="media/gal/${project.dir}/01.jpg" alt="${project.title}" decoding="async"><span class="project-card-top"><span>${pad(i + 1)} / 07</span><span>3DAR</span></span><span class="project-card-copy"><small>АРХИТЕКТУРНАЯ ВИЗУАЛИЗАЦИЯ</small><h2>${project.title}</h2><p>${project.renders} рендеров · Открыть проект ↗</p></span>`;
+    card.innerHTML = `<img src="media/gal/${project.dir}/01.jpg" alt="${project.title}" decoding="async"><span class="project-card-copy"><h2>${project.title}</h2><p>${project.renders} рендеров</p></span>`;
     card.addEventListener('click', () => {
       if (blocked() || performance.now() < suppressClickUntil) return;
       if (i !== active) { move(i); return; }
@@ -39,10 +39,15 @@
       const x = event.clientX - r.left - r.width / 2, y = event.clientY - r.top - r.height / 2;
       const proximity = Math.min(1, Math.max(Math.abs(x) / (r.width / 2), Math.abs(y) / (r.height / 2)));
       card.classList.add('hot');
-      card.style.setProperty('--edge-proximity', String(proximity * 100));
+      card.style.setProperty('--edge-proximity', '100');
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+        const nx=Math.max(-1,Math.min(1,x/(r.width/2))),ny=Math.max(-1,Math.min(1,y/(r.height/2)));
+        card.style.translate=(nx*10)+'px '+(ny*8)+'px';
+        card.style.rotate=(-ny)+' '+nx+' 0 '+(Math.hypot(nx,ny)*2)+'deg';
+      }
       card.style.setProperty('--cursor-angle', `${Math.atan2(y,x) * 180 / Math.PI + 90}deg`);
     });
-    card.addEventListener('pointerleave', () => { card.classList.remove('hot'); card.style.setProperty('--edge-proximity','0'); });
+    card.addEventListener('pointerleave', () => { card.classList.remove('hot'); card.style.setProperty('--edge-proximity','0'); card.style.translate='0px 0px';card.style.rotate='none'; });
     card.addEventListener('focus', () => { card.classList.add('hot'); card.style.setProperty('--edge-proximity','100'); });
     card.addEventListener('blur', () => { card.classList.remove('hot'); card.style.setProperty('--edge-proximity','0'); });
     stage.append(card); return card;

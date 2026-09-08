@@ -1,6 +1,7 @@
 import {ARTWORKS,mod,layout,visibleCards,hitCard,project} from './geometry.js';
 import {WebGLRenderer,CanvasRenderer} from './renderer.js';
 import {Water} from './water.js';
+import {showGalleryTitle} from '../media/bundles/gallery-fold.js';
 const original=document.querySelector('.proj')||document.querySelector('#wall-track');
 const isProject = Boolean(ARTWORKS[0]?.project);
 const hall=document.createElement('section');hall.className='mirror-gallery';hall.setAttribute('aria-label','3D ролики');
@@ -66,7 +67,7 @@ function frame(now){
  }
  renderer.render(cards,config,time,Math.abs(target-position),hover,canvas.width/config.width,water,time);
  const index=mod(Math.round(position));
- if(index!==selected){selected=index;caption.querySelector('h2').textContent=ARTWORKS[index].title;caption.querySelector('span').textContent=String(index+1).padStart(2,'0')+' / '+ARTWORKS.length;if(!motion.matches)caption.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:300,easing:'ease-out'})}
+ if(index!==selected){selected=index;const heading=caption.querySelector('h2');showGalleryTitle(heading,ARTWORKS[index].title);caption.querySelector('span').textContent=String(index+1).padStart(2,'0')+' / '+ARTWORKS.length}
  if(!motion.matches||Math.abs(position-target)>.001)kick();
 }
 function kick(){if(!raf&&renderer)raf=requestAnimationFrame(frame)}

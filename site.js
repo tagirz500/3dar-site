@@ -303,7 +303,7 @@
   for(const href of ['media/bundles/liquid-glass.css']){
     const css=document.createElement('link');css.rel='stylesheet';css.href=href;document.head.append(css);
   }
-  if(document.querySelector('.contact-icon,.why-grid')){
+  if(document.querySelector('.contact-icon,.contact-link-button,.cta--glass,.why-grid')){
     const glassScript=document.createElement('script');glassScript.src='media/bundles/liquid-glass.js';document.body.append(glassScript);
   }
   /* ── SVG stroke page transition (Drive: SVG-Page-transition) ──────────────
@@ -320,6 +320,16 @@
   const PTR_EASE='cubic-bezier(.37,0,.63,1)';
   document.body.insertAdjacentHTML('beforeend','<div class="ptr-logo" aria-hidden="true"><svg viewBox="0 0 334.4 145"><path d="M41.32 126.80Q31.12 126.80 25.30 122.96Q19.48 119.12 17.02 112.22Q14.56 105.32 14.56 96.32L14.56 92.84L34.60 92.84Q34.60 92.96 34.60 94.16Q34.60 95.36 34.60 96.32Q34.60 101.12 35.20 104.12Q35.80 107.12 37.36 108.50Q38.92 109.88 41.68 109.88Q44.44 109.88 45.82 108.44Q47.20 107 47.68 104.12Q48.16 101.24 48.16 96.92Q48.16 89.72 46.18 85.94Q44.20 82.16 37.96 82.04Q37.84 82.04 36.64 82.04Q35.44 82.04 34.24 82.04L34.24 68.24Q35.08 68.24 35.92 68.24Q36.76 68.24 37.48 68.24Q43.84 68.24 46 64.76Q48.16 61.28 48.16 53.96Q48.16 48.32 46.66 45.32Q45.16 42.32 41.08 42.32Q37.12 42.32 35.86 45.68Q34.60 49.04 34.60 54.32Q34.60 55.52 34.60 56.78Q34.60 58.04 34.60 59.36L14.56 59.36L14.56 53.48Q14.56 44.72 17.74 38.66Q20.92 32.60 26.86 29.48Q32.80 26.36 41.08 26.36Q49.48 26.36 55.48 29.36Q61.48 32.36 64.72 38.18Q67.96 44 67.96 52.64Q67.96 61.16 64.48 66.92Q61 72.68 56.08 74Q59.44 75.20 62.14 77.84Q64.84 80.48 66.40 84.98Q67.96 89.48 67.96 96.44Q67.96 105.32 65.38 112.16Q62.80 119 56.92 122.90Q51.04 126.80 41.32 126.80"/><path d="M106.72 125L81.88 125L81.88 27.80L106.48 27.80Q119.20 27.80 126.28 30.98Q133.36 34.16 136.24 40.94Q139.12 47.72 139.12 58.52L139.12 93.80Q139.12 104.72 136.24 111.62Q133.36 118.52 126.34 121.76Q119.32 125 106.72 125M103.36 42.80L103.36 110.12L106.72 110.12Q111.64 110.12 113.80 108.68Q115.96 107.24 116.50 104.36Q117.04 101.48 117.04 97.16L117.04 54.80Q117.04 50.48 116.38 47.84Q115.72 45.20 113.56 44Q111.40 42.80 106.60 42.80"/><path d="M170.80 125L150.52 125L168.88 27.80L193.36 27.80L211.48 125L191.68 125L188.44 104.48L174.16 104.48L170.80 125M181.24 53.72L176.08 91.64L186.40 91.64"/><path d="M245.80 125L224.32 125L224.32 27.80L251.08 27.80Q260.92 27.80 268.12 29.96Q275.32 32.12 279.34 37.70Q283.36 43.28 283.36 53.48Q283.36 59.48 282.40 64.16Q281.44 68.84 278.86 72.26Q276.28 75.68 271.48 77.96L284.80 125L262.60 125L251.92 81.44L245.80 81.44L245.80 125M245.80 42.20L245.80 69.08L251.80 69.08Q256.36 69.08 258.88 67.46Q261.40 65.84 262.42 62.78Q263.44 59.72 263.44 55.40Q263.44 49.16 261.16 45.68Q258.88 42.20 252.76 42.20"/><path d="M316.12 125L297.64 125L297.64 106.52L316.12 106.52"/></svg></div>');
   const pageLogo=document.querySelector('.ptr-logo'),letters=[...pageLogo.querySelectorAll('path')];
+  // One vector master for both the loader and every visible brand mark.
+  const logoMaster=pageLogo.querySelector('svg');
+  document.querySelectorAll('.mark,.library-mark,.contact-nav>a,header a,footer span,.sub-foot span,.library-bottom>span,.reel__spec>span').forEach(el=>{
+    if(!/^(?:STUDIO\s+)?3DAR\s*\.?(?:\s*©\s*\d{4})?$/.test(el.textContent.trim()))return;
+    const copyright=el.textContent.match(/©\s*\d{4}/)?.[0];
+    const logo=logoMaster.cloneNode(true);logo.classList.add('brand-logo');logo.setAttribute('aria-hidden','true');
+    if(el.tagName==='A'&&!el.hasAttribute('aria-label'))el.setAttribute('aria-label','3DAR — на главную');
+    else if(el.tagName!=='A')el.setAttribute('aria-label','STUDIO 3DAR'+(copyright?' '+copyright:''));
+    el.replaceChildren(logo);if(copyright)el.append(' '+copyright);
+  });
   const store={get:key=>{try{return sessionStorage.getItem(key)}catch{return null}},set:(key,value)=>{try{sessionStorage.setItem(key,value)}catch{}},remove:key=>{try{sessionStorage.removeItem(key)}catch{}}};
   let leaving=false,arrivalTimer;
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -344,31 +354,30 @@
   async function drawLogo(){
     resetLogo();pageLogo.style.opacity='1';
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-    await Promise.all(letters.map((p,i)=>animate(p,[{strokeDashoffset:p.getTotalLength()},{strokeDashoffset:0}],{duration:1000,delay:i*75,easing:PTR_EASE,fill:'forwards'})));
-    await Promise.all(letters.map(p=>animate(p,[{fillOpacity:0},{fillOpacity:1}],{duration:420,easing:'ease-out',fill:'forwards'})));
-    await wait(200);
+    await Promise.all(letters.map((p,i)=>animate(p,[{strokeDashoffset:p.getTotalLength()},{strokeDashoffset:0}],{duration:500,delay:i*37.5,easing:PTR_EASE,fill:'forwards'})));
+    await Promise.all(letters.map(p=>animate(p,[{fillOpacity:0},{fillOpacity:1}],{duration:210,easing:'ease-out',fill:'forwards'})));
+    await wait(100);
   }
   async function ptrLeave(){
     if(reduce)return;
-    await Promise.all(ptrPaths.map(p=>animate(p,[{strokeDashoffset:p.dataset.len,strokeWidth:'200px'},{strokeDashoffset:0,strokeWidth:'700px'}],{duration:900,easing:PTR_EASE,fill:'forwards'})));
+    await Promise.all(ptrPaths.map(p=>animate(p,[{strokeDashoffset:p.dataset.len,strokeWidth:'200px'},{strokeDashoffset:0,strokeWidth:'700px'}],{duration:450,easing:PTR_EASE,fill:'forwards'})));
     ptrPaths.forEach(p=>{p.style.strokeDashoffset='0';p.style.strokeWidth='700px';p.getAnimations().forEach(a=>a.cancel())});
   }
   async function ptrEnter(){
     if(reduce){cleanup();return}
-    await Promise.all(ptrPaths.map(p=>animate(p,[{strokeDashoffset:0,strokeWidth:'700px'},{strokeDashoffset:p.dataset.len,strokeWidth:'200px'}],{duration:1100,easing:PTR_EASE,fill:'forwards'})));
+    await Promise.all(ptrPaths.map(p=>animate(p,[{strokeDashoffset:0,strokeWidth:'700px'},{strokeDashoffset:p.dataset.len,strokeWidth:'200px'}],{duration:550,easing:PTR_EASE,fill:'forwards'})));
     ptrPaths.forEach(p=>{p.getAnimations().forEach(a=>a.cancel());p.style.strokeDashoffset=p.dataset.len;p.style.strokeWidth='200px'});
   }
   window.PTR={leave:ptrLeave,enter:ptrEnter};
   async function goWithStrokes(href){
     if(leaving)return;leaving=true;
     const target=new URL(href,location.href);
-    if(/\/(contact|feedback)\.html$/.test(target.pathname)){
+    if(window.ROUTE_MOTION?.handles(target)){
       cleanup();
-      document.documentElement.dataset.feedbackTransition='true';
-      // Both routes share the same real-document transition, without a competing loader.
+      // Contact and feedback each have their own supplied transition.
       root.classList.remove('menu-open','menu-closing');root.style.overflow='';
       menu.style.visibility='hidden';
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{location.href=href}));return;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{window.ROUTE_MOTION.navigate(href)}));return;
     }
     delete document.documentElement.dataset.feedbackTransition;
     const fallback=setTimeout(()=>{cleanup();location.href=href},3500);
@@ -378,6 +387,7 @@
       store.set('ptr-frame',document.querySelector('.ptr').outerHTML);
     }finally{clearTimeout(fallback);location.href=href}
   }
+  window.navigateSite=goWithStrokes;
   const arrived=Boolean(store.get('ptr'));
   if(arrived&&!reduce){
     ptrPaths.forEach(p=>{p.style.strokeDashoffset='0';p.style.strokeWidth='700px'});
@@ -389,7 +399,7 @@
         await drawLogo();
         dispatchEvent(new Event('page-reveal'));
         await Promise.all([
-          animate(pageLogo,[{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(1.1)'}],{duration:650,easing:'ease-in',fill:'forwards'}),
+          animate(pageLogo,[{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(1.1)'}],{duration:325,easing:'ease-in',fill:'forwards'}),
           ptrEnter()
         ]);
       }finally{cleanup()}

@@ -324,9 +324,10 @@ h1,h2,h3,.display{
 /* above the shrinking clip (z 35) so the split halves stay in front of it, as the component layers its title over the media */
 /* skips the scroll-driven clip: shown only while the hero holds the page */
 .hero-skip{display:none;position:absolute;left:50%;right:auto;top:18px;bottom:auto;z-index:61;padding:9px 16px;border-radius:999px;transform:translateX(-50%);
-  border:1px solid rgba(238,240,250,.3);background:rgba(2,10,36,.45);color:var(--fg-2);cursor:pointer;
+  border:0;background:transparent;color:#6ea8ff;cursor:pointer;box-shadow:none;
   font-family:Oswald,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
-.hero-skip:hover{border-color:var(--accent);color:var(--fg)}
+.hero-skip:hover{color:#a6caff}
+.hero-skip:focus-visible{outline:2px solid #6ea8ff;outline-offset:3px}
 body.locked .hero-skip{display:inline-flex}
 /* the clip is its own screen: no top bar while it plays (the menu button is separate and stays) */
 .nav{transition:opacity .4s ease}
@@ -352,7 +353,7 @@ body.locked .nav{opacity:0;pointer-events:none}
 /* VFX-JS rasterizes the element itself (SVG foreignObject), where web fonts are not available —
    so the phrase is set in a system face and given room, or the second line wraps and is cropped */
 .hero-h{display:block;max-width:820px;margin:0;font-family:"Arial Narrow",Arial,Helvetica,sans-serif;font-weight:700;text-transform:uppercase;
-  font-size:clamp(27px,2.9vw,43px);line-height:1.1;letter-spacing:.01em;color:var(--fg);white-space:nowrap}
+  font-size:clamp(54px,5.8vw,86px);line-height:1.1;letter-spacing:.01em;color:var(--fg);white-space:normal;max-width:min(1500px,90vw);text-wrap:balance}
 .swap{transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .swapping .swap{opacity:0;transform:translateY(10px)}
 @media(max-width:900px){
@@ -448,6 +449,7 @@ body.locked .nav{opacity:0;pointer-events:none}
 .service-deck__toggle:hover,.service-deck__toggle:focus-visible{border-color:var(--accent);background:rgba(16,39,91,.85);outline:none}
 .service-deck__toggle svg{width:16px;height:16px;transition:transform .5s var(--ease)}
 .services.is-open .service-deck__toggle svg{transform:rotate(180deg)}
+.services.is-open .service-deck__toggle{display:none}
 
 .brand-service{
   position:relative;min-height:76svh;display:grid;place-items:center;overflow:hidden;
@@ -914,6 +916,8 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
 <link rel="stylesheet" href="editorial-type.css">
 <script src="media/bundles/hero-goo-text.js"></script>
 <link rel="stylesheet" href="feedback-transition.css">
+<link rel="stylesheet" href="service-scan.css">
+<script src="service-scan.js" defer></script>
 </head>
 <body class="locked no-body-text-fx">
 
@@ -957,8 +961,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
      (Codrops OnScrollTypographyAnimations, effect 1: chars from opacity 0 / scale .6 / ±20°, stagger .4, power4, scrubbed) -->
 <section class="typo" id="typo">
   <div class="typo__inner">
-    <span class="eyebrow">Что мы делаем</span>
-    <h2 class="typo__title" id="js-typo" data-nogoo><span>Наше исполнение,</span><span>ваши желания</span></h2>
+    <h2 class="typo__title" id="js-typo" data-nogoo><span>Наше исполнение</span><span>ваше желание</span></h2>
     <p class="typo__p" id="js-typo-p" data-nogoo>Синтез творческого подхода и безупречного технического исполнения. Полный визуальный контент архитектурного объекта в одной студии.</p>
   </div>
 </section>
@@ -967,7 +970,6 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
   <div class="services__stage wrap">
     <header class="services__head">
       <div>
-        <span class="eyebrow">Что мы делаем</span>
         <h2 id="services-title">Наши услуги</h2>
       </div>
       <p class="services__hint">Прокрутите один раз, чтобы раскрыть направления</p>
@@ -1134,7 +1136,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       </details>
     </div>
     <aside class="faq-contact" id="contact">
-      <a class="cta" href="contact.html" data-a="Связаться" style="--w:176px;--h:62px;--fs:18px">Связаться</a>
+      <a class="cta cta--glass" href="contact.html" data-a="Связаться" data-b="Связаться">Связаться</a>
     </aside>
   </div>
 </section>
@@ -1208,7 +1210,15 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     };
     fly();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fly).catch(() => {});
-    a.addEventListener('pointerdown', () => { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); setTimeout(() => a.classList.remove('pop'), 900); });
+    if(a.classList.contains('cta--glass')){
+      let pending=false;
+      a.addEventListener('click',event=>{
+        if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+        event.preventDefault();if(pending)return;pending=true;
+        window.navigateSite?window.navigateSite(a.href):location.assign(a.href);
+      });
+      addEventListener('pageshow',()=>{pending=false});
+    }else a.addEventListener('pointerdown', () => { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); setTimeout(() => a.classList.remove('pop'), 900); });
   });
 
   /* ---------- React Bits GooeyNav, adapted to the static header ---------- */
@@ -1376,6 +1386,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const h = TEXT[i][0];
     if (hEl.dataset.line === h) return;
     hEl.dataset.line = h;
+    window.HERO_TEXT?.clear(hEl);
     hEl.innerHTML = h;
     if (window.HERO_TEXT) window.HERO_TEXT.scan(hEl);
   }
@@ -1397,7 +1408,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const stop = () => {
       if (stopped) return;
       stopped = true;
-      clearTimeout(safety);
+      clearInterval(safety);
       film.removeEventListener('timeupdate', check);
       if (g !== gen) return;                 // skipped meanwhile
       film.pause(); film.currentTime = b;
@@ -1409,8 +1420,14 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     film.addEventListener('timeupdate', check);
     film.play().then(() => {
       if (film.requestVideoFrameCallback) film.requestVideoFrameCallback(perFrame);
-      safety = setTimeout(stop, (b - film.currentTime) * 1000 + 400);
-    }).catch(stop);
+      // Advance only when the media reaches the cut, never on elapsed wall time.
+      safety = setInterval(check, 50);
+    }).catch(() => {
+      stopped = true;
+      clearInterval(safety);
+      film.removeEventListener('timeupdate', check);
+      if (g === gen) { busy = false; paint(); }
+    });
   }
 
   const reverseFilm = $('film-reverse');
@@ -1453,12 +1470,17 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     step = next; paint();
     lock(true);                                    // the clip keeps the page until it hands over
     setTimeout(() => { busy = false; }, 350);  // swallow trackpad momentum
-    if (step === 3) setTimeout(() => { if (step === 3 && !busy) leaveHero(); }, 700);    // allow reversing before the handover
+    if (step === 3) setTimeout(() => { if (step === 3 && !busy) leaveHero(); }, 3300);    // let the final headline resolve before carrying it into the dissolve
   }
 
   // Bidirectional dissolve between the video and the site.
   const heroEl = document.getElementById('top'), servicesEl = $('services');
   let heroLeft = false, handing = false;
+  const resumeKey='3dar-index-scroll-state';
+  function saveIndexPosition(){
+    try{sessionStorage.setItem(resumeKey,JSON.stringify({body:heroLeft,y:scrollY}))}catch{}
+  }
+  addEventListener('pagehide',saveIndexPosition);
   async function leaveHero() {                   // final frame dissolves automatically into the statement
     if (heroLeft || handing) return; handing = true;
     clearInterval(rev); hideReverse(); film.pause();
@@ -1490,7 +1512,13 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
         const timer=setTimeout(ready,2000);film.addEventListener('seeked',ready,{once:true});film.currentTime=0;
       });
       if(window.dissolveHeroFrame)await window.dissolveHeroFrame(film,back,true);else back();
-    } finally {handing=false;}
+    } catch (error) {
+      console.warn('Video return interrupted; restoring page scrolling.',error);
+    } finally {
+      handing=false;
+      // A cancelled/failed transition may leave the video hidden.
+      if(heroLeft){busy=false;lock(false);}
+    }
   }
   addEventListener('wheel', e => {               // at the very top of the site, one more scroll up returns to the clip
     if (heroLeft && !handing && scrollY === 0 && e.deltaY < -4) returnHero();
@@ -1533,11 +1561,24 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     if (Math.abs(dy) > 40) go(Math.sign(dy));
   }, { passive: true });
 
-  film.addEventListener('loadeddata', () => { film.currentTime = 0; }, { once: true });
+  // The media starts at zero naturally; a late loadeddata must not undo a scroll seek.
   paint();
+  // Browser restoration and asynchronous video callbacks must never leave the
+  // ordinary page in the intro's locked state. Do not touch menu/reel locks.
+  const recoverBodyScroll=()=>{
+    if(!heroLeft||handing||!heroEl.classList.contains('is-left'))return;
+    busy=false;lock(false);
+    if(!document.querySelector('.reel[open],.lightbox[open],dialog[open]')&&!document.documentElement.classList.contains('menu-open')&&!document.documentElement.classList.contains('menu-closing')){
+      document.documentElement.style.overflow='';
+    }
+  };
+  addEventListener('pageshow',()=>{recoverBodyScroll();requestAnimationFrame(recoverBodyScroll)});
+  addEventListener('wheel',recoverBodyScroll,{capture:true,passive:true});
+  addEventListener('touchstart',recoverBodyScroll,{capture:true,passive:true});
+  addEventListener('keydown',recoverBodyScroll,{capture:true});
   // A section URL enters the ordinary page, not the scroll-locked video intro.
   function openLinkedSection(){
-    const id=decodeURIComponent(location.hash.slice(1));
+    let id;try{id=decodeURIComponent(location.hash.slice(1))}catch{return}
     if(!id||id==='top')return;
     const section=document.getElementById(id);if(!section)return;
     gen++;clearInterval(rev);hideReverse();film.pause();busy=false;handing=false;
@@ -1546,6 +1587,22 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     requestAnimationFrame(()=>section.scrollIntoView({behavior:'instant',block:'start'}));
   }
   openLinkedSection();
+  // A reload of the body must not restore its scroll offset underneath a
+  // freshly locked video intro. Restore both view state and position together.
+  if(!location.hash && performance.getEntriesByType('navigation')[0]?.type==='reload'){
+    let saved;try{saved=JSON.parse(sessionStorage.getItem(resumeKey))}catch{}
+    if(saved?.body){
+      gen++;clearInterval(rev);hideReverse();film.pause();busy=false;handing=false;
+      step=3;heroLeft=true;heroEl.classList.add('is-left');lock(false);
+      document.documentElement.style.overflow='';
+      const restorePosition=()=>{lock(false);scrollTo({top:Math.max(0,Number(saved.y)||0),behavior:'instant'})};
+      requestAnimationFrame(restorePosition);
+      addEventListener('pageshow',restorePosition,{once:true});
+    }else{
+      // Fresh intro reloads start at its visible first frame, never below it.
+      requestAnimationFrame(()=>scrollTo({top:0,behavior:'instant'}));
+    }
+  }
   addEventListener('hashchange',openLinkedSection);
   addEventListener('pageshow',event=>{if(event.persisted){if(heroLeft)lock(false);openLinkedSection()}});
   if (new URLSearchParams(location.search).has('wall')) {          // wall-test.html: skip the clip, go to the wall
@@ -1619,30 +1676,105 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const serviceToggle = $('service-deck-toggle');
     const serviceLabel = serviceToggle.querySelector('span');
     let serviceOpen = false, serviceWheel = 0, serviceWheelAt = 0, serviceLockUntil = 0, serviceTouchY = 0;
+    const serviceSeenKey='3dar-services-unfolded';
+    try{
+      if(performance.getEntriesByType('navigation')[0]?.type==='reload')sessionStorage.removeItem(serviceSeenKey);
+      else if(sessionStorage.getItem(serviceSeenKey)==='1'){
+        serviceOpen=true;
+        serviceSection.classList.add('is-restored','is-open','is-hover-ready');
+        serviceToggle.setAttribute('aria-expanded','true');
+        serviceLabel.textContent='Сложить направления';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>serviceSection.classList.remove('is-restored')));
+      }
+    }catch{}
+    // Hold at the composition globally, not only while the pointer is over a card.
+    const serviceHolds=new Set();
+    let serviceAnchor=0;
+    window.beginServiceScrollLock=()=>{
+      if(reduce)return()=>{};
+      if(!serviceHolds.size)serviceAnchor=scrollY;
+      const token={};serviceHolds.add(token);
+      let finished=false;
+      const release=()=>{
+        if(finished)return;finished=true;clearTimeout(watchdog);
+        setTimeout(()=>{serviceHolds.delete(token);serviceWheelAt=performance.now()},240);
+      };
+      // Never leave the page trapped if an animation is cancelled or errors.
+      const watchdog=setTimeout(release,6000);
+      return release;
+    };
+    addEventListener('wheel',e=>{
+      if(!serviceHolds.size||e.ctrlKey)return;
+      e.preventDefault();e.stopImmediatePropagation();serviceWheelAt=performance.now();
+    },{capture:true,passive:false});
+    addEventListener('touchmove',e=>{
+      if(!serviceHolds.size)return;e.preventDefault();e.stopImmediatePropagation();
+    },{capture:true,passive:false});
+    addEventListener('keydown',e=>{
+      if(!serviceHolds.size||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+      if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(e.key)){e.preventDefault();e.stopImmediatePropagation()}
+    },{capture:true});
+    addEventListener('scroll',()=>{
+      if(serviceHolds.size&&Math.abs(scrollY-serviceAnchor)>1)scrollTo({top:serviceAnchor,behavior:'instant'});
+    },{passive:true});
+    const clearServiceHolds=()=>serviceHolds.clear();
+    addEventListener('hashchange',clearServiceHolds);
+    addEventListener('pagehide',clearServiceHolds);
+    addEventListener('pageshow',clearServiceHolds);
 
     const setServiceOpen = (open, source = 'gesture') => {
       if (serviceOpen === open) return;
       serviceOpen = open;
+      const releaseOpening=open?window.beginServiceScrollLock():()=>{};
       serviceSection.classList.toggle('is-open', open);
+      serviceSection.classList.remove('is-hover-ready');
+      if(open)requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        const motions=[...serviceSection.querySelectorAll('.service-card')].flatMap(card=>card.getAnimations()).filter(a=>Number.isFinite(a.effect?.getComputedTiming().iterations));
+        Promise.all(motions.map(a=>a.finished.catch(()=>{}))).finally(()=>{
+          if(serviceOpen){
+            serviceSection.classList.add('is-hover-ready');
+            try{sessionStorage.setItem(serviceSeenKey,'1')}catch{}
+          }
+          releaseOpening();
+        });
+      }));
       serviceToggle.setAttribute('aria-expanded', String(open));
       serviceLabel.textContent = open ? 'Сложить направления' : 'Раскрыть направления';
       serviceLockUntil = source === 'wheel' ? performance.now() + (reduce ? 80 : 900) : 0;
     };
     const serviceInView = () => {
       const r = serviceSection.getBoundingClientRect();
+      if(!serviceOpen){
+        const deck=$('service-deck').getBoundingClientRect();
+        const heading=serviceSection.querySelector('.services__head').getBoundingClientRect();
+        const center=deck.top+deck.height/2;
+        return heading.top<=innerHeight*.22 && heading.bottom>0 &&
+          center<=innerHeight*.62 && center>=innerHeight*.30;
+      }
       return r.top < innerHeight * .62 && r.bottom > innerHeight * .38;
     };
+    // Reach the Services composition before spreading; never unfold off-screen.
+    const openCenteredServices=()=>{
+      if(!serviceOpen&&serviceInView()&&!document.body.classList.contains('locked')){
+        serviceWheelAt=performance.now();
+        setServiceOpen(true,'scroll');
+      }
+    };
+    addEventListener('scroll',openCenteredServices,{passive:true});
+    addEventListener('resize',openCenteredServices);
+    requestAnimationFrame(openCenteredServices);
 
     serviceSection.addEventListener('wheel', e => {
       if (!serviceInView() || Math.abs(e.deltaY) < 3) return;
       const now = performance.now();
+      const freshServiceGesture = now - serviceWheelAt > 180;
       if (now - serviceWheelAt > 220) serviceWheel = 0;
       serviceWheelAt = now;
 
-      if (now < serviceLockUntil && e.deltaY > 0) { e.preventDefault(); return; }
+      if (serviceOpen && e.deltaY > 0 && window.SERVICE_SCAN?.advance(e.deltaY,freshServiceGesture)) { e.preventDefault(); return; }
       if (!serviceOpen && e.deltaY > 0) {
         e.preventDefault(); serviceWheel += e.deltaY;
-        if (serviceWheel > 24) { serviceWheel = 0; setServiceOpen(true, 'wheel'); }
+        if (serviceWheel > 0) { serviceWheel = 0; setServiceOpen(true, 'wheel'); }
       }
     }, { passive:false });
 
@@ -1652,11 +1784,13 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       const dy = serviceTouchY - e.changedTouches[0].clientY;
       if (Math.abs(dy) < 42) return;
       if (dy > 0 && !serviceOpen) setServiceOpen(true, 'touch');
+      else if (dy > 0) window.SERVICE_SCAN?.advance(dy,true);
     }, { passive:true });
     addEventListener('keydown', e => {
       if (!serviceInView() || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
       const down = ['ArrowDown','PageDown',' '].includes(e.key), up = ['ArrowUp','PageUp','Escape'].includes(e.key);
       if (down && !serviceOpen) { e.preventDefault(); setServiceOpen(true, 'keyboard'); }
+      else if(down&&!e.repeat&&window.SERVICE_SCAN?.advance(100,true))e.preventDefault();
     });
 
     if (reduce) setServiceOpen(true, 'reduced-motion');
@@ -1729,7 +1863,16 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
   if (!reduce) {
     const frame = $('wall-frame');
     const cols = Array.from(plane.children);
-    const offsets = cols.map(() => 0), limits = cols.map(() => 0);
+    // Three identical strips keep both ends offscreen while the middle wraps.
+    const counts = cols.map(col => col.children.length);
+    cols.forEach(col => {
+      const originals = Array.from(col.children);
+      const copy = tile => { const clone=tile.cloneNode(true); clone.tabIndex=-1; clone.setAttribute('aria-hidden','true'); return clone; };
+      col.prepend(...originals.map(copy));
+      col.append(...originals.map(copy));
+    });
+    const offsets = cols.map(() => 0), periods = cols.map(() => 0);
+    const wrap = (value, period) => period ? ((value + period / 2) % period + period) % period - period / 2 : 0;
     const velocities = cols.map((_, c) => WALL.speed * (.7 + ((c * .37) % 1) * .45) * (c % 2 ? -1 : 1));
     let wx = 0, wy = 0, tx = 0, ty = 0, prev = performance.now(), glowTile = null, hoverCol = -1;
 
@@ -1746,10 +1889,8 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       plane.style.transform = `translate(-50%,-50%) rotateX(${(TILT.rx + wy * TILT.sway).toFixed(3)}deg) rotateY(${(TILT.ry + wx * TILT.sway).toFixed(3)}deg) rotateZ(${TILT.rz}deg) translateZ(${-WALL.depth}px)`;
       if (measured) {
         cols.forEach((col, c) => {
-          if (c === hoverCol || !limits[c]) return;
-          offsets[c] += velocities[c] * dt / 1000;
-          if (offsets[c] >= limits[c]) { offsets[c] = limits[c]; velocities[c] *= -1; }
-          else if (offsets[c] <= -limits[c]) { offsets[c] = -limits[c]; velocities[c] *= -1; }
+          if (c === hoverCol || !periods[c]) return;
+          offsets[c] = wrap(offsets[c] + velocities[c] * dt / 1000, periods[c]);
         });
         positionColumns();
       }
@@ -1757,17 +1898,18 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     const loop = () => { wallStep(); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
 
-    // Each column is a finite, unique strip. Give the strips different starting
-    // positions, then move only the one beneath the wheel pointer.
+    // Repeat the same sequence seamlessly in either direction, without a clamp
+    // or an automatic reversal. Only the column under the pointer is scrubbed.
     let measured = false;
     const positionColumns = () => cols.forEach((col, c) => {
       col.style.transform = `translate3d(0,${(-offsets[c]).toFixed(2)}px,0)`;
     });
     const measureColumns = () => {
       cols.forEach((col, c) => {
-        limits[c] = Math.max(0, (col.scrollHeight - innerHeight * .78) / 2);
-        if (!measured) offsets[c] = limits[c] * ((c / Math.max(1, COLS - 1)) - .5) * .55;
-        offsets[c] = Math.max(-limits[c], Math.min(limits[c], offsets[c]));
+        const count=counts[c];
+        periods[c] = count ? col.children[count].offsetTop - col.children[0].offsetTop : 0;
+        if (!measured) offsets[c] = periods[c] * c / Math.max(1,COLS);
+        offsets[c] = wrap(offsets[c], periods[c]);
       });
       measured = true; positionColumns();
     };
@@ -1787,7 +1929,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       const c = +col.dataset.column;
       hoverCol = c;
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
-      const next = Math.max(-limits[c], Math.min(limits[c], offsets[c] + e.deltaY * unit));
+      const next = wrap(offsets[c] + e.deltaY * unit, periods[c]);
       e.preventDefault();
       offsets[c] = next; positionColumns();
     }, { passive:false });
@@ -1798,7 +1940,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
       // BorderGlow: edge proximity + cursor angle, measured against the hovered tile
       const tile = e.target.closest && e.target.closest('.tile');
-      if (glowTile && glowTile !== tile) { glowTile.style.setProperty('--edge-proximity', '0'); glowTile = null; }
+      if (glowTile && glowTile !== tile) { glowTile.style.setProperty('--edge-proximity', '0');glowTile.style.translate='0px 0px';glowTile.style.rotate='none'; glowTile = null; }
       if (!tile) return;
       glowTile = tile;
       const b = tile.getBoundingClientRect();
@@ -1809,7 +1951,10 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
       const edge = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
       let deg = (dx === 0 && dy === 0) ? 0 : Math.atan2(dy, dx) * (180 / Math.PI) + 90;
       if (deg < 0) deg += 360;
-      tile.style.setProperty('--edge-proximity', (edge * 100).toFixed(3));
+      tile.style.setProperty('--edge-proximity', '100');
+      const nx=Math.max(-1,Math.min(1,dx/cx)),ny=Math.max(-1,Math.min(1,dy/cy));
+      tile.style.translate=(nx*10)+'px '+(ny*8)+'px';
+      tile.style.rotate=(-ny)+' '+nx+' 0 '+(Math.hypot(nx,ny)*2)+'deg';
       tile.style.setProperty('--cursor-angle', deg.toFixed(3) + 'deg');
     });
     setHot = tile => {
@@ -1819,7 +1964,7 @@ body.no-body-text-fx #wall-vignette{-webkit-mask-image:radial-gradient(ellipse 8
     };
     frame.addEventListener('pointerleave', () => {
       tx = 0; ty = 0; label(null); setHot(null); hoverCol = -1;
-      if (glowTile) { glowTile.style.setProperty('--edge-proximity', '0'); glowTile = null; }
+      if (glowTile) { glowTile.style.setProperty('--edge-proximity', '0');glowTile.style.translate='0px 0px';glowTile.style.rotate='none'; glowTile = null; }
     });
     // Keep the nearest image active while the pointer is in a gap inside its column.
     frame.addEventListener('pointermove', e => {

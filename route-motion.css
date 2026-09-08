@@ -1,0 +1,31 @@
+/* PixelTransition demo4 (Contacts) and supplied scroll-24 section reveal (feedback). */
+@view-transition{navigation:auto}
+#route-pixels{position:fixed;inset:0;z-index:10000;display:grid;grid-template-columns:repeat(17,1fr);grid-template-rows:repeat(9,1fr);pointer-events:all}
+#route-pixels i{background:var(--bg,#040c24);transform:scale(0);opacity:0}
+html:root[data-pixel-transition]::view-transition-group(root),html:root[data-pixel-transition]::view-transition-old(root),html:root[data-pixel-transition]::view-transition-new(root){animation:none!important}
+/* The reference's opposing outer/inner wrappers are expressed as snapshot clipping;
+   content retains its 15% parallax while the incoming section crosses the viewport. */
+html:root[data-feedback-transition]::view-transition-group(root){animation:none}
+html:root[data-feedback-transition]::view-transition-old(feedback-content){animation:feedback-out-up 1.25s cubic-bezier(.455,.03,.515,.955) both;mix-blend-mode:normal;z-index:1}
+html:root[data-feedback-transition]::view-transition-new(feedback-content){animation:feedback-in-up 1.25s cubic-bezier(.455,.03,.515,.955) both;mix-blend-mode:normal;z-index:2}
+html:root[data-feedback-transition="reverse"]::view-transition-old(feedback-content){animation-name:feedback-out-down}
+html:root[data-feedback-transition="reverse"]::view-transition-new(feedback-content){animation-name:feedback-in-down}
+@keyframes feedback-out-up{to{transform:translateY(-15%)}}
+@keyframes feedback-in-up{from{transform:translateY(15%);clip-path:inset(100% 0 0 0)}to{transform:translateY(0);clip-path:inset(0)}}
+@keyframes feedback-out-down{to{transform:translateY(15%)}}
+@keyframes feedback-in-down{from{transform:translateY(-15%);clip-path:inset(0 0 100% 0)}to{transform:translateY(0);clip-path:inset(0)}}
+/* Hold the shared backdrop still while only the page content moves. */
+html:has(.contact-page),body.contact-page{background:#020a24}
+html:root[data-feedback-transition] main{view-transition-name:feedback-content}
+html:root[data-feedback-transition] .index.bgx{view-transition-name:contact-backdrop}
+html:root[data-feedback-transition]::view-transition{background:#020a24}
+html:root[data-feedback-transition]::view-transition-group(contact-backdrop){animation:none;z-index:1}
+html:root[data-feedback-transition]::view-transition-group(root){z-index:0}
+html:root[data-feedback-transition]::view-transition-old(contact-backdrop){animation:none;opacity:1}
+html:root[data-feedback-transition]::view-transition-new(contact-backdrop){animation:none;opacity:0}
+.feedback-back{display:inline-block;margin-bottom:24px;color:inherit;text-decoration:none}
+.feedback-char-clip{display:inline-block;overflow:hidden;vertical-align:bottom}
+.feedback-char-clip>span{display:inline-block}
+@media(prefers-reduced-motion:reduce){html:root[data-feedback-transition]::view-transition-old(root),html:root[data-feedback-transition]::view-transition-new(root){animation:none!important}}
+html:root[data-feedback-transition]::view-transition-group(feedback-content){animation:none;z-index:2}
+html:root[data-feedback-transition]::view-transition-old(root),html:root[data-feedback-transition]::view-transition-new(root){animation:none;mix-blend-mode:normal}

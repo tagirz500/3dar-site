@@ -17,7 +17,7 @@ html body #js-typo,html body #js-typo *{font-family:"Cormorant Garamond",sans-se
 html body #js-typo{font-size:clamp(60px,11.5625vw,185px)!important;translate:none;margin:0;gap:0;text-transform:none}
 html body #js-typo *{font-size:inherit!important}
 html body #js-typo-p,html body #js-typo-p *{font-family:'Cormorant Garamond',Georgia,serif!important;font-style:normal!important;font-weight:300!important;letter-spacing:-.04em!important;text-transform:none}
-html body #js-typo-p{font-size:clamp(24px,2.5vw,40px);line-height:1.05!important;color:#a1a1a1;translate:none;margin:clamp(40px,5.5vh,66px) auto 0}
+html body #js-typo-p{font-size:clamp(24px,2.5vw,40px);width:100%;max-width:19.8em;line-height:1.05!important;color:#a1a1a1;translate:none;margin:clamp(40px,5.5vh,66px) auto 0}
 html body.no-body-text-fx #typo{min-height:100svh;box-sizing:border-box;padding:clamp(100px,16svh,180px) 0 clamp(64px,10svh,110px)}
 html body #typo .typo__inner{height:auto;padding:0 clamp(20px,4vw,64px);position:relative;top:auto}
 @media(max-width:700px){html body #js-typo{font-size:clamp(50px,11.25vw,80px)!important}html body.no-body-text-fx #typo{padding:110px 0 80px}}
